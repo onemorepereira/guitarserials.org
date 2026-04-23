@@ -5,12 +5,22 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 interface Props {
   title?: string;
   description?: string;
+  /** Optional path override for canonical URL; defaults to Astro.url.pathname. */
+  canonicalPath?: string;
+  /** Optional OG image path (relative to site root). Defaults to /og-default.png. */
+  ogImage?: string;
 }
 
 const {
   title = 'guitarserials.org — Decode any guitar serial number',
   description = 'A free, open-source guitar serial-number decoder. Gibson, Fender, PRS, Heritage, Sire, Ibanez — runs in your browser, offline.',
+  canonicalPath,
+  ogImage = '/og-default.png',
 } = Astro.props;
+
+const site = Astro.site ?? new URL('https://guitarserials.org');
+const canonicalUrl = new URL(canonicalPath ?? Astro.url.pathname, site).toString();
+const absoluteOgImage = new URL(ogImage, site).toString();
 ---
 
 <!doctype html>
@@ -19,9 +29,29 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="guitarserials.org" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={absoluteOgImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
     <script is:inline>
       (() => {
         const t = localStorage.getItem('theme');
@@ -31,6 +61,8 @@ const {
         document.documentElement.classList.toggle('dark', pref === 'dark');
       })();
     </script>
+
+    <slot name="head" />
   </head>
   <body>
     <header class="border-b border-neutral-200 dark:border-neutral-800">
@@ -61,7 +93,7 @@ const {
         </div>
         <div>
           <span>Open source, MIT — </span>
-          <span class="text-neutral-500">contributions welcome</span>
+          <span class="text-neutral-600 dark:text-neutral-400">contributions welcome</span>
         </div>
       </div>
     </footer>

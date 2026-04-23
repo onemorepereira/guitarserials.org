@@ -2,9 +2,30 @@
 import Decoder from '../components/Decoder';
 import Base from '../layouts/Base.astro';
 import { BRANDS } from '../lib/brands';
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'guitarserials.org',
+  url: 'https://guitarserials.org/',
+  description:
+    'Free, open-source guitar serial-number decoder. Runs entirely in the browser.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://guitarserials.org/?s={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
 ---
 
 <Base>
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(websiteJsonLd)}
+  />
+
   <section class="flex flex-col gap-4 py-8">
     <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
       Decode any guitar serial number

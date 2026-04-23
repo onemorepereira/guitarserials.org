@@ -26,9 +26,35 @@ function tryItHref(format: BrandFormat): string {
 
 const title = `${brandMeta.label} serial number decoder — guitarserials.org`;
 const description = `Decode ${brandMeta.label} serial numbers. Every supported format, what each one encodes, and example serials you can try.`;
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://guitarserials.org/',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: brandMeta.label,
+      item: `https://guitarserials.org/brands/${brandMeta.slug}`,
+    },
+  ],
+};
 ---
 
 <Base title={title} description={description}>
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+
   <nav class="mb-6 text-sm text-neutral-600 dark:text-neutral-400">
     <a href="/" class="hover:underline">Home</a>
     <span class="mx-2">/</span>
