@@ -1,4 +1,11 @@
-export type ConfidenceTier = 'review' | 'low' | 'medium' | 'high' | 'hybrid' | 'verified';
+export type ConfidenceTier =
+  | 'review'
+  | 'low'
+  | 'medium'
+  | 'high'
+  | 'hybrid'
+  | 'verified'
+  | 'rejected';
 
 export interface MatchOptions {
   listingYear?: number;
@@ -6,18 +13,20 @@ export interface MatchOptions {
 }
 
 export interface SerialMatchCandidate {
-  year: number;
-  tier: ConfidenceTier;
-  formatName: string;
-  notes?: string;
+  serial: string;
+  decodedYear: number | null;
+  brandFormat: string;
+  sourceTag?: string | null;
+  confidenceCap?: ConfidenceTier | null;
+  confidenceOverride?: ConfidenceTier | null;
 }
 
 export interface SerialMatch {
-  brand: string;
   serial: string;
-  year: number;
-  tier: ConfidenceTier;
-  formatName: string;
-  candidates?: SerialMatchCandidate[];
-  notes?: string;
+  candidates: SerialMatchCandidate[];
+  best: SerialMatchCandidate;
+  confidenceTier: ConfidenceTier;
+  decodedYear: number | null;
+  brandFormat: string;
+  confidenceTierRank: number;
 }
