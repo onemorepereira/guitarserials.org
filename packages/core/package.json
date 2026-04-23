@@ -1,0 +1,46 @@
+{
+  "name": "@guitarserials/core",
+  "version": "0.0.0",
+  "description": "Guitar serial-number decoder — pure TypeScript, zero runtime dependencies.",
+  "license": "MIT",
+  "author": "Miguel Pereira",
+  "keywords": [
+    "guitar",
+    "serial",
+    "decoder",
+    "gibson",
+    "fender",
+    "prs",
+    "ibanez",
+    "heritage",
+    "sire"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vitest": "4.1.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
