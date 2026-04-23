@@ -1,0 +1,107 @@
+---
+import Base from '../../layouts/Base.astro';
+import { BRAND_GUIDES, type BrandFormat } from '../../lib/brandGuides';
+import { BRANDS } from '../../lib/brands';
+
+export function getStaticPaths() {
+  return BRANDS.map((b) => ({ params: { brand: b.slug } }));
+}
+
+const { brand: slug } = Astro.params as { brand: string };
+const brandMeta = BRANDS.find((b) => b.slug === slug);
+const guide = BRAND_GUIDES[brandMeta?.id ?? ''];
+
+if (!brandMeta || !guide) {
+  return Astro.redirect('/404');
+}
+
+function tryItHref(format: BrandFormat): string {
+  const p = new URLSearchParams();
+  p.set('s', format.example);
+  p.set('b', brandMeta!.id);
+  if (format.exampleYear) p.set('y', String(format.exampleYear));
+  if (format.exampleModelHint) p.set('m', format.exampleModelHint);
+  return `/?${p.toString()}`;
+}
+
+const title = `${brandMeta.label} serial number decoder — guitarserials.org`;
+const description = `Decode ${brandMeta.label} serial numbers. Every supported format, what each one encodes, and example serials you can try.`;
+---
+
+<Base title={title} description={description}>
+  <nav class="mb-6 text-sm text-neutral-600 dark:text-neutral-400">
+    <a href="/" class="hover:underline">Home</a>
+    <span class="mx-2">/</span>
+    <span>{brandMeta.label}</span>
+  </nav>
+
+  <header class="flex flex-col gap-3">
+    <h1 class="text-4xl font-bold tracking-tight">{brandMeta.label}</h1>
+    <p class="max-w-3xl text-lg text-neutral-700 dark:text-neutral-300">{guide.intro}</p>
+    {guide.eraPara && (
+      <p class="max-w-3xl text-base text-neutral-700 dark:text-neutral-300">{guide.eraPara}</p>
+    )}
+  </header>
+
+  <div class="mt-6 flex flex-wrap items-center gap-3 text-sm">
+    <a
+      href={`/?b=${encodeURIComponent(brandMeta.id)}`}
+      class="inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 font-semibold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+    >
+      Decode a {brandMeta.label} serial →
+    </a>
+    <a
+      href={`/brands/${brandMeta.slug}/find-serial`}
+      class="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 font-medium text-neutral-800 transition hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
+    >
+      Where to find your serial
+    </a>
+  </div>
+
+  <section class="mt-10">
+    <h2 class="text-2xl font-semibold tracking-tight">Supported formats</h2>
+    <div class="mt-6 flex flex-col gap-4">
+      {
+        guide.formats.map((format) => (
+          <article class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 class="text-lg font-semibold">{format.name}</h3>
+              <span class="text-sm text-neutral-600 dark:text-neutral-400">{format.yearRange}</span>
+            </div>
+
+            <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+              <span class="text-neutral-600 dark:text-neutral-400">Example:</span>
+              <code class="rounded bg-neutral-100 px-2 py-0.5 font-mono text-sm dark:bg-neutral-800">
+                {format.example}
+              </code>
+              <a
+                href={tryItHref(format)}
+                class="ml-1 text-sm text-neutral-700 underline-offset-2 hover:underline dark:text-neutral-300"
+              >
+                Try it →
+              </a>
+            </div>
+
+            <p class="mt-3 text-sm text-neutral-700 dark:text-neutral-300">{format.rule}</p>
+
+            {format.gotchas && format.gotchas.length > 0 && (
+              <div class="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
+                <p class="font-medium">Gotchas</p>
+                <ul class="mt-1 list-disc space-y-0.5 pl-5">
+                  {format.gotchas.map((g) => <li>{g}</li>)}
+                </ul>
+              </div>
+            )}
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mt-10 rounded-xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300">
+    <p>
+      <strong>Spotted an error or a missing format?</strong> This guide is open-source. Open an issue or a PR —
+      see the <a href="/methodology" class="underline">methodology</a> for the sourcing standard (≥ 2 authoritative sources per format claim).
+    </p>
+  </section>
+</Base>

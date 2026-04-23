@@ -36,10 +36,9 @@ interface FormState {
   modelHint: string;
 }
 
-function parseInitialState(): FormState {
-  if (typeof window === 'undefined') {
-    return { serial: '', brand: '', listingYear: '', modelHint: '' };
-  }
+const EMPTY_FORM: FormState = { serial: '', brand: '', listingYear: '', modelHint: '' };
+
+function readFormFromUrl(): FormState {
   const p = new URLSearchParams(window.location.search);
   return {
     serial: p.get('s') ?? '',
@@ -89,14 +88,17 @@ function buildPermalinkQuery(form: FormState): string {
 }
 
 export default function Decoder() {
-  const [form, setForm] = useState<FormState>(() => parseInitialState());
-  const [submitted, setSubmitted] = useState<boolean>(
-    () => typeof window !== 'undefined' && !!new URLSearchParams(window.location.search).get('s'),
-  );
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    const initial = readFormFromUrl();
+    if (initial.serial) {
+      setForm(initial);
+      setSubmitted(true);
+    }
     setHydrated(true);
   }, []);
 

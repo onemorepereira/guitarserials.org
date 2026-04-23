@@ -1,0 +1,72 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { BRAND_GUIDES } from '../../../lib/brandGuides';
+import { BRANDS } from '../../../lib/brands';
+
+export function getStaticPaths() {
+  return BRANDS.map((b) => ({ params: { brand: b.slug } }));
+}
+
+const { brand: slug } = Astro.params as { brand: string };
+const brandMeta = BRANDS.find((b) => b.slug === slug);
+const guide = BRAND_GUIDES[brandMeta?.id ?? ''];
+
+if (!brandMeta || !guide) {
+  return Astro.redirect('/404');
+}
+
+const title = `Where to find your ${brandMeta.label} serial — guitarserials.org`;
+const description = `Standard locations for ${brandMeta.label} serial numbers — headstock, neck plate, F-hole label, and other spots to check.`;
+---
+
+<Base title={title} description={description}>
+  <nav class="mb-6 text-sm text-neutral-600 dark:text-neutral-400">
+    <a href="/" class="hover:underline">Home</a>
+    <span class="mx-2">/</span>
+    <a href={`/brands/${brandMeta.slug}`} class="hover:underline">{brandMeta.label}</a>
+    <span class="mx-2">/</span>
+    <span>Find your serial</span>
+  </nav>
+
+  <header class="flex flex-col gap-3">
+    <h1 class="text-4xl font-bold tracking-tight">
+      Where to find your {brandMeta.label} serial
+    </h1>
+    <p class="max-w-3xl text-lg text-neutral-700 dark:text-neutral-300">{guide.findSerial.intro}</p>
+  </header>
+
+  <section class="mt-8 flex flex-col gap-4">
+    {
+      guide.findSerial.locations.map((loc) => (
+        <article class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+          <h2 class="text-lg font-semibold">{loc.place}</h2>
+          <p class="mt-2 text-neutral-700 dark:text-neutral-300">{loc.description}</p>
+        </article>
+      ))
+    }
+  </section>
+
+  <section class="mt-10 rounded-xl border border-dashed border-neutral-300 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300">
+    <p class="font-medium">Photos coming in phase 2</p>
+    <p class="mt-1">
+      Illustrated hotspots for each location — headstock, neck plate, F-hole, bridge — are planned
+      for a future update. If you'd like to contribute labeled photos (Creative Commons or your own),
+      open an issue on GitHub.
+    </p>
+  </section>
+
+  <div class="mt-8 flex flex-wrap gap-3 text-sm">
+    <a
+      href={`/brands/${brandMeta.slug}`}
+      class="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 font-medium text-neutral-800 transition hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
+    >
+      ← Back to {brandMeta.label} format guide
+    </a>
+    <a
+      href={`/?b=${encodeURIComponent(brandMeta.id)}`}
+      class="inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 font-semibold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+    >
+      Decode a {brandMeta.label} serial →
+    </a>
+  </div>
+</Base>

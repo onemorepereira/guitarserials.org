@@ -64,3 +64,9 @@ yarn-error.log*
 .tmp/
 tmp/
 *.tgz
+
+# Local screenshots / playwright MCP artifacts
+/.playwright-mcp/
+/*.png
+/*.jpg
+/*.jpeg
