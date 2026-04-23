@@ -13,8 +13,12 @@
       "!**/build",
       "!**/.astro",
       "!**/coverage",
+      "!**/playwright-report",
+      "!**/test-results",
       "!scripts/reference",
-      "!doc"
+      "!doc",
+      "!**/*.css",
+      "!**/*.astro"
     ]
   },
   "formatter": {

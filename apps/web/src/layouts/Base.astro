@@ -1,0 +1,69 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'guitarserials.org — Decode any guitar serial number',
+  description = 'A free, open-source guitar serial-number decoder. Gibson, Fender, PRS, Heritage, Sire, Ibanez — runs in your browser, offline.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script is:inline>
+      (() => {
+        const t = localStorage.getItem('theme');
+        const pref = t === 'light' || t === 'dark'
+          ? t
+          : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', pref === 'dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <header class="border-b border-neutral-200 dark:border-neutral-800">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <a href="/" class="flex items-center gap-2 font-semibold tracking-tight">
+          <span class="text-lg">🎸</span>
+          <span>guitarserials.org</span>
+        </a>
+        <nav class="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
+          <a href="/methodology" class="hover:text-neutral-900 dark:hover:text-neutral-100">Methodology</a>
+          <a href="/about" class="hover:text-neutral-900 dark:hover:text-neutral-100">About</a>
+          <ThemeToggle />
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-8">
+      <slot />
+    </main>
+
+    <footer class="mt-16 border-t border-neutral-200 py-8 dark:border-neutral-800">
+      <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 text-sm text-neutral-600 dark:text-neutral-400 md:flex-row md:items-center md:justify-between">
+        <div>
+          <span>© 2026 guitarserials.org — </span>
+          <a href="/about" class="underline hover:text-neutral-900 dark:hover:text-neutral-100">About</a>
+          <span>&nbsp;·&nbsp;</span>
+          <a href="/methodology" class="underline hover:text-neutral-900 dark:hover:text-neutral-100">Methodology</a>
+        </div>
+        <div>
+          <span>Open source, MIT — </span>
+          <span class="text-neutral-500">contributions welcome</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

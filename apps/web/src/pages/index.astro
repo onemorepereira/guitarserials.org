@@ -1,0 +1,51 @@
+---
+import Decoder from '../components/Decoder';
+import Base from '../layouts/Base.astro';
+import { BRANDS } from '../lib/brands';
+---
+
+<Base>
+  <section class="flex flex-col gap-4 py-8">
+    <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
+      Decode any guitar serial number
+    </h1>
+    <p class="max-w-2xl text-lg text-neutral-700 dark:text-neutral-300">
+      Free, open-source, and runs entirely in your browser — no account, no upload, no tracking.
+      Supports Gibson, Fender, PRS, Heritage, Sire, and Ibanez.
+    </p>
+  </section>
+
+  <section class="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+    <Decoder client:load />
+  </section>
+
+  <section class="mt-12 flex flex-col gap-4">
+    <h2 class="text-2xl font-semibold tracking-tight">Supported brands</h2>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {
+        BRANDS.map((brand) => (
+          <a
+            href={`/brands/${encodeURIComponent(brand.id).replace(/%20/g, '-')}`}
+            class="group rounded-xl border border-neutral-200 bg-white px-5 py-4 transition hover:border-neutral-400 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-600"
+          >
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-semibold">{brand.label}</span>
+              <span class="text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-neutral-600 dark:group-hover:text-neutral-300">
+                →
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{brand.blurb}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mt-12 rounded-xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300">
+    <p>
+      <strong>Not finding your brand, or got an incorrect result?</strong>{' '}
+      This is an open-source community resource. Contributions with authoritative
+      sources are welcome — see the <a href="/methodology" class="underline">methodology</a>.
+    </p>
+  </section>
+</Base>

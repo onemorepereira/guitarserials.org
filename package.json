@@ -20,5 +20,12 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
     "typescript": "6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "@biomejs/biome"
+    ]
   }
 }

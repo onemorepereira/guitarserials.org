@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="About — guitarserials.org" description="About guitarserials.org: a free, open-source guitar serial-number decoder.">
+  <div class="prose max-w-2xl py-8 dark:prose-invert">
+    <h1 class="text-3xl font-bold tracking-tight">About</h1>
+    <p class="mt-4 text-neutral-700 dark:text-neutral-300">
+      guitarserials.org is a free, accurate, open-source guitar serial-number decoder. It replaces
+      scattered forum posts and outdated PDFs with a single well-researched reference.
+    </p>
+
+    <h2 class="mt-8 text-xl font-semibold">What it does</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      Given a serial number and a brand, the decoder identifies the format era and decodes the
+      production year where the format encodes it. Every rule is derived from authoritative
+      sources (manufacturer documentation, published references, photographic evidence on known
+      instruments) and checked with a test suite that runs on every change.
+    </p>
+
+    <h2 class="mt-8 text-xl font-semibold">How it runs</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      The matcher is pure TypeScript (<code>@guitarserials/core</code>, on npm) with zero runtime
+      dependencies. The site is a static Astro build — every decode runs in your browser. Nothing
+      is uploaded, nothing is logged.
+    </p>
+
+    <h2 class="mt-8 text-xl font-semibold">Contributing</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      Found an incorrect decode, or know a brand/format we should add? Open a report on GitHub.
+      New brand support requires at least two authoritative sources cited per format claim, plus
+      test cases for every rule. See <code>CONTRIBUTING.md</code> for details.
+    </p>
+
+    <h2 class="mt-8 text-xl font-semibold">License</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      MIT. Use it, fork it, embed it — attribution is appreciated.
+    </p>
+  </div>
+</Base>

@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Methodology — guitarserials.org" description="How guitarserials.org decodes serial numbers and assigns confidence tiers.">
+  <div class="prose max-w-2xl py-8 dark:prose-invert">
+    <h1 class="text-3xl font-bold tracking-tight">Methodology</h1>
+
+    <h2 class="mt-6 text-xl font-semibold">Confidence tiers</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      Every decode is assigned one of six tiers. The tier combines (a) how definitive the serial
+      format itself is and (b) how the decoded year compares to any year you provide.
+    </p>
+    <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-neutral-700 dark:text-neutral-300">
+      <li><strong>verified</strong> — observationally confirmed against ground-truth data.</li>
+      <li><strong>high</strong> — format is definitive or the decoded year is within 1 year of the listing context.</li>
+      <li><strong>hybrid</strong> — multiple structurally valid interpretations; the best was picked by year proximity.</li>
+      <li><strong>medium</strong> — short-numeric formats (bridge-plate, pre-1961 stamp) with a strong model hint.</li>
+      <li><strong>low</strong> — reserved; not currently emitted.</li>
+      <li><strong>review</strong> — decoded year is 2-5 years off the listing context; plausible but worth a human look.</li>
+      <li><strong>rejected</strong> — decoded year is more than 5 years off; probably stock-photo or OCR contamination.</li>
+    </ul>
+
+    <h2 class="mt-8 text-xl font-semibold">Year cross-validation</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      If you provide a listing year (or a "bought around" year), the decoder compares it to the
+      year it decoded from the serial and adjusts the confidence accordingly (see above). A
+      prefix-definitive format like <code>JP1234</code> (Gibson artist run) always stays
+      <code>high</code> regardless of year, because the format itself doesn't encode a year.
+    </p>
+
+    <h2 class="mt-8 text-xl font-semibold">Sources</h2>
+    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
+      Every rule in the matcher cites at least two authoritative sources. Authoritative means the
+      manufacturer's own documentation, a published reference book, a reputable museum or registry,
+      or multiple corroborating expert accounts. Forum posts alone aren't sufficient to change a
+      rule — but they're useful signals when they cluster.
+    </p>
+  </div>
+</Base>
