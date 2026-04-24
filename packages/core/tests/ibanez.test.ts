@@ -111,4 +111,17 @@ describe('Ibanez serials', () => {
     expect(r!.brandFormat).toBe('ibanez_korea_world');
     expect(r!.decodedYear).toBe(2002);
   });
+
+  it('K-prefix Kwo Hsiao Indonesia 9-digit decodes year', () => {
+    // K160600221 = June 2016, #221 (Kwo Hsiao Co., Ltd.)
+    const r = matchSerial('K160600221', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_kwo_hsiao');
+    expect(r!.decodedYear).toBe(2016);
+  });
+
+  it('K-prefix with invalid month falls back to year-null', () => {
+    const r = matchSerial('K169900221', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_kwo_hsiao');
+    expect(r!.decodedYear).toBeNull();
+  });
 });

@@ -593,11 +593,12 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         id: 'prs_core_pre2008',
         name: 'Core / CE pre-2008 single-digit year (1985–2007)',
         yearRange: '1985–2007',
-        example: '612345',
-        rule: 'Single-digit year prefix + 4–6 sequential digits. The leading digit is the last digit of the production year — so 6 could be 1986, 1996, or 2006. Unambiguous dating requires the cumulative-production-range table maintained on community references (hendrixguitars.com).',
+        example: '523000',
+        exampleYear: 1995,
+        rule: 'Single-digit year prefix + 4–6 sequential digits. The leading digit is the last digit of the production year — so 6 could be 1986, 1996, or 2006. We disambiguate via the Hendrix Guitars cumulative-production-range table: 1985 = 1-400, 1986 = 401-1700, 1987 = 1701-3500, 1988 = 3501-5400, 1989 = 5401-7600, 1990 = 7601-10100, 1991 = 10101-12600, 1992 = 12601-15000, 1993 = 15001-17900, 1994 = 17901-20900, 1995 = 20901-24600, 1996 = 24601-29500, 1997 = 29501-34600, 1998 = 34601-39100, 1999 = 39101-44499, 2000 = 44500-52199, 2001 = 52200-62199, 2002 = 62200-72353, 2003 = 72354-82254, 2004 = 82255-92555, 2005 = 92556-103103, 2006/2007 = 103104+.',
         gotchas: [
-          'We match the format but leave the year undecoded — deterministic dating requires the full cumulative-range lookup table, which we have not baked into the matcher.',
-          'With a listing year provided, the confidence-cap rule gives a usable high-confidence signal; without one, the year is left null.',
+          "If the sequential doesn't fall in a documented range, the matcher returns year null; feed a listing year for context.",
+          '2006 and 2007 share the 103104+ range because PRS switched to two-digit-year prefixes in 2008 — we use the Y prefix digit (6 vs 7) to disambiguate.',
         ],
         sources: [
           {
@@ -855,10 +856,22 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         id: 'ibanez_indonesia',
         name: 'I-prefix Indonesia (Cor-Tek)',
         yearRange: 'Varies',
-        example: 'I16060221',
-        rule: 'I followed by 8 digits = YY + MM + 5-digit sequence (e.g. I16060221 = June 2016, #221). 7 or 9 digit variants fall back to year-unknown.',
+        example: 'I160600221',
+        rule: 'I followed by 9 digits = YY + MM + 5-digit sequence (e.g. I160600221 = June 2016, #221). 7 or 8 digit variants fall back to year-unknown.',
         gotchas: [
-          'Month must be 01-12 for the 8-digit branch to decode year; otherwise the serial falls back to year-unknown.',
+          'Month must be 01-12 for the 9-digit branch to decode year; otherwise the serial falls back to year-unknown.',
+          'Production numbers 00001-49999 are acoustics; 50000-99999 are electric guitars and basses (shared convention across all three Indonesian factories).',
+        ],
+      },
+      {
+        id: 'ibanez_indonesia_kwo_hsiao',
+        name: 'K-prefix Indonesia (Kwo Hsiao)',
+        yearRange: 'Varies',
+        example: 'K160600221',
+        rule: 'K followed by 9 digits = YY + MM + 5-digit sequence (e.g. K160600221 = June 2016, #221, Kwo Hsiao Co., Ltd.). Same layout as the I-prefix Cor-Tek format but a different Indonesian factory.',
+        gotchas: [
+          'Month must be 01-12 for year decoding; otherwise falls back to year-unknown.',
+          'Same acoustic/electric production-range split (00001-49999 = acoustics, 50000-99999 = electrics) as the Cor-Tek and Samick Indonesian factories.',
         ],
       },
       {

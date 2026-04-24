@@ -124,12 +124,39 @@ describe('PRS acoustic (A + YY)', () => {
   });
 });
 
-describe('PRS pre-2008 Core (single-digit year)', () => {
-  it('6 + sequential matches as pre-2008 with null year (ambiguous decade)', () => {
-    // Y=6 could be 1986, 1996, or 2006. Without cumulative-range disambiguation
-    // we leave year undecoded.
-    const r = matchSerial('612345', 'PRS');
+describe('PRS pre-2008 Core (single-digit year + cumulative range lookup)', () => {
+  it('523000 = 1995 (seq 23000 falls in 1995 range 20901-24600)', () => {
+    const r = matchSerial('523000', 'PRS');
     expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('prs_core_pre2008');
+    expect(r!.decodedYear).toBe(1995);
+  });
+
+  it('629500 = 1996 (last seq in 1996 range)', () => {
+    const r = matchSerial('629500', 'PRS');
+    expect(r!.decodedYear).toBe(1996);
+  });
+
+  it('744499 = 1997 / no — 44499 is the 1999 end. Seq 44499 with Y=9 = 1999', () => {
+    const r = matchSerial('944499', 'PRS');
+    expect(r!.decodedYear).toBe(1999);
+  });
+
+  it('103103 with prefix 5 = 2005 (final 2005 serial)', () => {
+    const r = matchSerial('5103103', 'PRS');
+    expect(r!.decodedYear).toBe(2005);
+  });
+
+  it('Y=6 with sequential beyond 2005 range decodes to 2006', () => {
+    // Past 103103, Y=6 pins to 2006
+    const r = matchSerial('6110000', 'PRS');
+    expect(r!.decodedYear).toBe(2006);
+  });
+
+  it('ambiguous Y+seq returns null year when no range matches', () => {
+    // Y=3, seq=50000 — 50000 falls in 2000 range (44500-52199), but Y=3 != 0.
+    // So no year matches; return null.
+    const r = matchSerial('350000', 'PRS');
     expect(r!.brandFormat).toBe('prs_core_pre2008');
     expect(r!.decodedYear).toBeNull();
   });

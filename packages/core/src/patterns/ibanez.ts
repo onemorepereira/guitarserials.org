@@ -64,6 +64,29 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
     }
   }
 
+  // Kwo Hsiao Indonesia K + 9 digits: YY + MM + 5-digit seq. Same layout
+  // as the I-prefix Cor-Tek format but a different Indonesian factory.
+  // Example: K160600221 = June 2016, #221 (Kwo Hsiao Co., Ltd.).
+  {
+    const m = text.match(/^K(\d{2})(\d{2})(\d{5})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_kwo_hsiao', listingYear);
+      }
+    }
+  }
+
+  // Kwo Hsiao Indonesia K + 7-9 digits: fall-back for non-9-digit variants.
+  {
+    const m = text.match(/^K\d{7,9}$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'ibanez_indonesia_kwo_hsiao', listingYear);
+    }
+  }
+
   // Samick Korea S-prefix (1990–1995): S + Y + MM + PPPP (7 digits after S).
   // Y = last digit of year (0=1990, 1=1991, …, 5=1995). MM = 01-12.
   // Gated tightly on the Samick window because S-prefix alone is too

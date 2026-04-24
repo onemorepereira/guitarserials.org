@@ -64,7 +64,7 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_avri_bridge: 'Fender AVRI bridge-plate short-numeric serial. Year inferred from listing.',
   prs_core: 'PRS Core / CE 2008+ — first two digits encode the year (08–29 → 2008–2029).',
   prs_core_pre2008:
-    'PRS Core / CE pre-2008 — single-digit year prefix. Decade disambiguation requires the cumulative-production-range table; we leave year undecoded by default.',
+    'PRS Core / CE pre-2008 — single-digit year prefix + sequential. Year decoded via the Hendrix Guitars cumulative-production-range table (1985-2007).',
   prs_s2:
     'PRS S2 series (2013+) — sequential S2-prefix; year inferrable from cumulative production ranges (not baked into the matcher).',
   prs_ce: 'PRS CE-prefix stamp — uncommon; most CE models carry a standard year-prefix serial.',
@@ -85,7 +85,9 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   ibanez_japan_letter_month:
     'Ibanez Japan pre-F (1975-1988) letter-month format: month letter + 2-digit year + sequence.',
   ibanez_indonesia:
-    'Ibanez Indonesia I-prefix (Cor-Tek). 8-digit layout encodes YY + MM + 5-digit sequence; shorter variants leave year unknown.',
+    'Ibanez Indonesia I-prefix (Cor-Tek). 9-digit layout encodes YY + MM + 5-digit sequence; shorter variants leave year unknown.',
+  ibanez_indonesia_kwo_hsiao:
+    'Ibanez Indonesia K-prefix (Kwo Hsiao Co., Ltd.). Same 9-digit YY + MM + 5-digit layout as the I-prefix Cor-Tek format.',
   ibanez_korea: 'Ibanez Korea C-prefix (Cort). Year encoding varies; decoder leaves year unknown.',
   ibanez_korea_samick:
     'Ibanez Korea S-prefix (Samick, 1990–1995). S + Y + MM + 4-digit sequence; Y is last digit of year.',
