@@ -43,12 +43,32 @@ const tiers: Array<{
     body: 'The decoded year is more than 5 years off your listing context — usually means a stock-photo mix-up, OCR contamination, or a typo.',
   },
 ];
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://guitarserials.org/' },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Methodology',
+      item: 'https://guitarserials.org/methodology/',
+    },
+  ],
+};
 ---
 
 <Base
   title="Methodology — guitarserials.org"
   description="How guitarserials.org decodes serial numbers, assigns confidence tiers, and cross-validates against the listing year."
 >
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(breadcrumbJsonLd)}
+  />
+
   <nav class="mb-6 text-xs uppercase tracking-wide text-ink-faint dark:text-cream-faint">
     <a href="/" class="hover:text-rust dark:hover:text-amber">Home</a>
     <span class="mx-2">/</span>
