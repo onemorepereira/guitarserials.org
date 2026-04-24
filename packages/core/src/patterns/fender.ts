@@ -8,22 +8,30 @@ export function matchFender(
   modelHint: string | null = null,
 ): SerialMatch | null {
   // US prefix: US + 6-9 digits + optional letter (YY + seq).
+  // US-prefix launched in 2000, so YY plausibility gate: 00-29.
   {
     const m = text.match(/^US(\d{6,9})[A-Z]?$/);
     if (m) {
       const year2 = parseInt((m[1] as string).slice(0, 2), 10);
-      const decodedYear = year2 < 50 ? 2000 + year2 : 1900 + year2;
-      return singleCandidateMatch(m[0], decodedYear, 'fender_us_prefix', listingYear, 'high');
+      if (year2 >= 0 && year2 <= 29) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'fender_us_prefix', listingYear, 'high');
+      }
+      // Format matches but YY out of plausible range — possibly a typo or
+      // non-US-prefix serial wrongly entered. Match format with year null.
+      return singleCandidateMatch(m[0], null, 'fender_us_prefix', listingYear, 'high');
     }
   }
 
   // MX prefix: MX + 8 digits + optional letter.
+  // MX-prefix launched in 2009, so YY plausibility gate: 09-29.
   {
     const m = text.match(/^MX(\d{8})[A-Z]?$/);
     if (m) {
       const year2 = parseInt((m[1] as string).slice(0, 2), 10);
-      const decodedYear = year2 < 50 ? 2000 + year2 : 1900 + year2;
-      return singleCandidateMatch(m[0], decodedYear, 'fender_mx', listingYear, 'high');
+      if (year2 >= 9 && year2 <= 29) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'fender_mx', listingYear, 'high');
+      }
+      return singleCandidateMatch(m[0], null, 'fender_mx', listingYear, 'high');
     }
   }
 
@@ -107,12 +115,15 @@ export function matchFender(
   }
 
   // VS prefix: Vintera/Vintera Special (Mexico 2020s+, YY + seq).
+  // Vintera launched in 2019; plausibility gate YY 19-29.
   {
     const m = text.match(/^VS(\d{6})$/);
     if (m) {
       const year2 = parseInt((m[1] as string).slice(0, 2), 10);
-      const decodedYear = year2 < 50 ? 2000 + year2 : 1900 + year2;
-      return singleCandidateMatch(m[0], decodedYear, 'fender_vs', listingYear, 'high');
+      if (year2 >= 19 && year2 <= 29) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'fender_vs', listingYear, 'high');
+      }
+      return singleCandidateMatch(m[0], null, 'fender_vs', listingYear, 'high');
     }
   }
 
@@ -125,12 +136,15 @@ export function matchFender(
   }
 
   // JD prefix: Japan 2011+, YY + 6-digit seq.
+  // Plausibility gate YY 11-29.
   {
     const m = text.match(/^JD(\d{8})$/);
     if (m) {
       const year2 = parseInt((m[1] as string).slice(0, 2), 10);
-      const decodedYear = year2 < 50 ? 2000 + year2 : 1900 + year2;
-      return singleCandidateMatch(m[0], decodedYear, 'fender_jd', listingYear, 'high');
+      if (year2 >= 11 && year2 <= 29) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'fender_jd', listingYear, 'high');
+      }
+      return singleCandidateMatch(m[0], null, 'fender_jd', listingYear, 'high');
     }
   }
 
@@ -143,11 +157,15 @@ export function matchFender(
   }
 
   // MS prefix: Mod Shop (2021+) — MS + YY + 4-digit seq.
+  // Plausibility gate YY 21-29.
   {
     const m = text.match(/^MS(\d{2})(\d{4})$/);
     if (m) {
-      const decodedYear = 2000 + parseInt(m[1] as string, 10);
-      return singleCandidateMatch(m[0], decodedYear, 'fender_mod_shop', listingYear, 'high');
+      const year2 = parseInt(m[1] as string, 10);
+      if (year2 >= 21 && year2 <= 29) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'fender_mod_shop', listingYear, 'high');
+      }
+      return singleCandidateMatch(m[0], null, 'fender_mod_shop', listingYear, 'high');
     }
   }
 

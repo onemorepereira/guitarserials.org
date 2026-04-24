@@ -144,6 +144,55 @@ describe('Fender serials', () => {
   });
 });
 
+describe('Fender prefix year-plausibility gates', () => {
+  it('US + implausible YY (e.g. 88) returns year null but still matches format', () => {
+    // US prefix launched in 2000; YY=88 (1988) is nonsense but we want to
+    // still recognize the format rather than rejecting outright.
+    const r = matchSerial('US88123456', 'Fender');
+    expect(r!.brandFormat).toBe('fender_us_prefix');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('US + YY=00 decodes to 2000 (first year of US prefix)', () => {
+    const r = matchSerial('US00123456', 'Fender');
+    expect(r!.decodedYear).toBe(2000);
+  });
+
+  it('MX + YY=07 (before MX launch in 2009) returns year null', () => {
+    const r = matchSerial('MX07123456', 'Fender');
+    expect(r!.brandFormat).toBe('fender_mx');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('MX + YY=09 (first year of MX) decodes correctly', () => {
+    const r = matchSerial('MX09123456', 'Fender');
+    expect(r!.decodedYear).toBe(2009);
+  });
+
+  it('VS + YY=15 (before Vintera launch 2019) returns year null', () => {
+    const r = matchSerial('VS150042', 'Fender');
+    expect(r!.brandFormat).toBe('fender_vs');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('VS + YY=19 decodes to 2019 (first Vintera year)', () => {
+    const r = matchSerial('VS190042', 'Fender');
+    expect(r!.decodedYear).toBe(2019);
+  });
+
+  it('JD + YY=08 (before JD launch 2011) returns year null', () => {
+    const r = matchSerial('JD08123456', 'Fender');
+    expect(r!.brandFormat).toBe('fender_jd');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('MS + YY=18 (before Mod Shop launch 2021) returns year null', () => {
+    const r = matchSerial('MS180042', 'Fender');
+    expect(r!.brandFormat).toBe('fender_mod_shop');
+    expect(r!.decodedYear).toBeNull();
+  });
+});
+
 describe('Fender vintage neckplate formats', () => {
   it('L-series 1963-1965 matches', () => {
     const r = matchSerial('L12345', 'Fender');
