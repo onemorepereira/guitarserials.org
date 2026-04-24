@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Brand sources', () => {
   test('Gibson page lists both manufacturer and reference sources with URLs', async ({ page }) => {
-    await page.goto('/brands/gibson');
+    await page.goto('/brands/gibson/');
 
     await expect(page.getByRole('link', { name: /Gibson Serial Number Search/i })).toHaveAttribute(
       'href',
@@ -15,7 +15,7 @@ test.describe('Brand sources', () => {
   });
 
   test('Ibanez page surfaces the "no official decoder" note', async ({ page }) => {
-    await page.goto('/brands/ibanez');
+    await page.goto('/brands/ibanez/');
     await expect(page.getByText(/Ibanez does not publish an official/i)).toBeVisible();
     await expect(
       page.getByRole('link', { name: /Ibanez Rules — Date Your Ibanez/i }),
@@ -23,7 +23,7 @@ test.describe('Brand sources', () => {
   });
 
   test('Fender page lists the three official support articles', async ({ page }) => {
-    await page.goto('/brands/fender');
+    await page.goto('/brands/fender/');
     await expect(page.getByRole('link', { name: /American-made instrument/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Mexican-made instrument/i })).toBeVisible();
     await expect(page.getByRole('link', { name: /Japanese-made instrument/i })).toBeVisible();

@@ -9,13 +9,20 @@ interface Props {
   canonicalPath?: string;
   /** Optional OG image path (relative to site root). Defaults to /og-default.png. */
   ogImage?: string;
+  /**
+   * When true, emits `<meta name="robots" content="noindex">` and omits the
+   * canonical link. Use for error pages (404) and any page that shouldn't
+   * be indexed or canonicalized to itself.
+   */
+  noindex?: boolean;
 }
 
 const {
   title = 'guitarserials.org — Decode any guitar serial number',
-  description = 'A free, open-source guitar serial-number decoder. Gibson, Fender, PRS, Heritage, Sire, Ibanez — runs in your browser, offline.',
+  description = 'A free, open-source guitar serial-number decoder. 18 brands (Gibson, Fender, PRS, Rickenbacker, Gretsch, Martin, Ibanez, and more), 115 format rules, a century of production. Runs entirely in your browser — no account, no tracking.',
   canonicalPath,
   ogImage = '/og-default.png',
+  noindex = false,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://guitarserials.org');
@@ -32,7 +39,11 @@ const absoluteOgImage = new URL(ogImage, site).toString();
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {noindex ? (
+      <meta name="robots" content="noindex" />
+    ) : (
+      <link rel="canonical" href={canonicalUrl} />
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="guitarserials.org" />

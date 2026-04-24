@@ -24,7 +24,7 @@ test.describe('SEO / social metadata', () => {
   });
 
   test('brand page has BreadcrumbList JSON-LD', async ({ page }) => {
-    await page.goto('/brands/fender');
+    await page.goto('/brands/fender/');
 
     const ld = await page.locator('script[type="application/ld+json"]').textContent();
     const parsed = JSON.parse(ld ?? '{}');
