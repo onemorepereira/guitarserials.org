@@ -73,8 +73,13 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Ibanez Japan (Fujigen) F-prefix. Length distinguishes eras: 6 digits = 1987-1996 single-Y, 7-8 digits = 1997+ YY.',
   ibanez_japan_letter_month:
     'Ibanez Japan pre-F (1975-1988) letter-month format: month letter + 2-digit year + sequence.',
-  ibanez_indonesia: 'Ibanez Indonesia I-prefix — year not encoded in the serial.',
-  ibanez_korea: 'Ibanez Korea C-prefix — year not encoded in the serial.',
+  ibanez_indonesia:
+    'Ibanez Indonesia I-prefix (Cor-Tek). 8-digit layout encodes YY + MM + 5-digit sequence; shorter variants leave year unknown.',
+  ibanez_korea: 'Ibanez Korea C-prefix (Cort). Year encoding varies; decoder leaves year unknown.',
+  ibanez_korea_samick:
+    'Ibanez Korea S-prefix (Samick, 1990–1995). S + Y + MM + 4-digit sequence; Y is last digit of year.',
+  ibanez_korea_world:
+    'Ibanez Korea W-prefix (World Musical Instrument Co.). W + YY + M + RRRR; M is month (1-9, X=Oct, Y=Nov, Z=Dec).',
 };
 
 export function describeFormat(formatId: string): string {

@@ -123,14 +123,15 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       },
       {
         id: 'gibson_pre1961',
-        name: 'Pre-1961 4-digit FON (Junior/Special/Melody Maker)',
-        yearRange: 'Pre-1961',
+        name: 'Late-1958+ 4-digit short serial (Junior/Special/Melody Maker)',
+        yearRange: '1958–1960',
         example: '6370',
         exampleModelHint: 'Les Paul Junior',
-        rule: 'A 4-digit factory order number ink-stamped on the back of the headstock, used on Junior/Special/Melody Maker student-line models.',
+        rule: 'A 4-digit impressed or inked headstock serial used on some Junior/Special/Melody Maker student-line models from the fall of 1958 onward — an exception to the standard era numbering. Not to be confused with the Factory Order Number (FON), which was stamped inside the instrument and used a different layout.',
         gotchas: [
           'Only claimed when the model hint indicates a Junior/Special/Melody Maker model — a bare 4-digit number without that hint falls through to the generic pre-1977 format.',
           'Rejects marketing phrases like "Special Edition" or artist names like "Junior Brown".',
+          'The serial itself encodes no year; confidence is capped at medium.',
         ],
       },
       {
@@ -584,13 +585,14 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       },
       {
         id: 'prs_se_korea',
-        name: 'SE Korea single-letter year (2000–2020)',
-        yearRange: '2000–2020',
+        name: 'SE Korea single-letter year (2000–2022)',
+        yearRange: '2000–2022',
         example: 'H12345',
-        rule: 'Single letter A–U + 3–6 sequential digits. Letter encodes year: A = 2000, B = 2001, …, I = 2008, …, U = 2020. Most SE Korea instruments were produced by World Musical Instruments.',
+        rule: 'Single letter A–W + 3–6 sequential digits. Letter encodes year: A = 2000, B = 2001, …, I = 2008, …, U = 2020, V = 2021, W = 2022. Most SE Korea instruments were produced by World Musical Instruments.',
         gotchas: [
           'PRS SE launched publicly in 2001; the letter A=2000 is documented in community charts and likely reflects a late-2000 pre-production run.',
           'Acoustic A-prefix format (A + YY + sequential) is checked first and wins when YY is in 09–29; otherwise A-letter falls through to SE Korea 2000.',
+          'Letters X, Y, Z (2023+) are not yet confirmed publicly and are not accepted.',
         ],
       },
       {
@@ -788,17 +790,37 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       },
       {
         id: 'ibanez_indonesia',
-        name: 'I-prefix (Indonesia)',
+        name: 'I-prefix Indonesia (Cor-Tek)',
         yearRange: 'Varies',
-        example: 'I12345678',
-        rule: 'I followed by 7–9 digits. No year encoded — sequences are plant-local.',
+        example: 'I16060221',
+        rule: 'I followed by 8 digits = YY + MM + 5-digit sequence (e.g. I16060221 = June 2016, #221). 7 or 9 digit variants fall back to year-unknown.',
+        gotchas: [
+          'Month must be 01-12 for the 8-digit branch to decode year; otherwise the serial falls back to year-unknown.',
+        ],
       },
       {
         id: 'ibanez_korea',
-        name: 'C-prefix (Korea)',
+        name: 'C-prefix Korea (Cort)',
         yearRange: 'Varies',
         example: 'C1234567',
-        rule: 'C followed by 6–8 digits. No year encoded.',
+        rule: 'C followed by 6–8 digits. Cort-factory Korea production. Year encoding varies by era; we match the format but leave the year undecoded.',
+      },
+      {
+        id: 'ibanez_korea_samick',
+        name: 'S-prefix Korea (Samick, 1990–1995)',
+        yearRange: '1990–1995',
+        example: 'S4110076',
+        rule: 'S + Y + MM + PPPP (7 digits after S). Y is the last digit of the year (0 = 1990, 1 = 1991, …, 5 = 1995). MM is the month (01-12). Example S4110076 = November 1994, #76.',
+        gotchas: [
+          'Gated tightly on the Samick window (Y ≤ 5); Samick stopped making Ibanez after 1995.',
+        ],
+      },
+      {
+        id: 'ibanez_korea_world',
+        name: 'W-prefix Korea (World Musical Instrument Co.)',
+        yearRange: 'Varies',
+        example: 'W02Y12345',
+        rule: 'W + YY + M + RRRR (up to 8 digits after W). YY is the 2-digit year, M is the month (1-9 = Jan-Sep, X = Oct, Y = Nov, Z = Dec). Example W02Y12345 = November 2002.',
       },
     ],
     findSerial: {

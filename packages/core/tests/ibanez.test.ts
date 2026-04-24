@@ -60,13 +60,55 @@ describe('Ibanez serials', () => {
     expect(r!.brandFormat).toBe('ibanez_indonesia');
   });
 
-  it('Indonesia I prefix', () => {
-    const r = matchSerial('I12345678', 'Ibanez');
+  it('Indonesia I prefix (7-digit) leaves year null', () => {
+    const r = matchSerial('I1234567', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_indonesia');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('Indonesia I prefix (9-digit YY + MM + 5-digit seq) decodes year', () => {
+    // I + 16 + 06 + 00221 = June 2016, #221 — 9 digits after I.
+    const r = matchSerial('I160600221', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia');
+    expect(r!.decodedYear).toBe(2016);
+  });
+
+  it('Indonesia I prefix (9-digit) with invalid month falls back to no year', () => {
+    // Month=99 is invalid; should still match brand as I-prefix but with no year.
+    const r = matchSerial('I169900221', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia');
+    expect(r!.decodedYear).toBeNull();
   });
 
   it('Korea C prefix', () => {
     const r = matchSerial('C1234567', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_korea');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('Korea S-prefix (Samick) decodes year 1990s', () => {
+    // S4110076 = November 1994, #76
+    const r = matchSerial('S4110076', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea_samick');
+    expect(r!.decodedYear).toBe(1994);
+  });
+
+  it('Korea S-prefix rejects Y > 5 (Samick window ended 1995)', () => {
+    // S8 would imply 1998 — outside Samick's 1990-1995 window
+    expect(matchSerial('S8110076', 'Ibanez')).toBeNull();
+  });
+
+  it('Korea W-prefix (World) decodes year with digit month', () => {
+    // W02 + 5 (May) + 12345 = May 2002
+    const r = matchSerial('W02512345', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea_world');
+    expect(r!.decodedYear).toBe(2002);
+  });
+
+  it('Korea W-prefix decodes year with letter month (X/Y/Z = Oct/Nov/Dec)', () => {
+    // W02Y12345 = November 2002
+    const r = matchSerial('W02Y12345', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea_world');
+    expect(r!.decodedYear).toBe(2002);
   });
 });

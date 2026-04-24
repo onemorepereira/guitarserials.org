@@ -71,8 +71,20 @@ describe('PRS SE Korea (single-letter year)', () => {
     expect(r!.brandFormat).toBe('prs_se_korea');
   });
 
-  it('V and beyond not accepted (post-2020 not documented)', () => {
-    expect(matchSerial('V12345', 'PRS')).toBeNull();
+  it('V = 2021 (community-confirmed extension)', () => {
+    const r = matchSerial('V12345', 'PRS');
+    expect(r!.decodedYear).toBe(2021);
+    expect(r!.brandFormat).toBe('prs_se_korea');
+  });
+
+  it('W = 2022', () => {
+    const r = matchSerial('W12345', 'PRS');
+    expect(r!.decodedYear).toBe(2022);
+    expect(r!.brandFormat).toBe('prs_se_korea');
+  });
+
+  it('X and beyond not yet accepted (2023+ not publicly confirmed)', () => {
+    expect(matchSerial('X12345', 'PRS')).toBeNull();
     expect(matchSerial('Z12345', 'PRS')).toBeNull();
   });
 

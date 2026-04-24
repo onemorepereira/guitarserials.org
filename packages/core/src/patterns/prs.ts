@@ -64,11 +64,13 @@ export function matchPrs(text: string, listingYear: number | null): SerialMatch 
     }
   }
 
-  // SE Korea single-letter year prefix (2000–2020): letter A–U + 3–6 digits.
-  // A=2000, B=2001, ..., U=2020. Produced primarily by World Musical Instruments.
+  // SE Korea single-letter year prefix (2000–2022): letter A–W + 3–6 digits.
+  // A=2000, B=2001, ..., U=2020, V=2021, W=2022. Produced primarily by
+  // World Musical Instruments. Extended to V/W per community references;
+  // letters beyond W not yet confirmed publicly.
   // See doc/audits/2026-04-23-source-audit.md §P-2.
   {
-    const m = text.match(/^([A-U])(\d{3,6})$/);
+    const m = text.match(/^([A-W])(\d{3,6})$/);
     if (m) {
       const year = 2000 + ((m[1] as string).charCodeAt(0) - 'A'.charCodeAt(0));
       return singleCandidateMatch(m[0], year, 'prs_se_korea', listingYear, 'high');
