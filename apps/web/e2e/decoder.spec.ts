@@ -11,7 +11,7 @@ test.describe('Home page decoder', () => {
 
     // Hero copy present
     await expect(
-      page.getByRole('heading', { level: 1, name: /decode any guitar serial/i }),
+      page.getByRole('heading', { level: 1, name: /paste a serial.*read it back/i }),
     ).toBeVisible();
 
     // Fill in a known Gibson serial
@@ -43,9 +43,7 @@ test.describe('Home page decoder', () => {
     await expect(page.getByTestId('result-multi')).toContainText('Sire');
   });
 
-  test('CS-prefix in "Unsure" mode does not dupe Gibson + Gibson Custom Shop', async ({
-    page,
-  }) => {
+  test('CS-prefix in "Unsure" mode does not dupe Gibson + Gibson Custom Shop', async ({ page }) => {
     await page.goto('/');
     await waitForHydration(page);
     // CS61117 is a Gibson Custom Shop serial. Our Gibson matcher also claims

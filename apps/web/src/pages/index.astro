@@ -26,47 +26,78 @@ const websiteJsonLd = {
     set:html={JSON.stringify(websiteJsonLd)}
   />
 
-  <section class="flex flex-col gap-4 py-8">
-    <h1 class="text-4xl font-bold tracking-tight md:text-5xl">
-      Decode any guitar serial number
+  <section class="flex flex-col gap-5 py-6">
+    <h1 class="display text-5xl font-semibold leading-[1.05] text-ink md:text-6xl dark:text-cream">
+      Paste a serial.<br />
+      <span class="display-italic text-rust dark:text-amber">Read it back.</span>
     </h1>
-    <p class="max-w-2xl text-lg text-neutral-700 dark:text-neutral-300">
-      Free, open-source, and runs entirely in your browser — no account, no upload, no tracking.
-      Supports Gibson, Fender, PRS, Heritage, Sire, and Ibanez.
+    <p class="max-w-2xl text-lg text-ink-soft dark:text-cream-soft">
+      Guitar serial numbers decoded — across 19 makers and a century of manufacturing.
+      Runs in your browser. Nothing leaves your device.
     </p>
   </section>
 
-  <section class="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+  <section class="rounded-lg border border-paper-line bg-paper-raised px-6 py-6 shadow-sm dark:border-espresso-line dark:bg-espresso-raised">
     <Decoder client:load />
   </section>
 
-  <section class="mt-12 flex flex-col gap-4">
-    <h2 class="text-2xl font-semibold tracking-tight">Supported brands</h2>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+  <section class="mt-16 flex flex-col gap-5">
+    <div class="flex items-baseline justify-between gap-4 border-b border-paper-line pb-3 dark:border-espresso-line">
+      <h2 class="display text-3xl font-medium italic text-ink dark:text-cream">
+        Nineteen makers.
+      </h2>
+      <p class="hidden text-sm text-ink-faint md:block dark:text-cream-faint">
+        One click for the guide, conventions, and sources.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-3 md:grid-cols-2">
       {
         BRANDS.map((brand) => (
           <a
             href={`/brands/${brand.slug}`}
-            class="group rounded-xl border border-neutral-200 bg-white px-5 py-4 transition hover:border-neutral-400 hover:shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-600"
+            class="group flex items-baseline justify-between gap-4 border-b border-dashed border-paper-line py-3 transition hover:border-rust dark:border-espresso-line dark:hover:border-amber"
           >
-            <div class="flex items-center justify-between">
-              <span class="text-lg font-semibold">{brand.label}</span>
-              <span class="text-neutral-400 transition group-hover:translate-x-0.5 group-hover:text-neutral-600 dark:group-hover:text-neutral-300">
+            <span class="flex items-baseline gap-3">
+              <span class="display text-xl font-medium text-ink group-hover:text-rust dark:text-cream dark:group-hover:text-amber">
+                {brand.label}
+              </span>
+              <span class="text-rust opacity-0 transition group-hover:opacity-100 dark:text-amber">
                 →
               </span>
-            </div>
-            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{brand.blurb}</p>
+            </span>
+            <span class="text-right text-xs text-ink-faint dark:text-cream-faint">{brand.blurb}</span>
           </a>
         ))
       }
     </div>
   </section>
 
-  <section class="mt-12 rounded-xl border border-neutral-200 bg-neutral-50 p-5 text-sm text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300">
-    <p>
-      <strong>Not finding your brand, or got an incorrect result?</strong>{' '}
-      This is an open-source community resource. Contributions with authoritative
-      sources are welcome — see the <a href="/methodology" class="underline">methodology</a>.
-    </p>
+  <section class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div>
+      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Built from sources</h3>
+      <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
+        Every format rule traces back to at least two authoritative references — manufacturers
+        where possible, then audited community references. See the{' '}
+        <a href="/methodology" class="text-rust underline underline-offset-2 dark:text-amber">methodology</a>.
+      </p>
+    </div>
+    <div>
+      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Runs offline</h3>
+      <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
+        The decoder is a static site. No backend, no analytics, no account. Your serial never
+        leaves the browser.
+      </p>
+    </div>
+    <div>
+      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Got an incorrect decode?</h3>
+      <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
+        This is an open-source community resource. Contributions with authoritative sources are
+        welcome —{' '}
+        <a
+          href="https://github.com/guitarserials/guitarserials/issues/new?template=incorrect_decode.md"
+          class="text-rust underline underline-offset-2 dark:text-amber"
+        >open a report</a>.
+      </p>
+    </div>
   </section>
 </Base>

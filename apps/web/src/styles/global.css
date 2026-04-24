@@ -2,10 +2,66 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/*
+ * Palette: warm parchment + ink + rust accent.
+ * Light mode evokes a mid-century guitar catalog; dark mode is espresso
+ * with amber accents (tube-amp glow). Semantic names so mode-switching
+ * changes meaning, not just values.
+ */
 @theme {
+  --font-serif:
+    'EB Garamond', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans:
+    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
+
+  /* Parchment / paper (light mode backgrounds) */
+  --color-paper: #faf6ec;
+  --color-paper-raised: #fffdf7;
+  --color-paper-sunken: #f3ebd6;
+  --color-paper-line: #dcd1bc;
+
+  /* Ink (light mode text) */
+  --color-ink: #1f1811;
+  --color-ink-soft: #5a4e3f;
+  --color-ink-faint: #8a7b65;
+
+  /* Espresso (dark mode backgrounds) */
+  --color-espresso: #14100a;
+  --color-espresso-raised: #1f1810;
+  --color-espresso-sunken: #0e0a06;
+  --color-espresso-line: #2e2519;
+
+  /* Cream (dark mode text) */
+  --color-cream: #f0e6d0;
+  --color-cream-soft: #b8a786;
+  --color-cream-faint: #7f725c;
+
+  /* Rust (light mode accent) — sunburst cherry */
+  --color-rust: #a74c1e;
+  --color-rust-strong: #7a3514;
+  --color-rust-faint: #ecd8c4;
+
+  /* Amber (dark mode accent) — tube-amp glow */
+  --color-amber: #d99858;
+  --color-amber-strong: #f0b470;
+  --color-amber-faint: #3a2817;
+
+  /* Muted confidence colors — no stock emerald/amber/rose pills */
+  --color-sage: #556b2f;
+  --color-sage-faint: #dee8c9;
+  --color-sage-faint-dark: #2c3519;
+  --color-sage-dark-text: #b8cc8f;
+  --color-ochre: #8b6914;
+  --color-ochre-faint: #efe3bc;
+  --color-ochre-faint-dark: #3a2f16;
+  --color-ochre-dark-text: #d4b564;
+  --color-wine: #782f2f;
+  --color-wine-faint: #eccbcb;
+  --color-wine-faint-dark: #351818;
+  --color-wine-dark-text: #d4908e;
 }
 
 html {
@@ -17,9 +73,51 @@ html.dark {
 }
 
 body {
-  @apply bg-white text-neutral-900 antialiased;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html.dark body {
-  @apply bg-neutral-950 text-neutral-100;
+  background-color: var(--color-espresso);
+  color: var(--color-cream);
+}
+
+/* Subtle paper-grain texture on the body background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(170, 130, 90, 0.04) 0px, transparent 40%),
+    radial-gradient(circle at 75% 70%, rgba(170, 130, 90, 0.04) 0px, transparent 40%);
+}
+
+html.dark body::before {
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(200, 160, 100, 0.05) 0px, transparent 40%),
+    radial-gradient(circle at 75% 70%, rgba(200, 160, 100, 0.04) 0px, transparent 40%);
+}
+
+/* Display serif for headings — opted-in via .display class */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.display-italic {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Keep the page above the texture pseudo-element */
+body > * {
+  position: relative;
+  z-index: 1;
 }

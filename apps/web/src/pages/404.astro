@@ -3,11 +3,13 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base title="Not found — guitarserials.org">
-  <section class="flex flex-col gap-4 py-16 text-center">
-    <p class="text-6xl">🎸</p>
-    <h1 class="text-3xl font-bold tracking-tight">Not found</h1>
-    <p class="text-neutral-700 dark:text-neutral-300">
-      This page doesn't exist. Head back to the <a href="/" class="underline">home page</a> to decode a serial.
+  <section class="flex flex-col items-start gap-4 py-16">
+    <p class="display text-7xl font-medium italic text-rust dark:text-amber">404</p>
+    <h1 class="display text-3xl font-semibold text-ink dark:text-cream">Nothing here.</h1>
+    <p class="max-w-xl text-ink-soft dark:text-cream-soft">
+      This page doesn't exist. Head back to the{' '}
+      <a href="/" class="text-rust underline underline-offset-2 dark:text-amber">home page</a>{' '}
+      to decode a serial.
     </p>
   </section>
 </Base>

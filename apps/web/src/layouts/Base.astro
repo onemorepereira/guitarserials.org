@@ -46,11 +46,18 @@ const absoluteOgImage = new URL(ogImage, site).toString();
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteOgImage} />
 
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14100a" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#faf6ec" media="(prefers-color-scheme: light)" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
 
     <script is:inline>
       (() => {
@@ -65,35 +72,49 @@ const absoluteOgImage = new URL(ogImage, site).toString();
     <slot name="head" />
   </head>
   <body>
-    <header class="border-b border-neutral-200 dark:border-neutral-800">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-        <a href="/" class="flex items-center gap-2 font-semibold tracking-tight">
-          <span class="text-lg">🎸</span>
-          <span>guitarserials.org</span>
+    <header class="border-b border-paper-line dark:border-espresso-line">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-5">
+        <a
+          href="/"
+          class="group flex items-baseline gap-2 tracking-tight text-ink dark:text-cream"
+        >
+          <span class="display text-2xl font-semibold italic">guitarserials</span>
+          <span class="text-sm text-ink-faint dark:text-cream-faint">.org</span>
         </a>
-        <nav class="flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
-          <a href="/methodology" class="hover:text-neutral-900 dark:hover:text-neutral-100">Methodology</a>
-          <a href="/about" class="hover:text-neutral-900 dark:hover:text-neutral-100">About</a>
+        <nav class="flex items-center gap-6 text-sm">
+          <a
+            href="/methodology"
+            class="text-ink-soft hover:text-rust dark:text-cream-soft dark:hover:text-amber"
+          >Methodology</a>
+          <a
+            href="/about"
+            class="text-ink-soft hover:text-rust dark:text-cream-soft dark:hover:text-amber"
+          >About</a>
           <ThemeToggle />
         </nav>
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
+    <main class="mx-auto max-w-5xl px-4 py-10">
       <slot />
     </main>
 
-    <footer class="mt-16 border-t border-neutral-200 py-8 dark:border-neutral-800">
-      <div class="mx-auto flex max-w-5xl flex-col gap-2 px-4 text-sm text-neutral-600 dark:text-neutral-400 md:flex-row md:items-center md:justify-between">
-        <div>
-          <span>© 2026 guitarserials.org — </span>
-          <a href="/about" class="underline hover:text-neutral-900 dark:hover:text-neutral-100">About</a>
-          <span>&nbsp;·&nbsp;</span>
-          <a href="/methodology" class="underline hover:text-neutral-900 dark:hover:text-neutral-100">Methodology</a>
+    <footer class="mt-20 border-t border-paper-line py-10 dark:border-espresso-line">
+      <div class="mx-auto flex max-w-5xl flex-col gap-3 px-4 text-sm text-ink-soft md:flex-row md:items-baseline md:justify-between dark:text-cream-soft">
+        <div class="flex flex-col gap-1">
+          <p class="display italic text-base text-ink dark:text-cream">guitarserials.org</p>
+          <p class="text-xs text-ink-faint dark:text-cream-faint">
+            A reference for guitar serial numbers. Open source, MIT.
+          </p>
         </div>
-        <div>
-          <span>Open source, MIT — </span>
-          <span class="text-neutral-600 dark:text-neutral-400">contributions welcome</span>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
+          <a href="/about" class="hover:text-rust dark:hover:text-amber">About</a>
+          <a href="/methodology" class="hover:text-rust dark:hover:text-amber">Methodology</a>
+          <a
+            href="https://github.com/guitarserials/guitarserials"
+            class="hover:text-rust dark:hover:text-amber"
+          >Source</a>
+          <span class="text-ink-faint dark:text-cream-faint">© 2026</span>
         </div>
       </div>
     </footer>
