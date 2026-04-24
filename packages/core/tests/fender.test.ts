@@ -144,6 +144,46 @@ describe('Fender serials', () => {
   });
 });
 
+describe('Fender vintage neckplate formats', () => {
+  it('L-series 1963-1965 matches', () => {
+    const r = matchSerial('L12345', 'Fender');
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('fender_l_series');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('6-digit pre-1976 neckplate matches with null year', () => {
+    const r = matchSerial('234567', 'Fender');
+    expect(r!.brandFormat).toBe('fender_pre1976_neckplate');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('8-digit bare numeric matches the legacy fender_neckplate fallback', () => {
+    const r = matchSerial('12345678', 'Fender');
+    expect(r!.brandFormat).toBe('fender_neckplate');
+  });
+});
+
+describe('Fender Japan JV/SQ (1982-1984)', () => {
+  it('JV + 5 digits matches with null year (no USA conflict)', () => {
+    const r = matchSerial('JV12345', 'Fender');
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('fender_japan_jv');
+    expect(r!.confidenceTier).toBe('high');
+  });
+
+  it('JV + 6 digits also matches', () => {
+    const r = matchSerial('JV123456', 'Fender');
+    expect(r!.brandFormat).toBe('fender_japan_jv');
+  });
+
+  it('SQ + 5 digits matches (Squier Japan format, 1983-1984)', () => {
+    const r = matchSerial('SQ12345', 'Fender');
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('fender_japan_sq');
+  });
+});
+
 describe('Fender decade prefixes', () => {
   it('S prefix 1970s', () => {
     const m = matchSerial('S654321', 'Fender', { listingYear: 1976 });

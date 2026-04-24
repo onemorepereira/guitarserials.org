@@ -12,6 +12,10 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   gibson_pre1961:
     'Pre-1961 4-digit factory order number ink-stamped on Junior/Special student models. Year unknown from the serial alone.',
   gibson_pre1977: 'Pre-1977 sequential Gibson serial — no year encoded in the number itself.',
+  gibson_a_series:
+    "Gibson A-series hollowbody label (1947–1961). A + 3–5 digits; year decoded via Gibson's official serialization range table. A-1 through A-18750 = white label; A-20001 through A-36147 = orange label.",
+  gibson_fon_letter:
+    'Gibson FON letter-prefix (1952–1961). Q/R/S/T/U/V/W/X/Y/Z + digits, stamped inside the instrument. Letter pins the year directly (Z=1952, Y=1953, … Q=1961).',
   gibson_1975_1977:
     '1975-1977 Gibson USA 8-digit decal where the first two digits encode the year (99=1975, 00=1976, 06=1977).',
   gibson_lp_classic_1989_1999:
@@ -49,7 +53,14 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_vs: 'Fender Vintera / Vintera Special (Mexico) — VS + 2-digit year + sequence.',
   fender_mod_shop: 'Fender Mod Shop (2021+) — MS + 2-digit year + 4-digit sequence.',
   fender_neckplate:
-    'Pre-1976 Fender neckplate 8-digit serial — year not encoded in the serial alone.',
+    '8-digit bare numeric on a Fender neckplate — rare; most often a US-prefix serial with US dropped. Year not encoded.',
+  fender_pre1976_neckplate:
+    'Fender neckplate pre-1976 (4-6 digit bare numeric). Year ranges overlap heavily across 1954-1976; use neck-date and pot-codes to pin the year.',
+  fender_l_series:
+    'Fender L-series (1963-1965) — L + 5 digits neckplate. The L was reportedly a mistake originally meant to be a 1 for the 100,000 range.',
+  fender_japan_jv:
+    'Fender Japan Vintage JV (1982-1984) — JV + 5-6 digits. Made for the export market starting with the 52/57/62 reissues.',
+  fender_japan_sq: 'Fender Japan Squier SQ (1983-1984) — SQ + 5-6 digits. Companion to JV.',
   fender_avri_bridge: 'Fender AVRI bridge-plate short-numeric serial. Year inferred from listing.',
   prs_core: 'PRS Core / CE 2008+ — first two digits encode the year (08–29 → 2008–2029).',
   prs_core_pre2008:

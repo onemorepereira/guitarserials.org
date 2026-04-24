@@ -167,15 +167,36 @@ export function matchFender(
     }
   }
 
-  // Fender 8-digit neck plate (1965-1976, no prefix).
+  // JV prefix (Japan Vintage, 1982–1984): JV + 5-6 digits. Made for the
+  // export market starting with the 52/57/62 Strat and Tele reissues.
   {
-    const m = text.match(/^[1-9]\d{7}$/);
+    const m = text.match(/^JV(\d{5,6})$/);
     if (m) {
-      return singleCandidateMatch(m[0], null, 'fender_neckplate', listingYear);
+      return singleCandidateMatch(m[0], null, 'fender_japan_jv', listingYear, 'high');
+    }
+  }
+
+  // SQ prefix (Squier Japan, 1983–1984): SQ + 5-6 digits. Companion to JV.
+  {
+    const m = text.match(/^SQ(\d{5,6})$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'fender_japan_sq', listingYear, 'high');
+    }
+  }
+
+  // L-series (1963–1965): L + 5 digits. Neckplate serial; the 'L' was
+  // reportedly a mistake originally intended to be a '1' for the 100k range.
+  {
+    const m = text.match(/^L(\d{5})$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'fender_l_series', listingYear, 'high');
     }
   }
 
   // AVRI bridge-plate short numeric (4-5 digits), model-gated.
+  // Checked BEFORE the generic pre-1976 neckplate rule so that AVRI
+  // reissue instruments get the bridge-plate tag rather than falling
+  // into the bare-numeric neckplate bucket.
   if (isFenderAvri(modelHint)) {
     const m = text.match(/^\d{4,5}$/);
     if (m) {
@@ -187,6 +208,28 @@ export function matchFender(
         confidenceCap: 'medium',
       };
       return buildMatch(m[0], [cand], cand, listingYear);
+    }
+  }
+
+  // Fender pre-1976 neckplate serial: 6-digit (1965–1976 F-plate era) or
+  // 4-5 digit (1954–1963 pre-L-series). Year ranges overlap heavily across
+  // these years (Fender used pre-numbered neckplates as they came), so we
+  // match the format and leave year null.
+  {
+    const m = text.match(/^[1-9]\d{3,5}$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'fender_pre1976_neckplate', listingYear);
+    }
+  }
+
+  // Ambiguous legacy 8-digit numeric (no prefix). Retained from earlier
+  // implementations; most real Fender neckplate serials are 4-6 digits.
+  // An 8-digit numeric under "Fender" brand is most often a US-prefix
+  // serial with the 'US' dropped.
+  {
+    const m = text.match(/^[1-9]\d{7}$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'fender_neckplate', listingYear);
     }
   }
 

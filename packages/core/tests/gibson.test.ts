@@ -100,6 +100,72 @@ describe('Gibson serials', () => {
   });
 });
 
+describe('Gibson A-series hollowbody labels (1947-1961)', () => {
+  it('A-100 = 1947 (start of series)', () => {
+    const r = matchSerial('A100', 'Gibson');
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1947);
+    expect(r!.brandFormat).toBe('gibson_a_series');
+  });
+
+  it('A-6000 = 1950', () => {
+    const r = matchSerial('A6000', 'Gibson');
+    expect(r!.decodedYear).toBe(1950);
+  });
+
+  it('A-20500 = 1955 (orange label)', () => {
+    const r = matchSerial('A20500', 'Gibson');
+    expect(r!.decodedYear).toBe(1955);
+  });
+
+  it('A-36000 = 1961 (near end of A-series)', () => {
+    const r = matchSerial('A36000', 'Gibson');
+    expect(r!.decodedYear).toBe(1961);
+  });
+
+  it('A-serial out of documented range matches format with null year', () => {
+    // A-37000 is past the final A-36147
+    const r = matchSerial('A37000', 'Gibson');
+    expect(r!.brandFormat).toBe('gibson_a_series');
+    expect(r!.decodedYear).toBeNull();
+  });
+});
+
+describe('Gibson FON letter-prefix (1952-1961)', () => {
+  it('Z batch = 1952', () => {
+    const r = matchSerial('Z22301', 'Gibson');
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1952);
+    expect(r!.brandFormat).toBe('gibson_fon_letter');
+  });
+
+  it('Y batch = 1953', () => {
+    const r = matchSerial('Y223021', 'Gibson');
+    expect(r!.decodedYear).toBe(1953);
+    expect(r!.brandFormat).toBe('gibson_fon_letter');
+  });
+
+  it('V batch = 1956', () => {
+    const r = matchSerial('V48678', 'Gibson');
+    expect(r!.decodedYear).toBe(1956);
+  });
+
+  it('R batch = 1960', () => {
+    const r = matchSerial('R678515', 'Gibson');
+    expect(r!.decodedYear).toBe(1960);
+  });
+
+  it('Q batch = 1961 (last FON letter)', () => {
+    const r = matchSerial('Q1234', 'Gibson');
+    expect(r!.decodedYear).toBe(1961);
+  });
+
+  it('letter P (outside 1952-1961 chart) does not match FON rule', () => {
+    // P isn't a documented FON year letter; should not match.
+    expect(matchSerial('P12345', 'Gibson')).toBeNull();
+  });
+});
+
 describe('Gibson 9-digit dual decode', () => {
   it('yddd_ybrrr only when yy out of range', () => {
     const m = matchSerial('012396456', 'Gibson', { listingYear: 2009 });
