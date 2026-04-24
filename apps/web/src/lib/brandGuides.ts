@@ -1,3 +1,13 @@
+export type SourceKind = 'manufacturer' | 'reference' | 'community' | 'book';
+
+export interface Source {
+  label: string;
+  url: string;
+  kind: SourceKind;
+  /** One-line note about what this source covers. */
+  note?: string;
+}
+
 export interface BrandFormat {
   /** Matches `brandFormat` returned by @guitarserials/core. */
   id: string;
@@ -14,6 +24,12 @@ export interface BrandFormat {
   rule: string;
   /** Caveats, collisions, known misses. */
   gotchas?: string[];
+  /**
+   * Optional format-specific citations. Used when the rule needs a stronger
+   * citation than the brand-wide `sources` (e.g. a format with a contested
+   * or non-obvious decoding rule). When empty, the brand-level sources apply.
+   */
+  sources?: Source[];
 }
 
 export interface SerialLocation {
@@ -26,11 +42,21 @@ export interface BrandGuide {
   slug: string;
   intro: string;
   eraPara?: string;
+  /**
+   * Brand-level authoritative citations — apply to every format in this
+   * brand unless a format overrides via its own `sources`.
+   */
+  sources: Source[];
   formats: BrandFormat[];
   findSerial: {
     intro: string;
     locations: SerialLocation[];
   };
+  /**
+   * Optional note on source quality — surfaced to readers when a brand has
+   * no official decoder (Ibanez, Sire).
+   */
+  sourceNote?: string;
 }
 
 export const BRAND_GUIDES: Record<string, BrandGuide> = {
@@ -41,6 +67,20 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       "Gibson's serial numbering has shifted several times since the 1950s, and the format alone doesn't always pin down a year — but for the 1977-onward eras the year is usually encoded directly in the digits. Earlier serials (pre-1977) are sequential with no year encoded, and the best way to date them is by comparing the serial to a factory-run reference.",
     eraPara:
       'The modern format (1977 onward) encodes the year in the first and fifth digits of an 8- or 9-digit serial. A brief period from 2014 to mid-2019 used a simpler YYNNNNNNN layout. Pre-1977 Gibson USA serials are sequential, and pre-1961 student-line models (Junior, Special, Melody Maker) were ink-stamped with a 4-digit factory order number.',
+    sources: [
+      {
+        label: 'Gibson Serial Number Search',
+        url: 'https://www.gibson.com/pages/serial-number-search',
+        kind: 'manufacturer',
+        note: "Gibson's official serial lookup and dating reference; documents the 1975-1977 decal, the 8-digit YDDDYRRR format (1977+), and the 9-digit YDDDYBRRR format (July 2005+).",
+      },
+      {
+        label: 'The Vintage Guitar Info Guy — Gibson Dating',
+        url: 'https://guitarhq.com/gibson.html',
+        kind: 'reference',
+        note: 'Comprehensive reference maintained since 1995 covering paper-label era, A-series (1947-1961), ink-stamped peghead, 1961-1975 impressed, and modern formats.',
+      },
+    ],
     formats: [
       {
         id: 'gibson_yddd_yrrr',
@@ -165,6 +205,26 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'gibson-custom-shop',
     intro:
       'Gibson Custom Shop (CS) has its own serial formats that diverge from Gibson USA. The CS label launched in 1993 and has produced a steady stream of Historic Reissue Les Pauls, Murphy Lab aged models, artist signature runs, and short-run collectibles. Each of these uses a distinct serial scheme.',
+    sources: [
+      {
+        label: 'Gibson Serial Number Search',
+        url: 'https://www.gibson.com/pages/serial-number-search',
+        kind: 'manufacturer',
+        note: 'Official Gibson lookup tool; covers Custom Shop alongside USA formats.',
+      },
+      {
+        label: 'Lovies Guitars — Gibson Serial Number Identification & Dating',
+        url: 'https://loviesguitars.com/gibson-serial-number-identification-dating/',
+        kind: 'reference',
+        note: 'Dealer reference documenting the CSYXXXX format (CS + single year digit + sequential rank) and its decade-ambiguity caveat.',
+      },
+      {
+        label: 'Gibson Brands Forum — 6-digit CS serial numbers',
+        url: 'https://forum.gibson.com/topic/83891-6-digit-cs-serial-numbers/',
+        kind: 'community',
+        note: 'Community thread documenting the ambiguous 6-digit CS variants (CSYRRRRR single-Y vs CSYYRRRR double-Y).',
+      },
+    ],
     formats: [
       {
         id: 'gibson_cs',
@@ -250,6 +310,38 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'fender',
     intro:
       'Fender has used many serial formats across its factories (USA, Mexico, Japan, Korea, Indonesia). Most post-1976 formats encode the year directly in the serial — either in the first letter of a decade-prefix, in the first digit (DN/MZ/MN-style), or in the first two digits (US/MX/JD/VS/MS-style). Several Custom Shop formats (V, CS, CZ, R, XN, HR) are definitive prefixes with no year encoded.',
+    sources: [
+      {
+        label: 'Fender — How can I find out when my American-made instrument was manufactured?',
+        url: 'https://support.fender.com/hc/en-us/articles/42521696369947-How-can-I-find-out-when-my-American-made-instrument-was-manufactured',
+        kind: 'manufacturer',
+        note: "Fender's official support article covering USA decade-prefix (S/E/N/Z/DZ), V-prefix AVRI, CS prefix, and US + YY prefix (2000+).",
+      },
+      {
+        label: 'Fender — How can I find out when my Mexican-made instrument was manufactured?',
+        url: 'https://support.fender.com/hc/en-us/articles/42521694811931-How-can-I-find-out-when-my-Mexican-made-instrument-was-manufactured',
+        kind: 'manufacturer',
+        note: 'Official coverage of MN (1990s), MZ (2000s), MX (2009+), and VS Vintera prefixes.',
+      },
+      {
+        label: 'Fender — How can I find out when my Japanese-made instrument was manufactured?',
+        url: 'https://support.fender.com/hc/en-us/articles/42521710053275-How-can-I-find-out-when-my-Japanese-made-instrument-was-manufactured',
+        kind: 'manufacturer',
+        note: 'Official coverage of the JD prefix (2011+ Japan) and earlier Made-in-Japan serials.',
+      },
+      {
+        label: 'Fender Serial Number Lookup Tool',
+        url: 'https://serialnumberlookup.fender.com/',
+        kind: 'manufacturer',
+        note: "Fender's official lookup tool — enter a serial and it returns the decoded model and approximate year when known.",
+      },
+      {
+        label: 'Gear Genealogy: How to Date Your Guitar',
+        url: 'https://www.fender.com/articles/maintenance/gear-genealogy-how-to-date-your-guitar',
+        kind: 'manufacturer',
+        note: "Fender's published overview of its serial-numbering systems across factories and eras.",
+      },
+    ],
     formats: [
       {
         id: 'fender_us_prefix',
@@ -423,6 +515,20 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'prs',
     intro:
       "Paul Reed Smith's serial numbering splits by production origin. Core and S2 are made in Stevensville, Maryland; CE is the older Stevensville economy line; SE is imported (historically Korea, now Indonesia). Most modern PRS formats encode the year somewhere in the digits.",
+    sources: [
+      {
+        label: 'PRS — Year Identification',
+        url: 'https://support.prsguitars.com/hc/en-us/articles/4408314427547-Year-Identification',
+        kind: 'manufacturer',
+        note: "PRS Guitars' official article documenting the year-prefix convention across Set-Neck, CE, Acoustic, and S2 models.",
+      },
+      {
+        label: 'PRS — When was my PRS Guitar built?',
+        url: 'https://support.prsguitars.com/hc/en-us/articles/4408350481179-When-was-my-PRS-Guitar-built',
+        kind: 'manufacturer',
+        note: 'Companion article describing serial-number placement by model and the year-prefix rule.',
+      },
+    ],
     formats: [
       {
         id: 'prs_core',
@@ -483,6 +589,20 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'heritage',
     intro:
       'Heritage Guitars has been building in the former Gibson Kalamazoo factory since 1985. Their standard serial scheme uses a leading letter (B = 1985) that increments through the alphabet, with a post-2009 switch to a double-letter format. A number of bare 6-digit Kalamazoo-stamped instruments exist and are not documented in any official decoder — we recognize the format but leave the year unknown.',
+    sources: [
+      {
+        label: 'Heritage Guitars — Date Your Heritage',
+        url: 'https://heritageguitars.com/pages/date-your-heritage',
+        kind: 'manufacturer',
+        note: "Heritage's official dating tool with a letter-to-year dropdown spanning B (1985) through AP (2025).",
+      },
+      {
+        label: 'Heritage Owners Club — Decoding Heritage Serial Numbers',
+        url: 'http://www.heritageownersclub.com/info_serials.htm',
+        kind: 'community',
+        note: 'Community reference confirming the single-letter and double-letter year conventions and detailing the post-letter digit layout (day-of-year-remaining + build rank).',
+      },
+    ],
     formats: [
       {
         id: 'heritage_single',
@@ -546,6 +666,16 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'sire',
     intro:
       "Sire's modern serials come in two generations: an 8-digit plain numeric (Gen 1) and a 2N-prefixed 10-digit format (Gen 2). Both encode the year in the first two significant digits.",
+    sourceNote:
+      'Sire does not publish an official serial-number decoder. The YYWW convention below is consistently reported by community resellers and dealer references; we have not sighted a canonical Sire-authored specification. If you have a manufacturer-authored source, please open an issue.',
+    sources: [
+      {
+        label: 'Still Kickin Music — Lakland and Sire Serial Number Database',
+        url: 'https://stillkickinmusic.com/blogs/still-kickin-blog/lakland-and-sire-added-to-serial-number-database',
+        kind: 'community',
+        note: 'Dealer-maintained serial-number database; documents the YYWW-prefix convention used by Sire across Gen 1 and Gen 2 serials.',
+      },
+    ],
     formats: [
       {
         id: 'sire_gen1',
@@ -580,6 +710,22 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     slug: 'ibanez',
     intro:
       'Ibanez has been made at several factories since the 1970s: Fujigen (Japan, F-prefix), plus Korean (C-prefix) and Indonesian (I-prefix) production. The Japanese F-prefix format changed in 1997 — from 1987 to 1996 a single digit encoded the year, after 1997 two digits do. Pre-F Japanese instruments (1975–1988) used a letter-month prefix that clashed with the later F-prefix and is matched first.',
+    sourceNote:
+      'Ibanez does not publish an official serial-number decoder (per their own support FAQ: "Ibanez does not manage models by serial number and does not disclose serial number information to the public"). Our rules are derived from the longest-standing community references below, cross-verified against dated instruments and Fujigen production records.',
+    sources: [
+      {
+        label: 'Ibanez Rules — Date Your Ibanez',
+        url: 'https://www.ibanezrules.com/catalogs/reference/dating.htm',
+        kind: 'community',
+        note: 'Long-standing community reference that documents the F-prefix length-branch distinction (F + 6 digits = 1987-1996 single-Y; F + 7-8 digits = 1997+ YY) and the C/I/pre-F letter-month formats.',
+      },
+      {
+        label: 'Ibanez Wiki — Serial Numbers',
+        url: 'https://ibanez.fandom.com/wiki/Ibanez_serial_numbers',
+        kind: 'community',
+        note: 'Community-maintained wiki corroborating Fujigen (F), Korean (C), and Indonesian (I) prefix conventions and month-letter pre-F format.',
+      },
+    ],
     formats: [
       {
         id: 'ibanez_japan_letter_month',
