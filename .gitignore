@@ -45,6 +45,9 @@ kubeconfig
 .aws/
 aws-exports.js
 
+# CDK build output
+cdk.out/
+
 # IDE & OS
 .vscode/
 .idea/
