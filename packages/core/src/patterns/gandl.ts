@@ -76,5 +76,50 @@ export function matchGAndL(text: string, listingYear: number | null): SerialMatc
     }
   }
 
+  // Tribute Series (import). Year + month encoded in the serial; format
+  // varies by factory location.
+  //   China: L + YY + MM + 4-5 digit seq (total 8-9 chars).
+  //   Indonesia: YY + MM + 5 digit seq (9 digits).
+  //   Korea: YY + MM + 4 digit seq (8 digits).
+  //
+  // Chinese L-prefix first.
+  {
+    const m = text.match(/^L(\d{2})(\d{2})(\d{4,5})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+        return singleCandidateMatch(m[0], decoded, 'gandl_tribute_china', listingYear);
+      }
+    }
+  }
+
+  // Indonesia Tribute: 9 digits = YY + MM + 5-digit seq.
+  {
+    const m = text.match(/^(\d{2})(\d{2})(\d{5})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      // Tribute Series ran from the early 2000s; gate to YY 03-29 as a
+      // plausibility check.
+      if (year2 >= 3 && year2 <= 29 && month >= 1 && month <= 12) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'gandl_tribute_indonesia', listingYear);
+      }
+    }
+  }
+
+  // Korean Tribute: 8 digits = YY + MM + 4-digit seq.
+  {
+    const m = text.match(/^(\d{2})(\d{2})(\d{4})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (year2 >= 3 && year2 <= 29 && month >= 1 && month <= 12) {
+        return singleCandidateMatch(m[0], 2000 + year2, 'gandl_tribute_korea', listingYear);
+      }
+    }
+  }
+
   return null;
 }

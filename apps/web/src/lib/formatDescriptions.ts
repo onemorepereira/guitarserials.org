@@ -139,6 +139,9 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   gandl_g_prefix: 'G&L G-prefix (1980-1997) — guitars, 5-6 digit sequence, no year encoded.',
   gandl_b_prefix: 'G&L B-prefix (1980-1997) — basses, 5-6 digit sequence, no year encoded.',
   gandl_placentia: 'G&L Placentia Series (China) — full 4-digit year prefix + 4-digit sequence.',
+  gandl_tribute_china: 'G&L Tribute China — L + YY + MM + 4-5 digit sequence.',
+  gandl_tribute_indonesia: 'G&L Tribute Indonesia — 9 digits (YY + MM + 5-digit sequence).',
+  gandl_tribute_korea: 'G&L Tribute Korea — 8 digits (YY + MM + 4-digit sequence).',
   schecter_factory: 'Schecter factory-prefix — W/IW/IC/C/S + YY + 3-7 digit sequence.',
   schecter_numeric: 'Schecter no-prefix — YY + 4-6 digit sequence (older Schecter).',
   martin_sequential:

@@ -39,4 +39,22 @@ describe('G&L', () => {
     expect(r!.decodedYear).toBe(2021);
     expect(r!.brandFormat).toBe('gandl_placentia');
   });
+
+  it('Tribute Korea 14020123 = February 2014', () => {
+    const r = matchSerial('14020123', 'G&L');
+    expect(r!.decodedYear).toBe(2014);
+    expect(r!.brandFormat).toBe('gandl_tribute_korea');
+  });
+
+  it('Tribute Indonesia 140214831 = February 2014', () => {
+    const r = matchSerial('140214831', 'G&L');
+    expect(r!.decodedYear).toBe(2014);
+    expect(r!.brandFormat).toBe('gandl_tribute_indonesia');
+  });
+
+  it('Tribute China L14021234 = February 2014', () => {
+    const r = matchSerial('L14021234', 'G&L');
+    expect(r!.decodedYear).toBe(2014);
+    expect(r!.brandFormat).toBe('gandl_tribute_china');
+  });
 });
