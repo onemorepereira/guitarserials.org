@@ -2,6 +2,7 @@ import { extractSerialFromNoise } from './extractSerial.js';
 import { normalizeText } from './normalize.js';
 import { matchCharvel } from './patterns/charvel.js';
 import { matchEpiphone } from './patterns/epiphone.js';
+import { matchEsp } from './patterns/esp.js';
 import { matchFender } from './patterns/fender.js';
 import { matchGAndL } from './patterns/gandl.js';
 import { matchGibson } from './patterns/gibson.js';
@@ -10,6 +11,8 @@ import { matchGretsch } from './patterns/gretsch.js';
 import { matchHeritage } from './patterns/heritage.js';
 import { matchIbanez } from './patterns/ibanez.js';
 import { matchJackson } from './patterns/jackson.js';
+import { matchMartin } from './patterns/martin.js';
+import { matchMusicMan } from './patterns/musicman.js';
 import { matchPrs } from './patterns/prs.js';
 import { matchRickenbacker } from './patterns/rickenbacker.js';
 import { matchSchecter } from './patterns/schecter.js';
@@ -33,6 +36,10 @@ export const SUPPORTED_BRANDS = new Set([
   'squier',
   'g&l',
   'schecter',
+  'martin',
+  'esp',
+  'ltd',
+  'music man',
 ]);
 
 type BrandMatcher = (
@@ -58,6 +65,10 @@ const BRAND_MATCHERS: Record<string, BrandMatcher> = {
   squier: (t, y, _h, _c) => matchSquier(t, y),
   'g&l': (t, y, _h, _c) => matchGAndL(t, y),
   schecter: (t, y, _h, _c) => matchSchecter(t, y),
+  martin: (t, y, _h, _c) => matchMartin(t, y),
+  esp: (t, y, _h, _c) => matchEsp(t, y),
+  ltd: (t, y, _h, _c) => matchEsp(t, y),
+  'music man': (t, y, _h, _c) => matchMusicMan(t, y),
 };
 
 /**

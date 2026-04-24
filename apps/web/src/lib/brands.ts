@@ -91,6 +91,24 @@ export const BRANDS: BrandMeta[] = [
     label: 'Schecter',
     blurb: 'First two digits of YY + optional factory prefix',
   },
+  {
+    id: 'martin',
+    slug: 'martin',
+    label: 'Martin',
+    blurb: 'Sequential since 1898; official year-end chart lookup',
+  },
+  {
+    id: 'esp',
+    slug: 'esp',
+    label: 'ESP / LTD',
+    blurb: 'E/U/I/L/W/IS/IR/IW/IX factory letter prefixes',
+  },
+  {
+    id: 'music man',
+    slug: 'music-man',
+    label: 'Ernie Ball Music Man',
+    blurb: 'B-prefix, 5-digit 8xxx/9xxx; database lookup for dating',
+  },
 ];
 
 export function findBrand(idOrSlug: string): BrandMeta | undefined {

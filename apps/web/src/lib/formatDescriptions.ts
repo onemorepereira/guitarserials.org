@@ -118,6 +118,16 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   gandl_placentia: 'G&L Placentia Series (China) — full 4-digit year prefix + 4-digit sequence.',
   schecter_factory: 'Schecter factory-prefix — W/IW/IC/C/S + YY + 3-7 digit sequence.',
   schecter_numeric: 'Schecter no-prefix — YY + 4-6 digit sequence (older Schecter).',
+  martin_sequential:
+    "Martin sequential (1898+). Year decoded via binary search of Martin's official year-end cumulative chart.",
+  esp_import:
+    'ESP / LTD import — letter factory prefix (E/U Korea, L China, I Vietnam, IS/IR/IW/IX Indonesia) + 7-8 digits. Year not uniformly encoded.',
+  esp_world_korea: 'ESP / LTD W-prefix — World Musical Instrument Co. (Incheon, Korea) + 8 digits.',
+  musicman_b_prefix:
+    'Music Man B-prefix. B + 6 digits; year not encoded in serial — use EB database.',
+  musicman_f_prefix: 'Music Man F-prefix. F + 5 digits.',
+  musicman_5digit:
+    'Music Man 5-digit (1985+). 8xxxx = EVH/Axis line, 9xxxx = Morse/Luke/Silhouette.',
 };
 
 export function describeFormat(formatId: string): string {

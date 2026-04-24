@@ -1420,6 +1420,192 @@ BRAND_GUIDES.schecter = {
   },
 };
 
+BRAND_GUIDES.martin = {
+  id: 'martin',
+  slug: 'martin',
+  intro:
+    "C.F. Martin & Co. has kept impeccable serial records since 1898, making any Martin guitar straightforward to date via its year-end chart. The serial is impressed on the neck block inside the body (look through the soundhole toward the neck). The system starts at 8,348 in 1898 — Martin's estimate of its cumulative pre-numbering production.",
+  sources: [
+    {
+      label: 'C.F. Martin — Dating Your Martin (official)',
+      url: 'https://www.martinguitar.com/support-serial-number-lookup.html',
+      kind: 'manufacturer',
+      note: "Martin's official serial chart with year-end cumulative totals from 1898 through current production.",
+    },
+    {
+      label: 'Reverb — Dating Martin Guitars by Serial Number',
+      url: 'https://reverb.com/news/dating-martin-guitars-by-serial-number',
+      kind: 'reference',
+      note: 'In-depth article covering the Sigma-Martin exception, the mandolin-merge in 1991, and the nonstandard electric E18.',
+    },
+    {
+      label: 'Vintage Guitars Info — Martin Dating',
+      url: 'https://guitarhq.com/martin.html',
+      kind: 'reference',
+      note: 'Comprehensive community reference with full year-by-year chart and detailed pre-1898 and model-specific notes.',
+    },
+  ],
+  formats: [
+    {
+      id: 'martin_sequential',
+      name: 'Sequential (1898+)',
+      yearRange: '1898+',
+      example: '800000',
+      exampleYear: 2001,
+      rule: "Purely-numeric sequential serial impressed on the neck block. The decoder binary-searches Martin's year-end chart to pin the build year. Starting serial for 1898 is 8,348.",
+      gotchas: [
+        'Serial numbers 900001–902908 were used on Sigma-Martin (licensed 1981-1982 imports) and are not Martin-branded; the decoder rejects them.',
+        "Martin mandolins pre-1991 used a separate sequence; we don't distinguish mandolins from guitars here.",
+        "Martin's rare electric E18 and some signature models don't use the sequential chart.",
+        'Backpacker and Little Martin (LX) have their own sequences; this decoder covers the main guitar/ukulele chart only.',
+      ],
+    },
+  ],
+  findSerial: {
+    intro:
+      'The Martin serial is stamped on the neck block inside the body. Look through the soundhole toward the neck; the number is impressed into the wood on the forward face of the neck block.',
+    locations: [
+      {
+        place: 'Neck block (inside body)',
+        description:
+          'Universal Martin serial location. Look through the soundhole toward the neck — the number is on the wooden block at the join.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.esp = {
+  id: 'esp',
+  slug: 'esp',
+  intro:
+    "ESP is a complex brand to date because the company's own records pre-2000 are incomplete — ESP Japan lost many records in a late-1990s factory fire. What remains well-documented is the post-2000 import format where a letter prefix identifies the factory (Korea, China, Vietnam, or Indonesia). Year encoding within the digits varies by factory and isn't uniformly published, so the decoder recognizes the format but leaves year null.",
+  sources: [
+    {
+      label: 'Guitars Collector — ESP Serial Numbers',
+      url: 'https://www.guitarscollector.com/esp-serial-numbers.html',
+      kind: 'community',
+      note: 'Reference documenting ESP/LTD factory letter codes: E/U = Korea, L = China, I = Vietnam, W = World Korea, IS/IR/IW/IX = Indonesia.',
+    },
+    {
+      label: 'Killerrig — ESP LTD Serial Number Decoding',
+      url: 'https://killerrig.com/esp-serial-number-decoding-ltd-guitars/',
+      kind: 'community',
+      note: 'Additional factory-code reference plus notes on pre-2000 limitations.',
+    },
+  ],
+  sourceNote:
+    'ESP explicitly acknowledges that many pre-2000 records were destroyed in a factory fire and dating instruments from that era via serial alone is often impossible. For pre-2000 instruments, physical inspection (pickups, hardware, logo style) is usually required.',
+  formats: [
+    {
+      id: 'esp_import',
+      name: 'Letter-prefix import (2000+)',
+      yearRange: '2000+',
+      example: 'E1234567',
+      rule: 'Single letter factory code + 7 digits (E/U = ESP Korea, L = China, I = Vietnam) or two letters + 7-8 digits (IS/IR = Indonesia, IW/IX = Indonesia World, plus some 8-digit Indonesia variants). Year encoding within the digits varies.',
+      gotchas: [
+        'Year decoding is not consistently documented across factories — we match the format and leave decoded year null.',
+      ],
+    },
+    {
+      id: 'esp_world_korea',
+      name: 'W-prefix (World Korea, 8 digits)',
+      yearRange: 'Varies',
+      example: 'W12345678',
+      rule: 'W + 8 digits. World Musical Instrument Co., Incheon, Korea — a major ESP/LTD contract factory.',
+    },
+  ],
+  findSerial: {
+    intro:
+      'Modern ESP and LTD serials live on the back of the headstock. Pre-2000 ESPs had the serial in varied locations.',
+    locations: [
+      {
+        place: 'Back of headstock (post-2000)',
+        description: 'Standard for all modern ESP and LTD production.',
+      },
+      {
+        place: 'Varies (pre-2000)',
+        description:
+          'Inside body on hollowbodies, neck plate on some solidbodies, neck pocket on others. Physical inspection required.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES['music man'] = {
+  id: 'music man',
+  slug: 'music-man',
+  intro:
+    "Ernie Ball Music Man uses a relatively simple sequential numbering system, but the serial itself doesn't cleanly encode the year. Dating EB Music Man instruments is best done via EB's official Serial Number Database — the decoder here recognizes the format and then points users to the canonical lookup.",
+  sources: [
+    {
+      label: 'Ernie Ball Music Man — Serial Number Database (official)',
+      url: 'https://www.music-man.com/serial-number-database',
+      kind: 'manufacturer',
+      note: "EB's official database — the authoritative way to date an Ernie Ball Music Man instrument.",
+    },
+    {
+      label: 'Ernie Ball Forums — Serial Number Search Tool and Info',
+      url: 'https://forums.ernieball.com/threads/serial-number-search-tool-and-info.69056/',
+      kind: 'community',
+      note: 'Official Ernie Ball forum thread with decoding notes and serial-location guidance.',
+    },
+    {
+      label: 'Music Man Bass Global — Serials Pre-EB Sting Ray',
+      url: 'http://www.musicmanbass.global/serials-pre-eb-sting-ray/',
+      kind: 'community',
+      note: 'Deep-dive community reference for pre-EB era (Leo Fender-era Music Man) serials.',
+    },
+  ],
+  sourceNote:
+    "Music Man serials don't encode the year reliably. The most accurate build date is written in the neck pocket or on the neck heel. Use EB's official database or email customer service for a definitive answer.",
+  formats: [
+    {
+      id: 'musicman_b_prefix',
+      name: 'B-prefix (mid-1980s+)',
+      yearRange: '1986+',
+      example: 'B027100',
+      rule: 'B + 6-digit serial. Introduced with the Ernie Ball era (1984+). Date via the EB database.',
+    },
+    {
+      id: 'musicman_f_prefix',
+      name: 'F-prefix',
+      yearRange: 'Varies',
+      example: 'F12345',
+      rule: 'F + 5-digit serial. Seen on various EB models; date via the EB database.',
+    },
+    {
+      id: 'musicman_5digit',
+      name: '5-digit 8xxxx / 9xxxx (1985+)',
+      yearRange: '1985+',
+      example: '85123',
+      rule: '5-digit serial starting with 8 or 9. 8xxxx = EVH / Axis guitars (later also others). 9xxxx = Steve Morse, Albert Lee, Luke, Silhouette, Silhouette Specials. Date via the EB database.',
+    },
+  ],
+  findSerial: {
+    intro:
+      'Music Man serial locations changed over time. 1985-1989 serials are stamped on the back of the headstock under the G-string tuner. 1990+ moved to the neckplate. The most accurate build date is hand-written in the neck pocket or on the neck heel.',
+    locations: [
+      {
+        place: 'Back of headstock (1985-1989)',
+        description: 'Under the G-string tuner. Early Ernie Ball era.',
+      },
+      {
+        place: 'Neckplate (1990+)',
+        description:
+          'Bottom of the neckplate between the two lowest screws. Post-1998 often imprinted into the metal.',
+      },
+      {
+        place: 'Bridge plate (early 1990s)',
+        description: 'Some early-1990s instruments had the serial on the bridge plate.',
+      },
+      {
+        place: 'Neck pocket / neck heel (authoritative date)',
+        description: 'The most accurate build date is hand-written here. Requires neck removal.',
+      },
+    ],
+  },
+};
+
 export function getBrandGuide(slug: string): BrandGuide | undefined {
   return Object.values(BRAND_GUIDES).find((g) => g.slug === slug);
 }
