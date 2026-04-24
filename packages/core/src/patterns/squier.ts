@@ -75,6 +75,46 @@ export function matchSquier(text: string, listingYear: number | null): SerialMat
     }
   }
 
+  // SI (Samick Indonesia): SI + YY + 4-6 digits.
+  {
+    const m = text.match(/^SI(\d{2})(\d{4,6})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+      return singleCandidateMatch(m[0], decoded, 'squier_si', listingYear, 'high');
+    }
+  }
+
+  // KC (Korea Cor-Tek, 1997+): KC + YY + 4-6 digits.
+  {
+    const m = text.match(/^KC(\d{2})(\d{4,6})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+      return singleCandidateMatch(m[0], decoded, 'squier_kc', listingYear, 'high');
+    }
+  }
+
+  // KV (Korea Saehan/Sunghan, 1997+): KV + YY + 4-6 digits.
+  {
+    const m = text.match(/^KV(\d{2})(\d{4,6})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+      return singleCandidateMatch(m[0], decoded, 'squier_kv', listingYear, 'high');
+    }
+  }
+
+  // VN (Vietnam, 2000s+): VN + YY + 4-6 digits.
+  {
+    const m = text.match(/^VN(\d{2})(\d{4,6})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+      return singleCandidateMatch(m[0], decoded, 'squier_vn', listingYear, 'high');
+    }
+  }
+
   // Shared Fender-style prefixes for Squier Mexico / USA production.
   // These overlap the Fender matcher's rules; include here so "Squier"
   // brand dispatch also resolves them.

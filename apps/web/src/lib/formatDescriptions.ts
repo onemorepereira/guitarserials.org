@@ -88,7 +88,10 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Ibanez Indonesia I-prefix (Cor-Tek). 9-digit layout encodes YY + MM + 5-digit sequence; shorter variants leave year unknown.',
   ibanez_indonesia_kwo_hsiao:
     'Ibanez Indonesia K-prefix (Kwo Hsiao Co., Ltd.). Same 9-digit YY + MM + 5-digit layout as the I-prefix Cor-Tek format.',
-  ibanez_korea: 'Ibanez Korea C-prefix (Cort). Year encoding varies; decoder leaves year unknown.',
+  ibanez_indonesia_samick:
+    'Ibanez Indonesia SI-prefix (Samick). 7-digit YMMPPPP (2000s single-digit year) or 9-digit YYMMPPPPP layout.',
+  ibanez_korea:
+    'Ibanez Korea C-prefix (Cort). 8-digit YY+MM+PPPP decodes 2-digit year; 7-digit YMMPPPP decodes 1990s single-digit year; 6-digit leaves year unknown.',
   ibanez_korea_samick:
     'Ibanez Korea S-prefix (Samick, 1990–1995). S + Y + MM + 4-digit sequence; Y is last digit of year.',
   ibanez_korea_world:
@@ -101,6 +104,9 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     "Gretsch pre-1966 sequential (1939-1965) — 3-5 digit rising sequence. Year ranges overlap so the serial alone doesn't pin the year; use listing context and physical features.",
   rickenbacker_1961_1986:
     'Rickenbacker (1961-1986) — year letter A-Z (A=1961, Z=1986) + month letter A-L + 3-5 digit production number.',
+  rickenbacker_pre1961:
+    'Rickenbacker pre-1961 — model letter (B=bass, C=combo, M=mandolin, G=guitar) + year digit 4-9 (1954-1959) + production number.',
+  rickenbacker_1960_jk_jl: 'Rickenbacker 1960 transition — JK = November 1960, JL = December 1960.',
   rickenbacker_1987_1996:
     'Rickenbacker (1987-1996) — month letter A-L + year digit 0-9 (1987-1996) + production number.',
   rickenbacker_1996_plus:
@@ -129,6 +135,10 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   squier_cn: 'Squier CN — China Cor-Tek. CN + YY + 4-6 digit seq.',
   squier_cy: 'Squier CY — China CW. CY + YY + 4-6 digit seq.',
   squier_ic: 'Squier IC — Indonesia Cort (shorter prefix). IC + YY + 4-6 digit seq.',
+  squier_si: 'Squier SI — Samick Indonesia. SI + YY + 4-6 digit seq.',
+  squier_kc: 'Squier KC — Korea Cor-Tek (1997+). KC + YY + 4-6 digit seq.',
+  squier_kv: 'Squier KV — Korea Saehan/Sunghan (1997+). KV + YY + 4-6 digit seq.',
+  squier_vn: 'Squier VN — Vietnam (2000s+). VN + YY + 4-6 digit seq.',
   squier_mn: 'Squier MN — Mexico 1990s. MN + single-digit year + 4-6 seq.',
   squier_mz: 'Squier MZ — Mexico 2000s. MZ + single-digit year + 4-6 seq.',
   squier_usa_e: 'Squier E-prefix — USA 1980s. E + single-digit year + 4-5 seq.',
@@ -149,6 +159,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   esp_import:
     'ESP / LTD import — letter factory prefix (E/U Korea, L China, I Vietnam, IS/IR/IW/IX Indonesia) + 7-8 digits. Year not uniformly encoded.',
   esp_world_korea: 'ESP / LTD W-prefix — World Musical Instrument Co. (Incheon, Korea) + 8 digits.',
+  esp_pre2000_japan:
+    'ESP pre-2000 Japan — 8-digit DDMMYNNN (day + month + year-digit + 3-digit rank). Year snapped via listingYear (candidates 1975-1999).',
   musicman_b_prefix:
     'Music Man B-prefix. B + 6 digits; year not encoded in serial — use EB database.',
   musicman_f_prefix: 'Music Man F-prefix. F + 5 digits.',

@@ -8,10 +8,10 @@ describe('Heritage serials', () => {
     expect(r!.brandFormat).toBe('heritage_single');
   });
 
-  it('single letter Z = 2009', () => {
-    const r = matchSerial('Z12345', 'Heritage');
-    expect(r!.decodedYear).toBe(2009);
-    expect(r!.brandFormat).toBe('heritage_single');
+  it('single letter Z does NOT match — Heritage skipped Z', () => {
+    // Heritage's official chart jumps from Y=2008 to AA=2010; 2009
+    // instruments carry the 1YYXXXX standard format instead.
+    expect(matchSerial('Z12345', 'Heritage')).toBeNull();
   });
 
   it('single letter H = 1991', () => {

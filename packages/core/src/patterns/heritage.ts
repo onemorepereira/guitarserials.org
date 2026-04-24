@@ -16,9 +16,11 @@ export function matchHeritage(text: string, listingYear: number | null): SerialM
     }
   }
 
-  // Single letter: B-Z + 5 digits.
+  // Single letter: B-Y + 5 digits. Z is intentionally excluded — Heritage's
+  // official decoder skips Z entirely (jumping from Y=2008 to AA=2010 with
+  // 2009 instruments carrying the 1YYXXXX standard-collection format).
   {
-    const m = text.match(/^([B-Z])(\d{5})$/);
+    const m = text.match(/^([B-Y])(\d{5})$/);
     if (m) {
       const decoded = HERITAGE_SINGLE_LETTER_BASE[m[1] as string] ?? null;
       return singleCandidateMatch(m[0], decoded, 'heritage_single', listingYear);

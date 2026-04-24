@@ -97,10 +97,40 @@ export function matchGibsonCustomShop(
   }
 
   // Historic Reissue: 5-6 digit pure numeric. Gated on CS-brand or model hint.
+  // Format MYRRR or MYRRRR where:
+  //   M = model-year digit (0=R0/1960, 4=R4/1954, 7=R7/1957, 8=R8/1958, 9=R9/1959)
+  //   Y = last digit of build year
+  //   RRR or RRRR = production rank
+  // When M matches a documented R-series model digit, we snap Y to the
+  // closest valid CS production decade via listingYear (CS launched 1993).
+  // When M is not an R-series digit, we still match the format but leave
+  // year null (other CS historic lines may use different first-digit conventions).
   {
-    const m = text.match(/^\d{5,6}$/);
+    const m = text.match(/^(\d)(\d)(\d{3,4})$/);
     const isCs = isCsBrand || isGibsonHistoricReissue(modelHint);
     if (m && listingYear !== null && isCs) {
+      const modelDigit = parseInt(m[1] as string, 10);
+      const yearDigit = parseInt(m[2] as string, 10);
+      const isRSeriesModel =
+        modelDigit === 0 ||
+        modelDigit === 4 ||
+        modelDigit === 7 ||
+        modelDigit === 8 ||
+        modelDigit === 9;
+      if (isRSeriesModel) {
+        const options = [
+          1990 + yearDigit,
+          2000 + yearDigit,
+          2010 + yearDigit,
+          2020 + yearDigit,
+        ].filter((y) => y >= 1993 && y <= 2030);
+        if (options.length > 0) {
+          const best = options.reduce((acc, y) =>
+            Math.abs(y - listingYear) < Math.abs(acc - listingYear) ? y : acc,
+          );
+          return singleCandidateMatch(m[0], best, 'gibson_cs_historic', listingYear);
+        }
+      }
       return singleCandidateMatch(m[0], null, 'gibson_cs_historic', listingYear);
     }
   }

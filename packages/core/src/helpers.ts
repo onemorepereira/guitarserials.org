@@ -1,9 +1,14 @@
 /**
- * Heritage single-letter year mapping: B=1985, C=1986, ..., Z=2009.
+ * Heritage single-letter year mapping: B=1985, C=1986, ..., Y=2008.
+ *
+ * Stops at Y per the Heritage Owners Club decoding chart (documented
+ * range B=1985 through Y=2008) and Heritage's official "Date Your
+ * Heritage" dropdown (which skips Z entirely and jumps from Y to AA=2010).
+ * 2009 instruments carry the 1YYXXXX standard-collection format instead.
  */
 export const HERITAGE_SINGLE_LETTER_BASE: Record<string, number> = (() => {
   const map: Record<string, number> = {};
-  for (let c = 'B'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++) {
+  for (let c = 'B'.charCodeAt(0); c <= 'Y'.charCodeAt(0); c++) {
     map[String.fromCharCode(c)] = 1985 + (c - 'B'.charCodeAt(0));
   }
   return map;

@@ -656,7 +656,7 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         gotchas: [
           'PRS SE launched publicly in 2001; the letter A=2000 is documented in community charts and likely reflects a late-2000 pre-production run.',
           'Acoustic A-prefix format (A + YY + sequential) is checked first and wins when YY is in 09–29; otherwise A-letter falls through to SE Korea 2000.',
-          'Letters X, Y, Z (2023+) are not yet confirmed publicly and are not accepted.',
+          'Letters X, Y, Z (2023+) are not part of the documented SE Korea chart and fall through — serials starting with those letters are rejected rather than extrapolated.',
         ],
       },
       {
@@ -721,7 +721,7 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         rule: 'A followed by a second letter A–P and 5 digits. Second letter increments from A (2010) through the alphabet: AA = 2010, AB = 2011, …, AP = 2025.',
         gotchas: [
           'Earlier decoders assumed a "double-the-letter" scheme (AA/BB/CC/...) which is wrong — the sequence is A-followed-by-any-letter.',
-          'Capped at AP (2025) because that is the last letter in Heritage\'s official "Date Your Heritage" dropdown. AQ and later are not accepted until the manufacturer publishes confirmation.',
+          'Capped at AP (2025) per Heritage\'s official "Date Your Heritage" dropdown. AQ and later are not part of the published chart and are rejected rather than extrapolated.',
         ],
       },
       {
@@ -898,6 +898,17 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         example: 'W02Y12345',
         rule: 'W + YY + M + RRRR (up to 8 digits after W). YY is the 2-digit year, M is the month (1-9 = Jan-Sep, X = Oct, Y = Nov, Z = Dec). Example W02Y12345 = November 2002.',
       },
+      {
+        id: 'ibanez_indonesia_samick',
+        name: 'SI-prefix Indonesia (Samick)',
+        yearRange: 'Varies',
+        example: 'SI4110076',
+        rule: "SI + 7 digits = Y + MM + PPPP (single-digit-year 2000s convention, e.g. SI4110076 = November 2004). SI + 9 digits = YY + MM + PPPPP (2-digit year, same layout as the Cor-Tek I-prefix). Samick's Indonesian plant reused the YMMPPPP and YYMMPPPPP conventions from its Korean operation.",
+        gotchas: [
+          'Month must be 01-12 for year decoding; otherwise falls back to year-unknown.',
+          'Single-digit year form (7 digits after SI) maps 0-9 to 2000-2009 — Samick Indonesia production began in the 2000s, so there is no pre-2000 ambiguity.',
+        ],
+      },
     ],
     findSerial: {
       intro:
@@ -1030,6 +1041,38 @@ BRAND_GUIDES.rickenbacker = {
     },
   ],
   formats: [
+    {
+      id: 'rickenbacker_pre1961',
+      name: 'Pre-1961 model-coded (1954–1959)',
+      yearRange: '1954–1959',
+      example: 'B4123',
+      rule: 'First letter encodes the instrument type (B = bass, C = combo (Rickenbacker guitar style), M = mandolin, G = guitar). Second digit encodes the year within the 1950s (4 = 1954, 5 = 1955, …, 9 = 1959 through September). Remaining 2-5 digits are a production number.',
+      gotchas: [
+        'Only the four documented model letters (B/C/M/G) are accepted — other letters are too rare or undocumented to decode safely.',
+        'Format ended in September 1959 when Rickenbacker moved to the permanent year-letter + month-letter system; October 1959 onward uses the 1961–1986 convention even though the letter run started mid-1959.',
+      ],
+    },
+    {
+      id: 'rickenbacker_1960_jk_jl',
+      name: 'JK / JL transition (Nov–Dec 1960)',
+      yearRange: '1960',
+      example: 'JK123',
+      rule: 'JK = November 1960, JL = December 1960. These two prefixes preview the permanent two-letter system (J = 1960 year letter, K = November, L = December) and are the only 1960 serials that use it.',
+      gotchas: [
+        'Earlier 1960 instruments carried over the pre-1961 model-coded format before Rickenbacker transitioned in November.',
+      ],
+    },
+    {
+      id: 'rickenbacker_1961_1986',
+      name: '1961–1986 (year letter + month letter)',
+      yearRange: '1961–1986',
+      example: 'AB1234',
+      rule: 'First letter = year (A = 1961, B = 1962, …, Z = 1986). Second letter = month (A = January, B = February, …, L = December). Remaining 3-5 digits are a production rank. Example AB1234 = February 1961.',
+      gotchas: [
+        'Distinct from the 1987–1996 format because the second character is a letter (A–L) rather than a digit.',
+        'Matched before the 1987–1996 rule so the two-letter form wins over a letter+digit form when the second character could be either.',
+      ],
+    },
     {
       id: 'rickenbacker_1987_1996',
       name: '1987–1996 (month letter + year digit)',
@@ -1322,6 +1365,34 @@ BRAND_GUIDES.squier = {
       rule: 'IC + 2-digit year + 4-6 digit sequence (older Squier Indonesia).',
     },
     {
+      id: 'squier_si',
+      name: 'SI — Indonesia Samick',
+      yearRange: 'Varies',
+      example: 'SI04123456',
+      rule: "SI + 2-digit year + 4-6 digit sequence. Samick's Indonesian plant; same year-prefix layout as the ICS/ISS Indonesian codes.",
+    },
+    {
+      id: 'squier_kc',
+      name: 'KC — Korea Cor-Tek',
+      yearRange: 'Varies',
+      example: 'KC15123456',
+      rule: 'KC + 2-digit year + 4-6 digit sequence. Korean Cor-Tek (Cort) production.',
+    },
+    {
+      id: 'squier_kv',
+      name: 'KV — Korea Saehan/Sunghan',
+      yearRange: 'Varies',
+      example: 'KV99123456',
+      rule: 'KV + 2-digit year + 4-6 digit sequence. Korean Saehan/Sunghan factory.',
+    },
+    {
+      id: 'squier_vn',
+      name: 'VN — Vietnam',
+      yearRange: 'Varies',
+      example: 'VN05123456',
+      rule: 'VN + 2-digit year + 4-6 digit sequence. Vietnamese production.',
+    },
+    {
       id: 'squier_mn',
       name: 'MN — Mexico (1990s, single-digit year)',
       yearRange: '1990s',
@@ -1599,6 +1670,17 @@ BRAND_GUIDES.esp = {
       yearRange: 'Varies',
       example: 'W12345678',
       rule: 'W + 8 digits. World Musical Instrument Co., Incheon, Korea — a major ESP/LTD contract factory.',
+    },
+    {
+      id: 'esp_pre2000_japan',
+      name: 'Pre-2000 Japan date-coded (DDMMYNNN)',
+      yearRange: '1975–1999',
+      example: '25055012',
+      rule: '8-digit numeric: DD + MM + Y + NNN. DD = day of month (01-31), MM = month (01-12), Y = last digit of year, NNN = daily production rank. Example 25055012 = May 25th, year ending in 5, build #12.',
+      gotchas: [
+        'The single-digit year is ambiguous without additional context. The decoder snaps to the closest plausible decade in 1975-1999 using the listing year; without a listing year it leaves year null.',
+        'ESP Japan lost many pre-2000 production records in a late-1990s factory fire — physical inspection (pickups, hardware, logo style) is often required to confirm decade.',
+      ],
     },
   ],
   findSerial: {

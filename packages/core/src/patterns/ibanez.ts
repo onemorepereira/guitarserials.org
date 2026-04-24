@@ -113,13 +113,67 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
     }
   }
 
-  // Korea C + 6-8 digits (Cort Korea). Year encoding varies by length and
-  // era; without a fully-documented authoritative chart we match the format
-  // but leave decoded_year=null.
+  // Cort Korea C + 8 digits: YY + MM + 4-digit seq (per ibanezrules.com —
+  // "8th digit format allows for YY, C03 is now 2003").
   {
-    const m = text.match(/^C\d{6,8}$/);
+    const m = text.match(/^C(\d{2})(\d{2})(\d{4})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+        return singleCandidateMatch(m[0], decoded, 'ibanez_korea', listingYear);
+      }
+    }
+  }
+
+  // Cort Korea C + 7 digits: Y + MM + PPPP (1990s single-digit-year format).
+  // Per ibanezrules.com, 7-digit Cort follows the Samick YMMPPPP convention.
+  {
+    const m = text.match(/^C(\d)(\d{2})(\d{4})$/);
+    if (m) {
+      const yearDigit = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        // Year digit maps to 1990-1999 (Cort's 7-digit era was the 1990s).
+        return singleCandidateMatch(m[0], 1990 + yearDigit, 'ibanez_korea', listingYear);
+      }
+    }
+  }
+
+  // Cort Korea C + 6 digits: fall-back for older/shorter variants. Year
+  // encoding not reliable at this length.
+  {
+    const m = text.match(/^C\d{6}$/);
     if (m) {
       return singleCandidateMatch(m[0], null, 'ibanez_korea', listingYear);
+    }
+  }
+
+  // Samick Indonesia SI + 7 digits: Y + MM + PPPP (Samick's Indonesian
+  // plant used the same YMMPPPP convention as its Korean operation).
+  {
+    const m = text.match(/^SI(\d)(\d{2})(\d{4})$/);
+    if (m) {
+      const yearDigit = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        // Samick Indonesia 2000s+ single-digit year maps 0-9 to 2000-2009.
+        return singleCandidateMatch(m[0], 2000 + yearDigit, 'ibanez_indonesia_samick', listingYear);
+      }
+    }
+  }
+
+  // Samick Indonesia SI + 9 digits: YY + MM + PPPPP.
+  {
+    const m = text.match(/^SI(\d{2})(\d{2})(\d{5})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_samick', listingYear);
+      }
     }
   }
 

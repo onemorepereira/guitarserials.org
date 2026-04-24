@@ -69,6 +69,34 @@ describe('Gibson Custom Shop serials', () => {
     expect(r!.brandFormat).toBe('gibson_cs_historic');
   });
 
+  it('historic R9 reissue 991234 = 1959 reissue built in 1999', () => {
+    const r = matchSerial('991234', 'Gibson Custom Shop', { listingYear: 1999 });
+    expect(r!.brandFormat).toBe('gibson_cs_historic');
+    expect(r!.decodedYear).toBe(1999);
+  });
+
+  it('historic R8 reissue 881234 = 1958 reissue built in 2008 (listing year context)', () => {
+    const r = matchSerial('881234', 'Gibson Custom Shop', { listingYear: 2008 });
+    expect(r!.decodedYear).toBe(2008);
+  });
+
+  it('historic R4 reissue 441234 = 1954 reissue built in 2004', () => {
+    const r = matchSerial('441234', 'Gibson Custom Shop', { listingYear: 2004 });
+    expect(r!.decodedYear).toBe(2004);
+  });
+
+  it('historic R0 reissue 001234 = 1960 reissue built in 2010', () => {
+    const r = matchSerial('001234', 'Gibson Custom Shop', { listingYear: 2010 });
+    expect(r!.decodedYear).toBe(2010);
+  });
+
+  it('non-R-series 5-digit historic leaves year null', () => {
+    // First digit 1 is not a valid R-series model digit.
+    const r = matchSerial('12345', 'Gibson Custom Shop', { listingYear: 2020 });
+    expect(r!.brandFormat).toBe('gibson_cs_historic');
+    expect(r!.decodedYear).toBeNull();
+  });
+
   it('historic reissue skipped without year', () => {
     expect(matchSerial('12345', 'Gibson Custom Shop')).toBeNull();
   });

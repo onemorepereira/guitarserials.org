@@ -51,7 +51,43 @@ const MONTH_1996_PLUS: Record<string, number> = {
   Y: 12,
 };
 
+/**
+ * Rickenbacker pre-1961 model-code mapping.
+ * First letter indicates instrument type.
+ */
+const PRE1961_MODEL_LETTER: Record<string, string> = {
+  B: 'Bass',
+  C: 'Combo (a Rickenbacker guitar style)',
+  M: 'Mandolin',
+  G: 'Guitar',
+};
+
 export function matchRickenbacker(text: string, listingYear: number | null): SerialMatch | null {
+  // JK / JL: November / December 1960 specifically (the two months that
+  // previewed the permanent two-letter year+month system). J = year letter
+  // for 1960, K = November, L = December.
+  {
+    const m = text.match(/^(JK|JL)(\d{3,5})$/);
+    if (m) {
+      return singleCandidateMatch(m[0], 1960, 'rickenbacker_1960_jk_jl', listingYear, 'high');
+    }
+  }
+
+  // Pre-1961 model-coded: model letter (B/C/M/G) + year digit 4-9 + production number.
+  // Year digit: 4=1954, 5=1955, 6=1956, 7=1957, 8=1958, 9=1959 (through Sept 1959).
+  // Gated on the model letter being one of the documented instrument types.
+  {
+    const m = text.match(/^([BCMG])([4-9])(\d{2,5})$/);
+    if (m) {
+      const letter = m[1] as string;
+      if (PRE1961_MODEL_LETTER[letter] !== undefined) {
+        const yearDigit = parseInt(m[2] as string, 10);
+        const decoded = 1950 + yearDigit;
+        return singleCandidateMatch(m[0], decoded, 'rickenbacker_pre1961', listingYear, 'high');
+      }
+    }
+  }
+
   // 1961–1986: two letters + 3-5 digit production number.
   // First letter = year (A=1961, B=1962, …, Z=1986). Second letter = month
   // (A=Jan, B=Feb, …, L=Dec). Distinct from the 1987-1996 format (which has

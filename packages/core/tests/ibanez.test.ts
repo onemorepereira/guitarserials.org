@@ -80,10 +80,31 @@ describe('Ibanez serials', () => {
     expect(r!.decodedYear).toBeNull();
   });
 
-  it('Korea C prefix', () => {
-    const r = matchSerial('C1234567', 'Ibanez');
+  it('Korea C prefix 7-digit YMMPPPP decodes single-Y year', () => {
+    // C5081234 = Y=5 (1995), MM=08 (August), PPPP=1234
+    const r = matchSerial('C5081234', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea');
+    expect(r!.decodedYear).toBe(1995);
+  });
+
+  it('Korea C prefix 8-digit YYMMPPPP decodes 2-digit year', () => {
+    // C03081234 = 2003, August, #1234
+    const r = matchSerial('C03081234', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea');
+    expect(r!.decodedYear).toBe(2003);
+  });
+
+  it('Korea C prefix 6-digit fallback leaves year null', () => {
+    const r = matchSerial('C123456', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_korea');
     expect(r!.decodedYear).toBeNull();
+  });
+
+  it('Korea C prefix 7-digit with invalid month falls through to null year', () => {
+    // C1234567: Y=1, MM=23 (invalid), rejected by 7-digit rule.
+    // Also doesn't match 8-digit (needs 8 digits). Also doesn't match 6-digit
+    // (has 7 digits). Returns null entirely.
+    expect(matchSerial('C1234567', 'Ibanez')).toBeNull();
   });
 
   it('Korea S-prefix (Samick) decodes year 1990s', () => {
@@ -123,5 +144,19 @@ describe('Ibanez serials', () => {
     const r = matchSerial('K169900221', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_indonesia_kwo_hsiao');
     expect(r!.decodedYear).toBeNull();
+  });
+
+  it('Samick Indonesia SI + 7-digit YMMPPPP decodes single-Y year', () => {
+    // SI5081234 = Y=5 (2005), MM=08, PPPP=1234
+    const r = matchSerial('SI5081234', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_samick');
+    expect(r!.decodedYear).toBe(2005);
+  });
+
+  it('Samick Indonesia SI + 9-digit YYMMPPPPP decodes 2-digit year', () => {
+    // SI160600221 = 2016 June #221
+    const r = matchSerial('SI160600221', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_samick');
+    expect(r!.decodedYear).toBe(2016);
   });
 });

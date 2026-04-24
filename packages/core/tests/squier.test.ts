@@ -37,4 +37,28 @@ describe('Squier', () => {
     expect(r!.decodedYear).toBe(2005);
     expect(r!.brandFormat).toBe('squier_mz');
   });
+
+  it('SI04123456 = Samick Indonesia 2004', () => {
+    const r = matchSerial('SI04123456', 'Squier');
+    expect(r!.decodedYear).toBe(2004);
+    expect(r!.brandFormat).toBe('squier_si');
+  });
+
+  it('KC15123456 = Korea Cor-Tek 2015', () => {
+    const r = matchSerial('KC15123456', 'Squier');
+    expect(r!.decodedYear).toBe(2015);
+    expect(r!.brandFormat).toBe('squier_kc');
+  });
+
+  it('KV99123456 = Korea Saehan 1999', () => {
+    const r = matchSerial('KV99123456', 'Squier');
+    expect(r!.decodedYear).toBe(1999);
+    expect(r!.brandFormat).toBe('squier_kv');
+  });
+
+  it('VN05123456 = Vietnam 2005', () => {
+    const r = matchSerial('VN05123456', 'Squier');
+    expect(r!.decodedYear).toBe(2005);
+    expect(r!.brandFormat).toBe('squier_vn');
+  });
 });

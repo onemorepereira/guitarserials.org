@@ -72,5 +72,33 @@ export function matchEsp(text: string, listingYear: number | null): SerialMatch 
     }
   }
 
+  // Pre-2000 Japan 8-digit DDMMYNNN: day + month + year-digit + 3-digit rank.
+  // Example: 25055012 = 25 May 1995, #12. Year digit alone is ambiguous
+  // across decades (5 → 1985 or 1995); we snap via listingYear when
+  // provided. ESP pre-2000 production was Japan-only, so candidates are
+  // 1975-1999.
+  {
+    const m = text.match(/^(\d{2})(\d{2})(\d)(\d{3})$/);
+    if (m) {
+      const day = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      const yearDigit = parseInt(m[3] as string, 10);
+      if (day >= 1 && day <= 31 && month >= 1 && month <= 12) {
+        let decodedYear: number | null = null;
+        if (listingYear !== null) {
+          const options = [1970 + yearDigit, 1980 + yearDigit, 1990 + yearDigit].filter(
+            (y) => y >= 1975 && y <= 1999,
+          );
+          if (options.length > 0) {
+            decodedYear = options.reduce((acc, y) =>
+              Math.abs(y - listingYear) < Math.abs(acc - listingYear) ? y : acc,
+            );
+          }
+        }
+        return singleCandidateMatch(m[0], decodedYear, 'esp_pre2000_japan', listingYear);
+      }
+    }
+  }
+
   return null;
 }
