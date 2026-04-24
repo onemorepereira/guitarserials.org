@@ -54,13 +54,12 @@ export function matchGibson(
     }
   }
 
-  // 1994 Centennial.
-  {
-    const m = text.match(/^94(\d{6})$/);
-    if (m && listingYear !== null && listingYear >= 1993 && listingYear <= 1995) {
-      return singleCandidateMatch(m[0], 1994, 'gibson_1994_centennial', listingYear);
-    }
-  }
+  // Removed: the 1994 Centennial "94 + 6 digits" rule previously lived here.
+  // Per guitarhq.com, the real Centennial was a ~14-unit run using a distinct
+  // YYYY-MM serial format (e.g. 1994-01), which this pattern did not match
+  // anyway. Matching every 8-digit number starting with 94 risked false
+  // positives on 1994-era Gibson stock-photo contamination. See
+  // doc/audits/2026-04-23-source-audit.md §2.
 
   // 8-9 digit numeric paths.
   const digitMatch = text.match(/^\d{8,9}$/);

@@ -145,17 +145,6 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         ],
       },
       {
-        id: 'gibson_1994_centennial',
-        name: '1994 Centennial',
-        yearRange: '1994',
-        example: '94006542',
-        exampleYear: 1994,
-        rule: 'Serials begin with 94 followed by a 6-digit sequential rank, used only for the 1994 centennial production year.',
-        gotchas: [
-          'Gated on a 1993–1995 listing year to avoid colliding with arbitrary YDDDYRRR serials that happen to start with 94.',
-        ],
-      },
-      {
         id: 'gibson_lp_classic_1989_1999',
         name: 'Les Paul Classic ink-stamped (1989–1999)',
         yearRange: '1989–1999',
@@ -613,21 +602,22 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       },
       {
         id: 'heritage_double',
-        name: 'Double-letter (AA+)',
-        yearRange: '2010+',
+        name: 'Double-letter (AA–AP)',
+        yearRange: '2010–2025',
         example: 'AA12345',
-        rule: 'A followed by a second letter A–Z and 5 digits. Second letter increments from A (2010) through the alphabet: AA = 2010, AB = 2011, …, AP = 2025.',
+        rule: 'A followed by a second letter A–P and 5 digits. Second letter increments from A (2010) through the alphabet: AA = 2010, AB = 2011, …, AP = 2025.',
         gotchas: [
-          'Earlier decoders assumed a "double-the-letter" scheme (AA/BB/CC/...) which is wrong — the sequence is A-followed-by-any-letter. Per the official Heritage "Date Your Heritage" dropdown, AP = 2025.',
+          'Earlier decoders assumed a "double-the-letter" scheme (AA/BB/CC/...) which is wrong — the sequence is A-followed-by-any-letter.',
+          'Capped at AP (2025) because that is the last letter in Heritage\'s official "Date Your Heritage" dropdown. AQ and later are not accepted until the manufacturer publishes confirmation.',
         ],
       },
       {
         id: 'heritage_cs',
-        name: 'HC-prefix Custom Shop',
+        name: 'HC-prefix Custom Shop (HC1YYXXXX)',
         yearRange: '2020+',
         example: 'HC1201234',
         exampleYear: 2020,
-        rule: 'HC + 1 + YY + 4-digit rank. After the HC prefix the leading 1 mirrors the standard-format identifier; the next two digits are the 2-digit year (2020+).',
+        rule: "HC + 1 + YY + 4-digit rank. After the HC prefix the leading 1 mirrors the standard-format identifier; the next two digits are the 2-digit year (2020+). Heritage's official decoder documents only this 8-character layout; a bare HC + 4–7 digit form previously matched here has been removed for lack of sourcing.",
       },
       {
         id: 'heritage_standard',
@@ -743,9 +733,10 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         name: 'Fujigen F-prefix (Japan)',
         yearRange: '1987+',
         example: 'F9825445',
-        rule: 'Length distinguishes the era. 6 digits (1987–1996): the single digit after F is the year (7=1987, 8=1988, 9=1989, 0=1990, 1=1991, …, 6=1996). 7–8 digits (1997+): the first two digits after F are the 2-digit year.',
+        rule: 'Length distinguishes the era. 6 digits (1987–1996): the single digit after F is the year (7=1987, 8=1988, 9=1989, 0=1990, 1=1991, …, 6=1996). 7 digits (1997+): the first two digits after F are the 2-digit year.',
         gotchas: [
           'Earlier decoders assumed a 2-digit year in all F-prefix cases, producing nonsense decodes like F320327 → 2032 for a 1993 instrument. The length-branch fix is authoritative per Fujigen production records.',
+          'F + 8 digits is not a documented Fujigen format; previously accepted here, now rejected. If you have a confirmed 8-digit F-prefix Ibanez, please open an issue with the instrument details.',
         ],
       },
       {

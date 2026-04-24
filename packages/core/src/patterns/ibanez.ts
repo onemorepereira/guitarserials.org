@@ -16,9 +16,12 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
   }
 
   // Japan F prefix (Fujigen).
-  // F + 7-8 digits: YY + seq (1997+).
+  // F + 7 digits: YY + 5-digit seq (1997+). Tightened from F + 7-8 digits
+  // to 7 only, per ibanezrules.com which documents Fujigen's switch to an
+  // 8-character (F + 7 digits) format in 1997. No source supports F + 8.
+  // See doc/audits/2026-04-23-source-audit.md §9.
   {
-    const m = text.match(/^F(\d{7,8})$/);
+    const m = text.match(/^F(\d{7})$/);
     if (m) {
       const digits = m[1] as string;
       const year2 = parseInt(digits.slice(0, 2), 10);

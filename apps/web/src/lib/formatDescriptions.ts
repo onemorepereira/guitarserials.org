@@ -14,8 +14,6 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   gibson_pre1977: 'Pre-1977 sequential Gibson serial — no year encoded in the number itself.',
   gibson_1975_1977:
     '1975-1977 Gibson USA 8-digit decal where the first two digits encode the year (99=1975, 00=1976, 06=1977).',
-  gibson_1994_centennial:
-    '1994 Centennial run — serials start with 94 and are sequential for that year only.',
   gibson_lp_classic_1989_1999:
     'Les Paul Classic 1989-1999 ink-stamped short-numeric serial. Year inferred from listing.',
   gibson_lp_classic_2000_2014:
@@ -41,7 +39,7 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_n_prefix: 'Fender USA 1990s — N + year-digit + sequence.',
   fender_z_prefix: 'Fender USA 2000s — Z + year-digit + sequence.',
   fender_avri_v_prefix:
-    'Fender American Vintage Reissue (AVRI) — V-prefix. Year not encoded in the serial.',
+    'Fender American Vintage Reissue (AVRI) — V-prefix. Pre-2012 serials have no year encoded; from mid-2012 onward (AVRI II), the first two digits after V are the 2-digit year.',
   fender_cs: 'Fender Custom Shop — CS-prefix. Year not encoded in the serial.',
   fender_cs_masterbuilt: 'Fender Custom Shop Masterbuilt (HR builder initials + sequence).',
   fender_cs_time_machine: 'Fender Custom Shop Time Machine R-prefix. Year not encoded.',

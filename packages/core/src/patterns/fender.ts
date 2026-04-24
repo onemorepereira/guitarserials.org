@@ -71,8 +71,27 @@ export function matchFender(
     }
   }
 
-  // V prefix: AVRI, definitive — no year encoded.
+  // V prefix: American Vintage Reissue.
+  // Pre-2012: sequential number, no year encoded.
+  // Mid-2012+ (AVRI II era): V + 7 digits where the first two are the
+  // 2-digit year. Per Fender dealer/customer documentation and independent
+  // community confirmations, V-prefix with leading digits in 12-29 decodes
+  // to 2012-2029. Lengths other than 7 (older stock), or 7 digits whose
+  // leading pair isn't a plausible year, fall back to no-year.
   {
+    const m7 = text.match(/^V(\d{7})$/);
+    if (m7) {
+      const year2 = parseInt((m7[1] as string).slice(0, 2), 10);
+      if (year2 >= 12 && year2 <= 29) {
+        return singleCandidateMatch(
+          m7[0],
+          2000 + year2,
+          'fender_avri_v_prefix',
+          listingYear,
+          'high',
+        );
+      }
+    }
     const m = text.match(/^V(\d{4,7})$/);
     if (m) {
       return singleCandidateMatch(m[0], null, 'fender_avri_v_prefix', listingYear, 'high');

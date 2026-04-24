@@ -67,6 +67,13 @@ describe('Heritage serials', () => {
     expect(r!.decodedYear).toBe(2025);
   });
 
+  it('double letter AQ is not accepted (capped at AP per official dropdown)', () => {
+    // Heritage's official "Date Your Heritage" dropdown only enumerates
+    // letters through AP. AQ and beyond are not accepted until confirmed.
+    // See doc/audits/2026-04-23-source-audit.md §5.
+    expect(matchSerial('AQ12345', 'Heritage')).toBeNull();
+  });
+
   it('MM not valid', () => {
     const r = matchSerial('MM12345', 'Heritage');
     if (r !== null) {

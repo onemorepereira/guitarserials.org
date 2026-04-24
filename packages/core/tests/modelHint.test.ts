@@ -21,11 +21,14 @@ describe('Model hint', () => {
     expect(m!.decodedYear).toBe(2005);
   });
 
-  it('Centennial without model hint still matches', () => {
+  it('1994 Centennial "94" + 6-digit pattern is intentionally not claimed', () => {
+    // The removed gibson_1994_centennial rule was overly loose. The real
+    // Centennial was a ~14-unit run using a distinct YYYY-MM serial format.
+    // See doc/audits/2026-04-23-source-audit.md §2.
     const m = matchSerial('94006542', 'Gibson', { listingYear: 1994 });
-    expect(m).not.toBeNull();
-    expect(m!.brandFormat).toBe('gibson_1994_centennial');
-    expect(m!.decodedYear).toBe(1994);
+    if (m !== null) {
+      expect(m.brandFormat).not.toBe('gibson_1994_centennial');
+    }
   });
 
   it('LP Classic without model hint falls through', () => {

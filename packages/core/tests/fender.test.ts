@@ -84,8 +84,23 @@ describe('Fender serials', () => {
     expect(r!.brandFormat).toBe('fender_e_prefix');
   });
 
-  it('V prefix no year', () => {
+  it('V prefix no year (pre-2012 sequential)', () => {
     const r = matchSerial('V12345', 'Fender');
+    expect(r!.decodedYear).toBeNull();
+    expect(r!.brandFormat).toBe('fender_avri_v_prefix');
+  });
+
+  it('V prefix + 7 digits decodes year for AVRI II (2012+)', () => {
+    // Post-mid-2012 AVRI II: V + YY + 5 digits. V1512345 → 2015.
+    const r = matchSerial('V1512345', 'Fender');
+    expect(r!.decodedYear).toBe(2015);
+    expect(r!.brandFormat).toBe('fender_avri_v_prefix');
+    expect(r!.confidenceTier).toBe('high');
+  });
+
+  it('V prefix + 7 digits with implausible YY falls back to no-year', () => {
+    // V + 99 + 5 digits — 99 is not a plausible AVRI II year; keep null year.
+    const r = matchSerial('V9912345', 'Fender');
     expect(r!.decodedYear).toBeNull();
     expect(r!.brandFormat).toBe('fender_avri_v_prefix');
   });

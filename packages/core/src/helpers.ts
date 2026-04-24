@@ -10,12 +10,17 @@ export const HERITAGE_SINGLE_LETTER_BASE: Record<string, number> = (() => {
 })();
 
 /**
- * Heritage double-letter year mapping: AA=2010, AB=2011, ..., AZ=2035.
- * Second letter increments; no letters skipped.
+ * Heritage double-letter year mapping: AA=2010, AB=2011, ..., AP=2025.
+ *
+ * Capped at AP per Heritage Guitars' official "Date Your Heritage" dropdown
+ * (https://heritageguitars.com/pages/date-your-heritage), which enumerates
+ * letters only through AP. Values beyond AP are deliberately unmapped until
+ * Heritage publishes confirmation of AQ/AR/etc. See
+ * doc/audits/2026-04-23-source-audit.md §5.
  */
 export const HERITAGE_DOUBLE_LETTER_BASE: Record<string, number> = (() => {
   const map: Record<string, number> = {};
-  for (let c = 'A'.charCodeAt(0); c <= 'Z'.charCodeAt(0); c++) {
+  for (let c = 'A'.charCodeAt(0); c <= 'P'.charCodeAt(0); c++) {
     map[`A${String.fromCharCode(c)}`] = 2010 + (c - 'A'.charCodeAt(0));
   }
   return map;
