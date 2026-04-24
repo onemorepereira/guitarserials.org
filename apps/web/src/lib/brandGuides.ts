@@ -607,7 +607,7 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         label: 'PRS — Year Identification (official)',
         url: 'https://support.prsguitars.com/hc/en-us/articles/4408314427547-Year-Identification',
         kind: 'manufacturer',
-        note: "The authoritative source. PRS publishes per-year sequential ranges for every model line — set-neck Core (1985–2024), S2 (2013–2024), CE (1988–2008), EG (1990–1995), Swamp Ash Special (1997–2009), and all three bass variants. The decoder ships every row verbatim.",
+        note: 'The authoritative source. PRS publishes per-year sequential ranges for every model line — set-neck Core (1985–2024), S2 (2013–2024), CE (1988–2008), EG (1990–1995), Swamp Ash Special (1997–2009), and all three bass variants. The decoder ships every row verbatim.',
       },
       {
         label: 'Hendrix Guitars — PRS Set-Neck Sequential Serial Numbers',
