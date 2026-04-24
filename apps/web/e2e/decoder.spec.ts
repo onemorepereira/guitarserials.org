@@ -43,6 +43,26 @@ test.describe('Home page decoder', () => {
     await expect(page.getByTestId('result-multi')).toContainText('Sire');
   });
 
+  test('CS-prefix in "Unsure" mode does not dupe Gibson + Gibson Custom Shop', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await waitForHydration(page);
+    // CS61117 is a Gibson Custom Shop serial. Our Gibson matcher also claims
+    // it (sellers often list CS guitars as just "Gibson"), but in "Unsure"
+    // mode the result should be deduped in favor of Gibson Custom Shop.
+    await page.getByTestId('serial-input').fill('CS61117');
+    await page.getByTestId('brand-select').selectOption('');
+    await page.getByTestId('decode-submit').click();
+
+    const multi = page.getByTestId('result-multi');
+    await expect(multi).toBeVisible();
+    await expect(multi).toContainText('Gibson Custom Shop');
+    // Plain "Gibson" (without Custom Shop suffix) should be suppressed.
+    const gibsonOnly = multi.locator('text=/^Gibson$/');
+    await expect(gibsonOnly).toHaveCount(0);
+  });
+
   test('shows no-match panel for unsupported serial', async ({ page }) => {
     await page.goto('/');
     await waitForHydration(page);

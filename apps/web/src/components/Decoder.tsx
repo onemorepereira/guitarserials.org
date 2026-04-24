@@ -59,16 +59,33 @@ function compute(form: FormState): DecodeResult {
 
   if (form.brand === '') {
     // "Unsure" — try all brands and show every valid match.
-    const matches: Array<{ brandLabel: string; match: SerialMatch }> = [];
+    const matches: Array<{ brandLabel: string; brandId: string; match: SerialMatch }> = [];
     for (const b of BRANDS) {
       const r = matchSerial(form.serial, b.id, opts);
-      if (r) matches.push({ brandLabel: b.label, match: r });
+      if (r) matches.push({ brandLabel: b.label, brandId: b.id, match: r });
     }
-    if (matches.length === 0) return { kind: 'none', brandLabel: 'any brand' };
-    if (matches.length === 1 && matches[0]) {
-      return { kind: 'match', brandLabel: matches[0].brandLabel, match: matches[0].match };
+    // Dedup: when the same (brandFormat, serial, decodedYear) is produced
+    // under multiple brands where one brand id is a strict prefix of another
+    // (e.g. "gibson" is a prefix of "gibson custom shop"), keep only the
+    // more specific brand. The Gibson matcher delegates to the Custom Shop
+    // matcher because sellers often list CS guitars as just "Gibson" — that's
+    // useful when Gibson is explicitly selected but produces a redundant
+    // entry in "Unsure" mode.
+    const deduped = matches.filter((m) => {
+      for (const other of matches) {
+        if (other === m) continue;
+        if (other.match.brandFormat !== m.match.brandFormat) continue;
+        if (other.match.decodedYear !== m.match.decodedYear) continue;
+        if (other.match.serial !== m.match.serial) continue;
+        if (other.brandId.startsWith(`${m.brandId} `)) return false;
+      }
+      return true;
+    });
+    if (deduped.length === 0) return { kind: 'none', brandLabel: 'any brand' };
+    if (deduped.length === 1 && deduped[0]) {
+      return { kind: 'match', brandLabel: deduped[0].brandLabel, match: deduped[0].match };
     }
-    return { kind: 'multi', matches };
+    return { kind: 'multi', matches: deduped };
   }
 
   const result = matchSerial(form.serial, form.brand, opts);
