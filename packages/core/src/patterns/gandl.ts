@@ -28,7 +28,9 @@ export function matchGAndL(text: string, listingYear: number | null): SerialMatc
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'gandl_clf_dated', listingYear, 'high');
+        return singleCandidateMatch(m[0], decoded, 'gandl_clf_dated', listingYear, 'high', {
+          month,
+        });
       }
     }
   }
@@ -90,7 +92,9 @@ export function matchGAndL(text: string, listingYear: number | null): SerialMatc
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'gandl_tribute_china', listingYear);
+        return singleCandidateMatch(m[0], decoded, 'gandl_tribute_china', listingYear, null, {
+          month,
+        });
       }
     }
   }
@@ -104,7 +108,14 @@ export function matchGAndL(text: string, listingYear: number | null): SerialMatc
       // Tribute Series ran from the early 2000s; gate to YY 03-29 as a
       // plausibility check.
       if (year2 >= 3 && year2 <= 29 && month >= 1 && month <= 12) {
-        return singleCandidateMatch(m[0], 2000 + year2, 'gandl_tribute_indonesia', listingYear);
+        return singleCandidateMatch(
+          m[0],
+          2000 + year2,
+          'gandl_tribute_indonesia',
+          listingYear,
+          null,
+          { month },
+        );
       }
     }
   }
@@ -116,7 +127,9 @@ export function matchGAndL(text: string, listingYear: number | null): SerialMatc
       const year2 = parseInt(m[1] as string, 10);
       const month = parseInt(m[2] as string, 10);
       if (year2 >= 3 && year2 <= 29 && month >= 1 && month <= 12) {
-        return singleCandidateMatch(m[0], 2000 + year2, 'gandl_tribute_korea', listingYear);
+        return singleCandidateMatch(m[0], 2000 + year2, 'gandl_tribute_korea', listingYear, null, {
+          month,
+        });
       }
     }
   }

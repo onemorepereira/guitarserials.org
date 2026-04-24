@@ -8,9 +8,18 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
   {
     const m = text.match(/^([A-L])(\d{2})(\d{4})$/);
     if (m) {
+      const monthLetter = m[1] as string;
+      const month = monthLetter.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
       const yy = parseInt(m[2] as string, 10);
       if (yy >= 75 && yy <= 88) {
-        return singleCandidateMatch(m[0], 1900 + yy, 'ibanez_japan_letter_month', listingYear);
+        return singleCandidateMatch(
+          m[0],
+          1900 + yy,
+          'ibanez_japan_letter_month',
+          listingYear,
+          null,
+          { month },
+        );
       }
     }
   }
@@ -49,7 +58,9 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia', listingYear);
+        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia', listingYear, null, {
+          month,
+        });
       }
     }
   }
@@ -74,7 +85,14 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_kwo_hsiao', listingYear);
+        return singleCandidateMatch(
+          m[0],
+          decoded,
+          'ibanez_indonesia_kwo_hsiao',
+          listingYear,
+          null,
+          { month },
+        );
       }
     }
   }
@@ -97,7 +115,14 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const yearDigit = parseInt(m[1] as string, 10);
       const month = parseInt(m[2] as string, 10);
       if (yearDigit <= 5 && month >= 1 && month <= 12) {
-        return singleCandidateMatch(m[0], 1990 + yearDigit, 'ibanez_korea_samick', listingYear);
+        return singleCandidateMatch(
+          m[0],
+          1990 + yearDigit,
+          'ibanez_korea_samick',
+          listingYear,
+          null,
+          { month },
+        );
       }
     }
   }
@@ -108,8 +133,19 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
     const m = text.match(/^W(\d{2})([1-9XYZ])(\d{4,5})$/);
     if (m) {
       const year2 = parseInt(m[1] as string, 10);
+      const monthChar = m[2] as string;
+      const month =
+        monthChar === 'X'
+          ? 10
+          : monthChar === 'Y'
+            ? 11
+            : monthChar === 'Z'
+              ? 12
+              : parseInt(monthChar, 10);
       const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-      return singleCandidateMatch(m[0], decoded, 'ibanez_korea_world', listingYear);
+      return singleCandidateMatch(m[0], decoded, 'ibanez_korea_world', listingYear, null, {
+        month,
+      });
     }
   }
 
@@ -122,7 +158,7 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'ibanez_korea', listingYear);
+        return singleCandidateMatch(m[0], decoded, 'ibanez_korea', listingYear, null, { month });
       }
     }
   }
@@ -136,7 +172,9 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         // Year digit maps to 1990-1999 (Cort's 7-digit era was the 1990s).
-        return singleCandidateMatch(m[0], 1990 + yearDigit, 'ibanez_korea', listingYear);
+        return singleCandidateMatch(m[0], 1990 + yearDigit, 'ibanez_korea', listingYear, null, {
+          month,
+        });
       }
     }
   }
@@ -159,7 +197,14 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         // Samick Indonesia 2000s+ single-digit year maps 0-9 to 2000-2009.
-        return singleCandidateMatch(m[0], 2000 + yearDigit, 'ibanez_indonesia_samick', listingYear);
+        return singleCandidateMatch(
+          m[0],
+          2000 + yearDigit,
+          'ibanez_indonesia_samick',
+          listingYear,
+          null,
+          { month },
+        );
       }
     }
   }
@@ -172,7 +217,9 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = parseInt(m[2] as string, 10);
       if (month >= 1 && month <= 12) {
         const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_samick', listingYear);
+        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_samick', listingYear, null, {
+          month,
+        });
       }
     }
   }

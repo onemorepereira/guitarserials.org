@@ -31,6 +31,33 @@ function brandLabelFor(brandId: string): string {
   return BRANDS.find((b) => b.id === brandId)?.label ?? brandId;
 }
 
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+/**
+ * Render the sub-year date precision a format encoded.
+ *   month + day → "March 21"
+ *   month only  → "March"
+ *   nothing     → ""  (caller should skip rendering)
+ */
+function formatDatePrecision(month: number, day: number | null): string {
+  const name = MONTH_NAMES[month - 1];
+  if (!name) return '';
+  return day != null ? `${name} ${day}` : name;
+}
+
 interface FormState {
   serial: string;
   brand: string;
@@ -399,6 +426,11 @@ function MatchCard({ brandLabel, match }: { brandLabel: string; match: SerialMat
               >
                 {match.decodedYear}
               </strong>
+              {match.decodedMonth != null && (
+                <span className="ml-2 text-ink-soft dark:text-cream-soft" data-testid="result-date">
+                  · {formatDatePrecision(match.decodedMonth, match.decodedDay ?? null)}
+                </span>
+              )}
             </>
           ) : (
             <span className="text-ink-soft dark:text-cream-soft">

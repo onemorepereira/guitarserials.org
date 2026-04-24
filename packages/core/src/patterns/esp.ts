@@ -95,7 +95,10 @@ export function matchEsp(text: string, listingYear: number | null): SerialMatch 
             );
           }
         }
-        return singleCandidateMatch(m[0], decodedYear, 'esp_pre2000_japan', listingYear);
+        return singleCandidateMatch(m[0], decodedYear, 'esp_pre2000_japan', listingYear, null, {
+          month,
+          day,
+        });
       }
     }
   }

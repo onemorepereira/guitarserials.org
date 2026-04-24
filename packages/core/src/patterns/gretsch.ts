@@ -35,7 +35,9 @@ export function matchGretsch(text: string, listingYear: number | null): SerialMa
         const month = parseInt(m[3] as string, 10);
         if (month >= 1 && month <= 12) {
           const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-          return singleCandidateMatch(m[0], decoded, 'gretsch_modern', listingYear, 'high');
+          return singleCandidateMatch(m[0], decoded, 'gretsch_modern', listingYear, 'high', {
+            month,
+          });
         }
       }
     }
@@ -71,6 +73,8 @@ export function matchGretsch(text: string, listingYear: number | null): SerialMa
                 decoded1,
                 'gretsch_date_coded_1966_1972',
                 listingYear,
+                null,
+                { month: month1 },
               );
             }
           }
@@ -96,6 +100,8 @@ export function matchGretsch(text: string, listingYear: number | null): SerialMa
               decoded2,
               'gretsch_date_coded_1966_1972',
               listingYear,
+              null,
+              { month: month2 },
             );
           }
         }

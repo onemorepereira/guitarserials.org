@@ -38,7 +38,9 @@ export function matchEpiphone(text: string, listingYear: number | null): SerialM
         const month = parseInt(m[3] as string, 10);
         if (month >= 1 && month <= 12) {
           const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-          return singleCandidateMatch(m[0], decoded, 'epiphone_factory', listingYear, 'high');
+          return singleCandidateMatch(m[0], decoded, 'epiphone_factory', listingYear, 'high', {
+            month,
+          });
         }
       }
     }
@@ -54,7 +56,9 @@ export function matchEpiphone(text: string, listingYear: number | null): SerialM
         const month = parseInt(m[3] as string, 10);
         if (month >= 1 && month <= 12) {
           const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
-          return singleCandidateMatch(m[0], decoded, 'epiphone_factory', listingYear, 'high');
+          return singleCandidateMatch(m[0], decoded, 'epiphone_factory', listingYear, 'high', {
+            month,
+          });
         }
       }
     }
@@ -68,7 +72,9 @@ export function matchEpiphone(text: string, listingYear: number | null): SerialM
       const month = parseInt(m[2] as string, 10);
       // Year plausibility: 08-29 (2008-2029) covers the numeric-era window.
       if (year2 >= 8 && year2 <= 29 && month >= 1 && month <= 12) {
-        return singleCandidateMatch(m[0], 2000 + year2, 'epiphone_numeric', listingYear, 'high');
+        return singleCandidateMatch(m[0], 2000 + year2, 'epiphone_numeric', listingYear, 'high', {
+          month,
+        });
       }
     }
   }
