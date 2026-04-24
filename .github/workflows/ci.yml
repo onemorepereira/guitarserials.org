@@ -26,10 +26,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      # Build @guitarserials/core first so the web app can resolve it during
+      # typecheck (astro check reads the package's exports) and during its
+      # own build. pnpm --filter A... (trailing dots) builds A and its
+      # workspace dependencies in topological order.
+      - run: pnpm --filter "@guitarserials/web..." build
+
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm --filter @guitarserials/core test
-      - run: pnpm --filter @guitarserials/web build
 
   e2e:
     runs-on: ubuntu-latest
@@ -46,5 +51,9 @@ jobs:
           cache: pnpm
 
       - run: pnpm install --frozen-lockfile
+      # Same rationale as the check job — playwright webServer spins up
+      # `astro dev` which needs @guitarserials/core already built so the
+      # import resolves.
+      - run: pnpm --filter @guitarserials/core build
       - run: pnpm --filter @guitarserials/web exec playwright install --with-deps chromium
       - run: pnpm --filter @guitarserials/web test:e2e

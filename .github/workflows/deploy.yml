@@ -36,8 +36,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Build web
-        run: pnpm --filter @guitarserials/web build
+      # Trailing `...` means "this package and its workspace dependencies",
+      # built in topological order. So @guitarserials/core's dist/ lands
+      # before astro resolves its imports.
+      - name: Build web (+ workspace deps)
+        run: pnpm --filter "@guitarserials/web..." build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
