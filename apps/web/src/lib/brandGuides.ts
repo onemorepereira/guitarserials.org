@@ -64,9 +64,9 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     id: 'gibson',
     slug: 'gibson',
     intro:
-      "Gibson's serial numbering has shifted several times since the 1950s, and the format alone doesn't always pin down a year — but for the 1977-onward eras the year is usually encoded directly in the digits. Earlier serials (pre-1977) are sequential with no year encoded, and the best way to date them is by comparing the serial to a factory-run reference.",
+      'Gibson has used at least a dozen distinct serialization schemes since 1902 — paper labels, interior-stamped factory order numbers with year letters, A-prefix hollowbody labels, 4-6 digit die-stamps, 8-digit YDDDYRRR, 9-digit YDDDYBRRR, and a simplified 9-digit YYNNNNNNN format. No single rule decodes them all. The decoder matches the format first, then decodes the year when the serial actually encodes one.',
     eraPara:
-      'The modern format (1977 onward) encodes the year in the first and fifth digits of an 8- or 9-digit serial. A brief period from 2014 to mid-2019 used a simpler YYNNNNNNN layout. Pre-1977 Gibson USA serials are sequential, and pre-1961 student-line models (Junior, Special, Melody Maker) were ink-stamped with a 4-digit factory order number.',
+      'Era map: 1902-1947 paper labels (sequential). 1947-1961 A-prefix hollowbody labels (year from range table). 1952-1961 FON letter-prefix interior stamps (Q-Z = 1961-1952). 1961-1970 die-stamped 4-6 digit peghead (no "Made in USA", year ambiguous across reuse). 1970-1975 die-stamped 6-digit with "Made in USA" (still ambiguous). 1975-1977 8-digit decals (99=1975, 00=1976, 06=1977). 1977-2005 8-digit YDDDYRRR (year = pos 1+5, day-of-year = pos 2-4). 2005-2014 and mid-2019+ 9-digit YDDDYBRRR (+ batch digit). 2014-mid-2019 simplified YYNNNNNNN. Custom Shop, artist runs, Les Paul Classic, Centennial, and student-line FONs each have their own conventions.',
     sources: [
       {
         label: 'Gibson Serial Number Search',
@@ -119,7 +119,33 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         name: 'Pre-1977 sequential (4–7 digits)',
         yearRange: 'Pre-1977',
         example: '1234567',
-        rule: 'Sequential serial with no year encoded in the digits. Dating requires cross-referencing a factory-run chart.',
+        rule: 'Sequential serial with no year encoded in the digits. Covers three distinct sub-eras: 1961-1969 die-stamped with no "Made in USA" (4-6 digit, highly ambiguous — same number reused across years), 1970-1975 die-stamped 6-digit with "Made in USA" stamp below (also ambiguous), and some 1961-1969 student-line 4-digit stamps. Dating requires cross-referencing Gibson\'s year-range charts with features (pot codes, hardware, finish, neck date).',
+        gotchas: [
+          'Same serial number was sometimes reused up to three times between 1961 and 1969.',
+          'For pre-1970 vs 1970-1975 disambiguation, the presence/absence of a "Made in USA" stamp below the serial is the primary tell.',
+        ],
+      },
+      {
+        id: 'gibson_a_series',
+        name: 'A-series hollowbody label (1947–1961)',
+        yearRange: '1947–1961',
+        example: 'A18000',
+        rule: "A + 3-5 digit number on a label inside the F-hole. Used exclusively on mid-to-upper-end hollowbody instruments. White label from A-100 (1947) through A-18750 (Jan 12, 1955); orange label from A-20001 (Jan 13, 1955) through A-36147 (1961, the final A-series serial). Year decoded via Gibson's official serialization range chart.",
+        gotchas: [
+          'Serials between A-18751 and A-20000 were reserved / unused during the label-color transition.',
+          'Only used on hollowbodies — solidbodies of this era used FON letter-prefix interior stamps or pre-1961 headstock stamps.',
+        ],
+      },
+      {
+        id: 'gibson_fon_letter',
+        name: 'FON letter-prefix (1952–1961)',
+        yearRange: '1952–1961',
+        example: 'Z22301',
+        rule: 'Factory Order Number stamped INSIDE the instrument (not on the headstock). Format is a letter (Q-Z) + batch number (3-5 digits) + optional rank. The letter pins the year directly: Z=1952, Y=1953, X=1954, W=1955, V=1956, U=1957, T=1958, S=1959, R=1960, Q=1961. Gibson worked backwards through the alphabet, ending the FON system in 1961 when the die-stamped serial-number system took over.',
+        gotchas: [
+          "FONs are interior stamps — you'll find them inside the control cavity or on the inside of the body, not on the headstock.",
+          'The FON and the headstock serial number are separate things; a 1958 Les Paul has both a T-prefix FON (inside) and a 4-6 digit headstock serial.',
+        ],
       },
       {
         id: 'gibson_pre1961',
@@ -299,7 +325,9 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     id: 'fender',
     slug: 'fender',
     intro:
-      'Fender has used many serial formats across its factories (USA, Mexico, Japan, Korea, Indonesia). Most post-1976 formats encode the year directly in the serial — either in the first letter of a decade-prefix, in the first digit (DN/MZ/MN-style), or in the first two digits (US/MX/JD/VS/MS-style). Several Custom Shop formats (V, CS, CZ, R, XN, HR) are definitive prefixes with no year encoded.',
+      'Fender has used more serial formats than any other major guitar brand — across four eras of USA production and contract manufacturing in Mexico, Japan, Korea, China, and Indonesia. The quick shorthand: pre-1976 USA was on a neckplate (4-6 digit numeric or L-prefix for 1963-1965). Post-1976 USA uses a decade-prefix letter (S=1970s, E=1980s, N=1990s, Z=2000s, DZ=2000s Deluxe, US+YY=2000+). Mexico introduced MN (1990s), MZ (2000s), MX (2009+), and VS (Vintera). Japan started with JV/SQ export reissues in 1982-1984, then letter-coded MIJ through 1997, then Crafted-in-Japan, then JD (2011+). Custom Shop has its own zoo of definitive prefixes: V (AVRI), CS, CZ, R (Time Machine), XN (American Custom), HR (Masterbuilt).',
+    eraPara:
+      "Era map in more detail: Pre-1954 = 4-digit neckplate (rare). 1954-1963 = 4-5 digit neckplate (ranges overlap across years). 1963-1965 = L + 5 digits (originally meant to be a '1' for the 100k range). 1965-1976 = 6-digit on an F-plate (pre-numbered plates used as available, so ranges overlap). 1976+ = decade-prefix era (S/E/N/Z/DZ). 1982-1984 = Japan JV / SQ export. 1984-1997 = Japan letter-coded MIJ (E1-E9, N0-N6). 1997-2008 = Japan Crafted-in-Japan (various prefixes). 2000+ = US-prefix USA. 2009+ = MX-prefix Mexico. 2011+ = JD-prefix Japan. 2020+ = VS Vintera. 2021+ = MS Mod Shop. Custom Shop formats (V/CS/CZ/R/XN/HR) run concurrently with main production.",
     sources: [
       {
         label: 'Fender — How can I find out when my American-made instrument was manufactured?',
@@ -453,11 +481,46 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         rule: 'XN + 5 digits sequential rank. Successor to the CZ prefix. Sellers often drop the XN prefix when listing.',
       },
       {
+        id: 'fender_pre1976_neckplate',
+        name: 'Pre-1976 neck-plate (4–6 digit)',
+        yearRange: '1954–1976',
+        example: '234567',
+        rule: "Bare numeric neck-plate serial from the pre-decade-prefix era. 4-5 digits = 1954-1963; L-prefix + 5 digits = 1963-1965; 6 digits on an F-plate = 1965-1976. Year ranges overlap heavily across years because Fender used pre-numbered neckplates as they came off the production line, so the serial alone can't pin the year without cross-referencing the neck-heel date and pot codes.",
+        gotchas: [
+          'Overlap is severe: a given 6-digit serial can span two or three years. The neck-heel pencil date and pot codes are more reliable for exact dating.',
+          'Stolen-and-refurbished instruments occasionally swap neckplates across bodies; always verify the neck-date matches.',
+        ],
+      },
+      {
+        id: 'fender_l_series',
+        name: 'L-series neck-plate (1963–1965)',
+        yearRange: '1963–1965',
+        example: 'L12345',
+        rule: 'L + 5 digit numeric neck-plate serial. The "L" was reportedly a mistake originally intended to be a "1" for the 100,000 range and stuck. Bridges the gap between the 4-5 digit pre-L era and the 6-digit F-plate era.',
+      },
+      {
+        id: 'fender_japan_jv',
+        name: 'Japan Vintage JV (1982–1984)',
+        yearRange: '1982–1984',
+        example: 'JV12345',
+        rule: 'JV + 5-6 digit sequential. Made for the export market starting with the 52/57/62 Stratocaster and Telecaster reissues — the "Japan Vintage" program was Fender\'s response to the vintage-reissue demand that helped re-establish the company\'s reputation post-CBS.',
+      },
+      {
+        id: 'fender_japan_sq',
+        name: 'Japan Squier SQ (1983–1984)',
+        yearRange: '1983–1984',
+        example: 'SQ12345',
+        rule: 'SQ + 5-6 digit sequential. Companion to JV — the Squier-branded version of the Japan Vintage program. This is the ONLY Squier format that Fender-brand dispatch routes through; later Squier serials use the separate Squier brand matcher.',
+      },
+      {
         id: 'fender_neckplate',
-        name: 'Neck-plate 8-digit (1965–1976)',
-        yearRange: '1965–1976',
+        name: '8-digit bare neck-plate (legacy / ambiguous)',
+        yearRange: 'Rare',
         example: '12345678',
-        rule: 'Pre-1977 Fender USA 8-digit numeric stamped on the neck plate. No year encoded; dating requires a reference chart.',
+        rule: '8-digit bare numeric under Fender brand. Rare legitimately — most post-2000 Fenders use US/MX/JD prefixes, and pre-1976 neck-plates are 4-6 digits. An 8-digit numeric is most often a US-prefix (US+6-9 digit) serial with the "US" accidentally dropped. Year is not encoded.',
+        gotchas: [
+          "If you typed the serial yourself and it's 8 digits, double-check whether it actually starts with US.",
+        ],
       },
       {
         id: 'fender_avri_bridge',
