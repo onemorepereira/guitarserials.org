@@ -69,7 +69,11 @@ export function matchRickenbacker(text: string, listingYear: number | null): Ser
   {
     const m = text.match(/^(JK|JL)(\d{3,5})$/);
     if (m) {
-      return singleCandidateMatch(m[0], 1960, 'rickenbacker_1960_jk_jl', listingYear, 'high');
+      // JK = November 1960, JL = December 1960.
+      const month = m[1] === 'JK' ? 11 : 12;
+      return singleCandidateMatch(m[0], 1960, 'rickenbacker_1960_jk_jl', listingYear, 'high', {
+        month,
+      });
     }
   }
 
@@ -99,7 +103,10 @@ export function matchRickenbacker(text: string, listingYear: number | null): Ser
       const yearLetter = m[1] as string;
       const yearOffset = yearLetter.charCodeAt(0) - 'A'.charCodeAt(0);
       const decoded = 1961 + yearOffset;
-      return singleCandidateMatch(m[0], decoded, 'rickenbacker_1961_1986', listingYear, 'high');
+      const month = (m[2] as string).charCodeAt(0) - 'A'.charCodeAt(0) + 1;
+      return singleCandidateMatch(m[0], decoded, 'rickenbacker_1961_1986', listingYear, 'high', {
+        month,
+      });
     }
   }
 
@@ -111,7 +118,10 @@ export function matchRickenbacker(text: string, listingYear: number | null): Ser
       if (MONTH_1987_1996[letter] !== undefined) {
         const yearDigit = parseInt(m[2] as string, 10);
         const decoded = 1987 + yearDigit;
-        return singleCandidateMatch(m[0], decoded, 'rickenbacker_1987_1996', listingYear, 'high');
+        const month = MONTH_1987_1996[letter] as number;
+        return singleCandidateMatch(m[0], decoded, 'rickenbacker_1987_1996', listingYear, 'high', {
+          month,
+        });
       }
     }
   }
@@ -124,6 +134,7 @@ export function matchRickenbacker(text: string, listingYear: number | null): Ser
       const letter = m[1] as string;
       if (MONTH_1996_PLUS[letter] !== undefined) {
         const yearDigit = parseInt(m[2] as string, 10);
+        const month = MONTH_1996_PLUS[letter] as number;
         const firstCycle = 1997 + yearDigit; // 1997..2006
         const secondCycle = firstCycle + 10; // 2007..2016
         const thirdCycle = firstCycle + 20; // 2017..2026
@@ -133,11 +144,15 @@ export function matchRickenbacker(text: string, listingYear: number | null): Ser
           const best = options.reduce((acc, y) =>
             Math.abs(y - listingYear) < Math.abs(acc - listingYear) ? y : acc,
           );
-          return singleCandidateMatch(m[0], best, 'rickenbacker_1996_plus', listingYear, 'high');
+          return singleCandidateMatch(m[0], best, 'rickenbacker_1996_plus', listingYear, 'high', {
+            month,
+          });
         }
         // No listing year — honest ambiguity, return format match with
         // year undecoded.
-        return singleCandidateMatch(m[0], null, 'rickenbacker_1996_plus', listingYear, 'high');
+        return singleCandidateMatch(m[0], null, 'rickenbacker_1996_plus', listingYear, 'high', {
+          month,
+        });
       }
     }
   }

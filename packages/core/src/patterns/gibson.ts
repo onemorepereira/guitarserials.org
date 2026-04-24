@@ -1,4 +1,4 @@
-import { buildMatch, singleCandidateMatch } from '../buildMatch.js';
+import { buildMatch, dayOfYearToMonthDay, singleCandidateMatch } from '../buildMatch.js';
 import { isGibsonStudentLine, isLesPaulClassic } from '../helpers.js';
 import type { SerialMatch, SerialMatchCandidate } from '../types.js';
 import { matchGibsonCustomShop } from './gibsonCustomShop.js';
@@ -174,9 +174,12 @@ export function matchGibson(
     if (ddd >= 1 && ddd <= 366) {
       const year2 = parseInt((serial[0] as string) + (serial[4] as string), 10);
       const decodedYddd = year2 < 40 ? 2000 + year2 : 1900 + year2;
+      const md = dayOfYearToMonthDay(decodedYddd, ddd);
       candidates.push({
         serial,
         decodedYear: decodedYddd,
+        decodedMonth: md?.month ?? null,
+        decodedDay: md?.day ?? null,
         brandFormat: 'gibson_yddd_ybrrr',
       });
     }
@@ -212,5 +215,13 @@ export function matchGibson(
   const dayOfYear = parseInt(serial.slice(1, 4), 10);
   if (dayOfYear < 1 || dayOfYear > 366) return null;
   const decodedYear = year2 < 40 ? 2000 + year2 : 1900 + year2;
-  return singleCandidateMatch(serial, decodedYear, 'gibson_yddd_yrrr', listingYear);
+  const md = dayOfYearToMonthDay(decodedYear, dayOfYear);
+  return singleCandidateMatch(
+    serial,
+    decodedYear,
+    'gibson_yddd_yrrr',
+    listingYear,
+    null,
+    md ? { month: md.month, day: md.day } : null,
+  );
 }
