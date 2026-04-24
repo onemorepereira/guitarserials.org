@@ -29,7 +29,9 @@ test.describe('Brand pages', () => {
     await page.waitForURL('**/brands/fender#find-serial');
     // Inlined section renders under an h2, and the intro sentence mentions
     // locations like neck plate.
-    await expect(page.getByRole('heading', { name: /where to find your serial/i }).first()).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /where to find your serial/i }).first(),
+    ).toBeVisible();
     await expect(page.getByText(/neck plate/i).first()).toBeVisible();
   });
 

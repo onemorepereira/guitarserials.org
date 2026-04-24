@@ -1,40 +1,196 @@
 ---
 import Base from '../layouts/Base.astro';
+
+/*
+ * Every tier in the same palette the decoder uses on the result card. Keeps
+ * the doc and the live UI visually continuous — a user who saw a "high"
+ * pill on their result lands here and sees the same swatch against the
+ * explanation.
+ */
+const tiers: Array<{
+  name: string;
+  className: string;
+  body: string;
+}> = [
+  {
+    name: 'verified',
+    className: 'bg-sage-faint text-sage dark:bg-sage-faint-dark dark:text-sage-dark-text',
+    body: 'Observationally confirmed against ground-truth data (known serial on a known instrument).',
+  },
+  {
+    name: 'high',
+    className: 'bg-sage-faint text-sage dark:bg-sage-faint-dark dark:text-sage-dark-text',
+    body: 'The format itself is definitive, or the decoded year is within 1 year of the listing context you provided.',
+  },
+  {
+    name: 'hybrid',
+    className: 'bg-sage-faint text-sage dark:bg-sage-faint-dark dark:text-sage-dark-text',
+    body: 'Multiple structurally valid interpretations existed; the one closest to your listing year won.',
+  },
+  {
+    name: 'medium',
+    className: 'bg-ochre-faint text-ochre dark:bg-ochre-faint-dark dark:text-ochre-dark-text',
+    body: 'Short-numeric formats (bridge-plate, pre-1961 student stamp) claimed only when a model hint strongly supports them.',
+  },
+  {
+    name: 'review',
+    className: 'bg-rust-faint text-rust dark:bg-amber-faint dark:text-amber',
+    body: 'The decoded year is 2–5 years off your listing context. Plausible, but worth a second look at the photos, pot codes, or neck date.',
+  },
+  {
+    name: 'rejected',
+    className: 'bg-wine-faint text-wine dark:bg-wine-faint-dark dark:text-wine-dark-text',
+    body: 'The decoded year is more than 5 years off your listing context — usually means a stock-photo mix-up, OCR contamination, or a typo.',
+  },
+];
 ---
 
-<Base title="Methodology — guitarserials.org" description="How guitarserials.org decodes serial numbers and assigns confidence tiers.">
-  <div class="prose max-w-2xl py-8 dark:prose-invert">
-    <h1 class="text-3xl font-bold tracking-tight">Methodology</h1>
+<Base
+  title="Methodology — guitarserials.org"
+  description="How guitarserials.org decodes serial numbers, assigns confidence tiers, and cross-validates against the listing year."
+>
+  <nav class="mb-6 text-xs uppercase tracking-wide text-ink-faint dark:text-cream-faint">
+    <a href="/" class="hover:text-rust dark:hover:text-amber">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-ink-soft dark:text-cream-soft">Methodology</span>
+  </nav>
 
-    <h2 class="mt-6 text-xl font-semibold">Confidence tiers</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      Every decode is assigned one of six tiers. The tier combines (a) how definitive the serial
-      format itself is and (b) how the decoded year compares to any year you provide.
+  <header class="flex flex-col gap-4">
+    <h1 class="display text-5xl font-semibold leading-[1.05] text-ink md:text-6xl dark:text-cream">
+      Methodology
+    </h1>
+    <p class="max-w-2xl text-lg text-ink-soft dark:text-cream-soft">
+      How the decoder reads a serial, cross-checks it against the year you type in, and decides
+      whether to trust the result.
     </p>
-    <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-neutral-700 dark:text-neutral-300">
-      <li><strong>verified</strong> — observationally confirmed against ground-truth data.</li>
-      <li><strong>high</strong> — format is definitive or the decoded year is within 1 year of the listing context.</li>
-      <li><strong>hybrid</strong> — multiple structurally valid interpretations; the best was picked by year proximity.</li>
-      <li><strong>medium</strong> — short-numeric formats (bridge-plate, pre-1961 stamp) with a strong model hint.</li>
-      <li><strong>low</strong> — reserved; not currently emitted.</li>
-      <li><strong>review</strong> — decoded year is 2-5 years off the listing context; plausible but worth a human look.</li>
-      <li><strong>rejected</strong> — decoded year is more than 5 years off; probably stock-photo or OCR contamination.</li>
+  </header>
+
+  {/* ------------------------- Worked example ------------------------- */}
+  <section class="mt-14">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      How a serial decodes
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-soft dark:text-cream-soft">
+      The rules themselves read like tiny regex poems. Here's the most common one — Gibson's
+      8-digit <code class="font-mono">YDDDYRRR</code> format, used on USA production from 1977
+      through mid-2005 — walked digit by digit.
+    </p>
+
+    <div class="mt-6 rounded-md border border-paper-line bg-paper-raised px-6 py-6 dark:border-espresso-line dark:bg-espresso-raised">
+      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <span class="font-mono text-3xl font-semibold tracking-tight text-ink dark:text-cream">
+          <span class="text-rust dark:text-amber">8</span><span class="text-ink-soft dark:text-cream-soft">276</span><span class="text-rust dark:text-amber">5</span><span class="text-ink-faint dark:text-cream-faint">501</span>
+        </span>
+        <span class="text-ink-faint dark:text-cream-faint">—</span>
+        <span class="display text-base italic text-ink-soft dark:text-cream-soft">Gibson Les Paul, 1985</span>
+      </div>
+
+      <dl class="mt-5 grid grid-cols-[max-content_1fr] gap-x-6 gap-y-3 text-sm">
+        <dt class="font-mono text-rust dark:text-amber">8 … 5</dt>
+        <dd class="text-ink-soft dark:text-cream-soft">
+          Positions 1 and 5 together are the last two digits of the year — <strong class="text-ink dark:text-cream">85</strong>.
+          Years below 40 decode as 20YY; 40 and above decode as 19YY. So <strong class="text-ink dark:text-cream">1985</strong>.
+        </dd>
+        <dt class="font-mono text-ink-soft dark:text-cream-soft">276</dt>
+        <dd class="text-ink-soft dark:text-cream-soft">
+          Day of year (1–366). Day 276 of 1985 is <strong class="text-ink dark:text-cream">October 3rd</strong>.
+          If this number is outside 1–366 the format simply doesn't apply.
+        </dd>
+        <dt class="font-mono text-ink-faint dark:text-cream-faint">501</dt>
+        <dd class="text-ink-soft dark:text-cream-soft">
+          Rank within that day — the 501st instrument stamped. Not relevant to dating; useful for
+          collectors tracking sibling serials.
+        </dd>
+      </dl>
+
+      <p class="mt-5 text-xs text-ink-faint dark:text-cream-faint">
+        Every format in the{' '}
+        <a href="/" class="text-rust underline underline-offset-2 dark:text-amber">decoder</a>{' '}
+        follows an analogous pattern: a regex identifies the shape, then a few lines of arithmetic
+        extract the year (or admit the year isn't encoded and leave it null).
+      </p>
+    </div>
+  </section>
+
+  {/* ------------------------- Confidence tiers ------------------------- */}
+  <section class="mt-14">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      Confidence tiers
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-soft dark:text-cream-soft">
+      Every decode is tagged with one of six tiers. The tier combines how definitive the format
+      itself is with how well the decoded year matches any listing year you provide.
+    </p>
+
+    <dl class="mt-6 flex flex-col gap-3">
+      {tiers.map((t) => (
+        <div class="flex flex-col gap-1 rounded-md border border-paper-line bg-paper-raised px-5 py-4 md:flex-row md:items-start md:gap-5 dark:border-espresso-line dark:bg-espresso-raised">
+          <dt class="shrink-0">
+            <span class={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wide ${t.className}`}>
+              {t.name}
+            </span>
+          </dt>
+          <dd class="text-sm text-ink-soft dark:text-cream-soft">{t.body}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  {/* ------------------------- Year cross-validation ------------------------- */}
+  <section class="mt-14">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      Year cross-validation
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-soft dark:text-cream-soft">
+      If you provide a listing year (or a "bought around" year), the decoder compares it against
+      the year it decoded from the serial and adjusts the tier accordingly. A format whose rule is
+      prefix-definitive but whose serial doesn't encode a year — Gibson artist prefixes like{' '}
+      <code class="rounded bg-paper-sunken px-1.5 font-mono text-xs dark:bg-espresso-sunken">JP1234</code>,
+      or Fender Custom Shop CS — always stays <strong>high</strong>, because there's no year for a
+      listing year to conflict with.
+    </p>
+    <p class="mt-3 max-w-2xl text-ink-soft dark:text-cream-soft">
+      Three gap thresholds, measured against your listing year:
+    </p>
+    <ul class="mt-2 list-disc space-y-1 pl-6 text-sm text-ink-soft dark:text-cream-soft">
+      <li>Within 1 year → keeps <strong class="text-ink dark:text-cream">high</strong>.</li>
+      <li>2–5 years off → drops to <strong class="text-ink dark:text-cream">review</strong>.</li>
+      <li>Over 5 years off → <strong class="text-ink dark:text-cream">rejected</strong> — probably a stock photo, a typo, or OCR noise.</li>
     </ul>
+  </section>
 
-    <h2 class="mt-8 text-xl font-semibold">Year cross-validation</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      If you provide a listing year (or a "bought around" year), the decoder compares it to the
-      year it decoded from the serial and adjusts the confidence accordingly (see above). A
-      prefix-definitive format like <code>JP1234</code> (Gibson artist run) always stays
-      <code>high</code> regardless of year, because the format itself doesn't encode a year.
+  {/* ------------------------- Sources & authority ------------------------- */}
+  <section class="mt-14">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      Sources &amp; authority
+    </h2>
+    <p class="mt-4 max-w-2xl text-ink-soft dark:text-cream-soft">
+      Every format rule in the matcher traces to at least two authoritative sources. Authoritative
+      means the manufacturer's own documentation, a published reference book, a reputable museum
+      or registry, or multiple corroborating expert accounts. Forum posts alone aren't enough to
+      land a rule — but they're useful signals when they cluster and agree.
     </p>
+    <p class="mt-3 max-w-2xl text-ink-soft dark:text-cream-soft">
+      Each brand page carries its sources at the bottom, color-coded by kind:
+      <span class="mx-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-sage-faint text-sage dark:bg-sage-faint-dark dark:text-sage-dark-text">Manufacturer</span>
+      (e.g. Fender's own dating articles),
+      <span class="mx-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-ochre-faint text-ochre dark:bg-ochre-faint-dark dark:text-ochre-dark-text">Reference</span>
+      (e.g. Gruhn Guide, vintage-guitar registries),
+      <span class="mx-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-paper-sunken text-ink-soft dark:bg-espresso-sunken dark:text-cream-soft">Community</span>
+      (e.g. Ibanez Wiki, Squier Wiki), or
+      <span class="mx-1 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide bg-rust-faint text-rust dark:bg-amber-faint dark:text-amber">Book</span>.
+    </p>
+  </section>
 
-    <h2 class="mt-8 text-xl font-semibold">Sources</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      Every rule in the matcher cites at least two authoritative sources. Authoritative means the
-      manufacturer's own documentation, a published reference book, a reputable museum or registry,
-      or multiple corroborating expert accounts. Forum posts alone aren't sufficient to change a
-      rule — but they're useful signals when they cluster.
+  <section class="mt-14 border-t border-paper-line pt-6 text-sm text-ink-faint dark:border-espresso-line dark:text-cream-faint">
+    <p>
+      The full rule set is at{' '}
+      <a
+        href="https://github.com/guitarserials/guitarserials"
+        class="text-rust underline underline-offset-2 dark:text-amber"
+      >github.com/guitarserials/guitarserials</a>.
+      Every change is covered by a unit test; see <code class="font-mono">CONTRIBUTING.md</code> for the
+      sourcing standard a new rule has to meet.
     </p>
-  </div>
+  </section>
 </Base>

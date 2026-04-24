@@ -1,40 +1,96 @@
 ---
 import Base from '../layouts/Base.astro';
+import { BRANDS } from '../lib/brands';
+
+const brandCount = BRANDS.length;
 ---
 
-<Base title="About — guitarserials.org" description="About guitarserials.org: a free, open-source guitar serial-number decoder.">
-  <div class="prose max-w-2xl py-8 dark:prose-invert">
-    <h1 class="text-3xl font-bold tracking-tight">About</h1>
-    <p class="mt-4 text-neutral-700 dark:text-neutral-300">
-      guitarserials.org is a free, accurate, open-source guitar serial-number decoder. It replaces
-      scattered forum posts and outdated PDFs with a single well-researched reference.
-    </p>
+<Base
+  title="About — guitarserials.org"
+  description="About guitarserials.org: a free, open-source guitar serial-number decoder."
+>
+  <nav class="mb-6 text-xs uppercase tracking-wide text-ink-faint dark:text-cream-faint">
+    <a href="/" class="hover:text-rust dark:hover:text-amber">Home</a>
+    <span class="mx-2">/</span>
+    <span class="text-ink-soft dark:text-cream-soft">About</span>
+  </nav>
 
-    <h2 class="mt-8 text-xl font-semibold">What it does</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      Given a serial number and a brand, the decoder identifies the format era and decodes the
-      production year where the format encodes it. Every rule is derived from authoritative
-      sources (manufacturer documentation, published references, photographic evidence on known
-      instruments) and checked with a test suite that runs on every change.
+  <header class="flex flex-col gap-4">
+    <h1 class="display text-5xl font-semibold leading-[1.05] text-ink md:text-6xl dark:text-cream">
+      About
+    </h1>
+    <p class="max-w-2xl text-lg text-ink-soft dark:text-cream-soft">
+      A reference for guitar serial numbers — covering {brandCount} makers and a century of production,
+      in one place, without an account or a paywall.
     </p>
+  </header>
 
-    <h2 class="mt-8 text-xl font-semibold">How it runs</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      The matcher is pure TypeScript (<code>@guitarserials/core</code>, on npm) with zero runtime
-      dependencies. The site is a static Astro build — every decode runs in your browser. Nothing
-      is uploaded, nothing is logged.
+  <section class="mt-12 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      What it is
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      Guitar serial numbers are scattered across manufacturer support articles, dealer blogs,
+      decades-old forum threads, and an increasingly thin stock of printed references. The
+      information exists; finding the right piece of it when you're holding an instrument
+      usually doesn't. This is an attempt to consolidate it.
     </p>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      Type a serial, pick a brand (or let the decoder guess), optionally add the listing year and
+      a model hint, and you get the format, the decoded year when the format encodes one, and
+      a confidence tier that reflects how sure the decoder is.
+    </p>
+  </section>
 
-    <h2 class="mt-8 text-xl font-semibold">Contributing</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      Found an incorrect decode, or know a brand/format we should add? Open a report on GitHub.
-      New brand support requires at least two authoritative sources cited per format claim, plus
-      test cases for every rule. See <code>CONTRIBUTING.md</code> for details.
+  <section class="mt-10 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      How it runs
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      The decoder is pure TypeScript —{' '}
+      <code class="rounded bg-paper-sunken px-1.5 font-mono text-xs dark:bg-espresso-sunken">@guitarserials/core</code>,
+      published on npm, zero runtime dependencies. The site is a static Astro build with no
+      backend. Every decode happens in your browser. Nothing is uploaded, nothing is logged,
+      nothing is tracked.
     </p>
+  </section>
 
-    <h2 class="mt-8 text-xl font-semibold">License</h2>
-    <p class="mt-2 text-neutral-700 dark:text-neutral-300">
-      MIT. Use it, fork it, embed it — attribution is appreciated.
+  <section class="mt-10 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      How the rules get here
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      Every format rule traces to at least two authoritative sources — manufacturer documentation
+      where it exists, then reference books, curated registries, and long-running community wikis.
+      Every rule has unit tests. The details are in the{' '}
+      <a href="/methodology" class="text-rust underline underline-offset-2 dark:text-amber">methodology</a>.
     </p>
-  </div>
+  </section>
+
+  <section class="mt-10 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      Contributing
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      Spotted a wrong decode? Know a brand or format worth adding? Open an issue — or better, a
+      pull request — at{' '}
+      <a
+        href="https://github.com/guitarserials/guitarserials"
+        class="text-rust underline underline-offset-2 dark:text-amber"
+      >github.com/guitarserials/guitarserials</a>.
+      New formats need two authoritative citations and a test per rule;{' '}
+      <code class="rounded bg-paper-sunken px-1.5 font-mono text-xs dark:bg-espresso-sunken">CONTRIBUTING.md</code>{' '}
+      has the specifics.
+    </p>
+  </section>
+
+  <section class="mt-10 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      License
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      MIT. Use it, fork it, embed the decoder library in your own dealer tool or appraisal
+      workflow — attribution is appreciated but not required.
+    </p>
+  </section>
 </Base>
