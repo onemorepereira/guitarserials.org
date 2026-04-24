@@ -2,6 +2,7 @@ import { matchSerial, type SerialMatch } from '@guitarserials/core';
 import { useEffect, useMemo, useState } from 'react';
 import { BRANDS } from '../lib/brands';
 import { describeFormat } from '../lib/formatDescriptions';
+import { ErrorBoundary } from './ErrorBoundary';
 
 type DecodeResult =
   | { kind: 'empty' }
@@ -119,15 +120,23 @@ function buildPermalinkQuery(form: FormState): string {
 }
 
 const inputClass =
-  'rounded-md border border-paper-line bg-paper-raised px-3 py-2 font-mono text-base text-ink outline-none transition focus:border-rust focus:ring-2 focus:ring-rust/20 dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream dark:focus:border-amber dark:focus:ring-amber/25';
+  'rounded-md border border-paper-line bg-paper-raised px-3 py-2 font-mono text-base text-ink outline-none transition focus:border-rust focus:ring-2 focus:ring-rust/40 dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream dark:focus:border-amber dark:focus:ring-amber/50';
 
 const selectClass =
-  'rounded-md border border-paper-line bg-paper-raised px-3 py-2 text-base text-ink outline-none transition focus:border-rust focus:ring-2 focus:ring-rust/20 dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream dark:focus:border-amber dark:focus:ring-amber/25';
+  'rounded-md border border-paper-line bg-paper-raised px-3 py-2 text-base text-ink outline-none transition focus:border-rust focus:ring-2 focus:ring-rust/40 dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream dark:focus:border-amber dark:focus:ring-amber/50';
 
 const labelClass =
   'text-[11px] font-medium uppercase tracking-[0.08em] text-ink-faint dark:text-cream-faint';
 
-export default function Decoder({ initialBrand }: DecoderProps = {}) {
+export default function Decoder(props: DecoderProps = {}) {
+  return (
+    <ErrorBoundary feature="decoder">
+      <DecoderImpl {...props} />
+    </ErrorBoundary>
+  );
+}
+
+function DecoderImpl({ initialBrand }: DecoderProps) {
   const seed: FormState = initialBrand ? { ...EMPTY_FORM, brand: initialBrand } : EMPTY_FORM;
   const [form, setForm] = useState<FormState>(seed);
   const [submitted, setSubmitted] = useState(false);
@@ -265,7 +274,7 @@ export default function Decoder({ initialBrand }: DecoderProps = {}) {
         <div className="flex items-center gap-4 md:col-span-3">
           <button
             type="submit"
-            className="inline-flex items-center justify-center rounded-md bg-rust px-5 py-2 text-sm font-semibold tracking-wide text-paper-raised shadow-sm transition hover:bg-rust-strong dark:bg-amber dark:text-espresso dark:hover:bg-amber-strong"
+            className="inline-flex items-center justify-center rounded-md bg-rust px-5 py-2 text-sm font-semibold tracking-wide text-paper-raised shadow-sm outline-none transition hover:bg-rust-strong focus-visible:ring-2 focus-visible:ring-rust focus-visible:ring-offset-2 focus-visible:ring-offset-paper-raised dark:bg-amber dark:text-espresso dark:hover:bg-amber-strong dark:focus-visible:ring-amber dark:focus-visible:ring-offset-espresso-raised"
             data-testid="decode-submit"
           >
             Decode
@@ -278,7 +287,7 @@ export default function Decoder({ initialBrand }: DecoderProps = {}) {
                   key={chip.serial}
                   type="button"
                   onClick={() => onChipClick(chip)}
-                  className="rounded-full border border-paper-line bg-paper-raised px-2.5 py-0.5 font-mono text-[11px] text-ink-soft transition hover:border-rust hover:text-rust dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream-soft dark:hover:border-amber dark:hover:text-amber"
+                  className="rounded-full border border-paper-line bg-paper-raised px-2.5 py-0.5 font-mono text-[11px] text-ink-soft outline-none transition hover:border-rust hover:text-rust focus-visible:border-rust focus-visible:text-rust focus-visible:ring-2 focus-visible:ring-rust/50 dark:border-espresso-line dark:bg-espresso-sunken dark:text-cream-soft dark:hover:border-amber dark:hover:text-amber dark:focus-visible:border-amber dark:focus-visible:text-amber dark:focus-visible:ring-amber/50"
                   title={chip.label}
                 >
                   {chip.serial}
@@ -289,7 +298,11 @@ export default function Decoder({ initialBrand }: DecoderProps = {}) {
         </div>
       </form>
 
-      <ResultPanel result={result} onCopyPermalink={onCopyPermalink} copied={copied} />
+      {/* role=status + aria-live lets screen readers announce each decode
+          result as it appears, without the user needing to tab to it. */}
+      <div role="status" aria-live="polite">
+        <ResultPanel result={result} onCopyPermalink={onCopyPermalink} copied={copied} />
+      </div>
     </div>
   );
 }

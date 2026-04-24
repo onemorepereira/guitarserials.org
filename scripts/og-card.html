@@ -1,0 +1,191 @@
+<!doctype html>
+<!--
+  Source template for the Open Graph / social preview card.
+
+  Regenerate the PNG by running the playwright script in
+  scripts/generate-og.mjs, or by opening this page in a browser at
+  exactly 1200×630 and screenshotting.
+
+  The design mirrors the home hero: parchment bg, ink body type,
+  rust accent for the italic display line, small serif wordmark,
+  and a bottom strap with a tagline. All the fonts come from
+  Google Fonts so the render matches the live site.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>guitarserials.org — OG card</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+    />
+    <style>
+      :root {
+        --paper: #faf6ec;
+        --paper-line: #dcd1bc;
+        --ink: #1f1811;
+        --ink-soft: #5a4e3f;
+        --ink-faint: #8a7b65;
+        --rust: #a74c1e;
+        --serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+        --sans: 'Inter', system-ui, sans-serif;
+        --mono: 'JetBrains Mono', monospace;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        font-family: var(--sans);
+        color: var(--ink);
+        background: var(--paper);
+      }
+
+      body {
+        width: 1200px;
+        height: 630px;
+        position: relative;
+        overflow: hidden;
+        background-image:
+          radial-gradient(circle at 25% 30%, rgba(170, 130, 90, 0.07) 0, transparent 40%),
+          radial-gradient(circle at 75% 70%, rgba(170, 130, 90, 0.07) 0, transparent 40%);
+      }
+
+      .card {
+        position: absolute;
+        inset: 0;
+        padding: 56px 64px 48px 64px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .wordmark {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 600;
+        font-size: 32px;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+      }
+
+      .wordmark .tld {
+        font-family: var(--sans);
+        font-style: normal;
+        font-weight: 500;
+        font-size: 18px;
+        color: var(--ink-faint);
+        margin-left: 4px;
+        vertical-align: 4px;
+      }
+
+      .hero {
+        margin-top: 28px;
+      }
+
+      .hero h1 {
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: 112px;
+        line-height: 1;
+        letter-spacing: -0.015em;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .hero h1 .italic {
+        display: block;
+        font-style: italic;
+        font-weight: 500;
+        color: var(--rust);
+        margin-top: 8px;
+      }
+
+      .subcopy {
+        margin-top: 36px;
+        font-family: var(--sans);
+        font-size: 24px;
+        line-height: 1.35;
+        color: var(--ink-soft);
+        max-width: 900px;
+      }
+
+      .footer {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 32px;
+      }
+
+      .makers {
+        font-family: var(--mono);
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        color: var(--ink-faint);
+        text-transform: uppercase;
+      }
+
+      .url {
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 26px;
+        color: var(--ink-soft);
+      }
+
+      .rule {
+        position: absolute;
+        left: 64px;
+        right: 64px;
+        bottom: 108px;
+        height: 1px;
+        background: var(--paper-line);
+      }
+
+      .sample {
+        position: absolute;
+        right: 64px;
+        top: 76px;
+        font-family: var(--mono);
+        font-size: 22px;
+        color: var(--ink-faint);
+        letter-spacing: 0.03em;
+      }
+
+      .sample .decoded {
+        color: var(--rust);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="wordmark">
+        guitarserials<span class="tld">.org</span>
+      </div>
+
+      <div class="sample">
+        82765501 <span class="decoded">→ 1985</span>
+      </div>
+
+      <div class="hero">
+        <h1>
+          Paste a serial.
+          <span class="italic">Read it back.</span>
+        </h1>
+        <p class="subcopy">
+          Guitar serial numbers decoded — across 18 makers and a century of manufacturing. Runs
+          in your browser. Nothing leaves your device.
+        </p>
+      </div>
+
+      <div class="rule"></div>
+
+      <div class="footer">
+        <div class="makers">
+          Gibson · Fender · PRS · Rickenbacker · Gretsch · Martin · Ibanez · &amp; 11 more
+        </div>
+        <div class="url">guitarserials.org</div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -15,7 +15,8 @@
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "og:generate": "node scripts/generate-og.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",

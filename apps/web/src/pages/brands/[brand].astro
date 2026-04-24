@@ -165,34 +165,40 @@ const breadcrumbJsonLd = {
         Find your shape, jump to the format
       </span>
     </div>
-    <table class="mt-4 w-full border-separate border-spacing-0 text-sm">
-      <tbody>
-        {quickPickFormats.map((f, i) => (
-          <tr class={i % 2 === 1 ? 'bg-paper-sunken/40 dark:bg-espresso-sunken/40' : ''}>
-            <td class="border-b border-paper-line px-3 py-2 font-mono text-ink dark:border-espresso-line dark:text-cream">
+    <ul class="mt-4 flex flex-col">
+      {quickPickFormats.map((f, i) => (
+        <li
+          class={`border-b border-paper-line dark:border-espresso-line ${
+            i % 2 === 1 ? 'bg-paper-sunken/40 dark:bg-espresso-sunken/40' : ''
+          }`}
+        >
+          <a
+            href={`#${anchorFor(f)}`}
+            class="flex flex-col gap-1 px-3 py-2.5 sm:grid sm:grid-cols-[120px_1fr_max-content] sm:items-baseline sm:gap-4"
+          >
+            <span class="font-mono text-sm text-ink dark:text-cream">
               {shapeOf(f.example)}
-            </td>
-            <td class="border-b border-paper-line px-3 py-2 font-mono text-xs text-ink-faint dark:border-espresso-line dark:text-cream-faint">
-              e.g. {f.example}
-            </td>
-            <td class="border-b border-paper-line px-3 py-2 dark:border-espresso-line">
-              <a
-                href={`#${anchorFor(f)}`}
-                class="display italic text-ink-soft hover:text-rust dark:text-cream-soft dark:hover:text-amber"
-              >
+            </span>
+            <span class="flex flex-wrap items-baseline gap-2">
+              <span class="display italic text-ink-soft dark:text-cream-soft">
                 {f.name}
-              </a>
+              </span>
               {f.primary && (
-                <span class="ml-2 text-[10px] uppercase tracking-wide text-rust dark:text-amber">primary</span>
+                <span class="text-[10px] uppercase tracking-wide text-rust dark:text-amber">
+                  primary
+                </span>
               )}
-            </td>
-            <td class="hidden border-b border-paper-line px-3 py-2 text-right text-xs text-ink-faint md:table-cell dark:border-espresso-line dark:text-cream-faint">
+              <span class="font-mono text-xs text-ink-faint sm:hidden dark:text-cream-faint">
+                e.g. {f.example}
+              </span>
+            </span>
+            <span class="hidden text-right text-xs text-ink-faint sm:inline dark:text-cream-faint">
               {f.yearRange}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
   </section>
 
   {guide.eraPara && (

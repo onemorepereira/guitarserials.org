@@ -3,6 +3,32 @@ import Decoder from '../components/Decoder';
 import Base from '../layouts/Base.astro';
 import { BRANDS } from '../lib/brands';
 
+const brandCount = BRANDS.length;
+const brandCountWord = [
+  'zero',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+  'eleven',
+  'twelve',
+  'thirteen',
+  'fourteen',
+  'fifteen',
+  'sixteen',
+  'seventeen',
+  'eighteen',
+  'nineteen',
+  'twenty',
+][brandCount] ?? String(brandCount);
+const brandCountWordTitle = brandCountWord.charAt(0).toUpperCase() + brandCountWord.slice(1);
+
 const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
@@ -32,7 +58,7 @@ const websiteJsonLd = {
       <span class="display-italic text-rust dark:text-amber">Read it back.</span>
     </h1>
     <p class="max-w-2xl text-lg text-ink-soft dark:text-cream-soft">
-      Guitar serial numbers decoded — across 19 makers and a century of manufacturing.
+      Guitar serial numbers decoded — across {brandCount} makers and a century of manufacturing.
       Runs in your browser. Nothing leaves your device.
     </p>
   </section>
@@ -44,7 +70,7 @@ const websiteJsonLd = {
   <section class="mt-16 flex flex-col gap-5">
     <div class="flex items-baseline justify-between gap-4 border-b border-paper-line pb-3 dark:border-espresso-line">
       <h2 class="display text-3xl font-medium italic text-ink dark:text-cream">
-        Nineteen makers.
+        {brandCountWordTitle} makers.
       </h2>
       <p class="hidden text-sm text-ink-faint md:block dark:text-cream-faint">
         One click for the guide, conventions, and sources.

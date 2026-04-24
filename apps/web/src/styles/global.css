@@ -23,10 +23,10 @@
   --color-paper-sunken: #f3ebd6;
   --color-paper-line: #dcd1bc;
 
-  /* Ink (light mode text) */
+  /* Ink (light mode text). -faint tuned to meet WCAG AA (4.5:1) on paper. */
   --color-ink: #1f1811;
   --color-ink-soft: #5a4e3f;
-  --color-ink-faint: #8a7b65;
+  --color-ink-faint: #7a6b57;
 
   /* Espresso (dark mode backgrounds) */
   --color-espresso: #14100a;
@@ -34,10 +34,10 @@
   --color-espresso-sunken: #0e0a06;
   --color-espresso-line: #2e2519;
 
-  /* Cream (dark mode text) */
+  /* Cream (dark mode text). -faint tuned to meet WCAG AA on espresso. */
   --color-cream: #f0e6d0;
   --color-cream-soft: #b8a786;
-  --color-cream-faint: #7f725c;
+  --color-cream-faint: #97866b;
 
   /* Rust (light mode accent) — sunburst cherry */
   --color-rust: #a74c1e;
@@ -54,7 +54,7 @@
   --color-sage-faint: #dee8c9;
   --color-sage-faint-dark: #2c3519;
   --color-sage-dark-text: #b8cc8f;
-  --color-ochre: #8b6914;
+  --color-ochre: #7a5912;
   --color-ochre-faint: #efe3bc;
   --color-ochre-faint-dark: #3a2f16;
   --color-ochre-dark-text: #d4b564;
