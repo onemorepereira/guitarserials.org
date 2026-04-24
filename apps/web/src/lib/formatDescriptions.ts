@@ -80,6 +80,23 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Ibanez Korea S-prefix (Samick, 1990–1995). S + Y + MM + 4-digit sequence; Y is last digit of year.',
   ibanez_korea_world:
     'Ibanez Korea W-prefix (World Musical Instrument Co.). W + YY + M + RRRR; M is month (1-9, X=Oct, Y=Nov, Z=Dec).',
+  gretsch_modern:
+    'Gretsch modern (2003+) — 2-letter factory code (JT/JD/JF/KP/KS/CY/CS) + YY + MM + 4-digit sequence.',
+  gretsch_date_coded_1966_1972:
+    'Gretsch date-coded (1966-1972) — first digit(s) = month, next digit = year (6-9 → 1966-1969, 0-2 → 1970-1972), remaining digits = production rank.',
+  rickenbacker_1987_1996:
+    'Rickenbacker (1987-1996) — month letter A-L + year digit 0-9 (1987-1996) + production number.',
+  rickenbacker_1996_plus:
+    'Rickenbacker (1996+) — month letter M-Y (O skipped) + year digit 0-9 + production number. Year digit cycles every decade; needs listing-year context past 2006.',
+  jackson_modern_import:
+    'Jackson modern import (2013+) — 3-letter factory (ICJ/CYJ/CJ/MJ/XJ/CUJ/ISJ) + YY + 5-digit sequence.',
+  jackson_rr_signature: 'Jackson Randy Rhoads signature — RR + 4-digit sequence; no year encoded.',
+  jackson_usa: 'Jackson USA J-prefix — J + 4-digit sequence; no year encoded.',
+  jackson_mij_professional:
+    'Jackson MIJ Professional (1990-1995) — 6 digits; first digit = year offset (0=1990, 5=1995).',
+  charvel_japan: 'Charvel Japan (modern) — JC + YY + 5-6 digit sequence.',
+  charvel_san_dimas:
+    'Charvel USA San Dimas (1981-1986) — 4-digit sequential; cumulative-range lookup needed for exact year.',
 };
 
 export function describeFormat(formatId: string): string {

@@ -842,6 +842,269 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
   },
 };
 
+BRAND_GUIDES.gretsch = {
+  id: 'gretsch',
+  slug: 'gretsch',
+  intro:
+    'Gretsch serial numbering split into three distinct eras. Pre-1966 numbers were largely sequential. From 1966 to the end of Baldwin-era production (1972-ish) Gretsch used a date-coded format that packs the month, year, and production rank into a short numeric. Modern production (2003+) uses a clean two-letter factory code followed by YY + MM + a 4-digit sequence.',
+  sources: [
+    {
+      label: 'Gretsch Guitars — Product Dating (official)',
+      url: 'https://www.gretschguitars.com/support/product-dating',
+      kind: 'manufacturer',
+      note: "Gretsch's official dating resource covering all eras.",
+    },
+    {
+      label: 'GretschTech — Understanding Modern Gretsch Serial Numbers',
+      url: 'https://blog.gretschguitars.com/2013/07/gretschtech-understanding-modern-gretsch-serial-numbers/',
+      kind: 'manufacturer',
+      note: "Gretsch's own blog post documenting every modern factory code (JT, JD, JF, KP, KS, CY, CS) and the YY+MM+seq layout.",
+    },
+    {
+      label: 'GretschTech — Serial Numbers 1930s-1966',
+      url: 'https://blog.gretschguitars.com/2016/05/gretschtech-serial-numbers-1930s-1966/',
+      kind: 'manufacturer',
+      note: 'Companion article covering the pre-1966 sequential era.',
+    },
+    {
+      label: 'Reverb — How To Date A Gretsch Guitar',
+      url: 'https://reverb.com/news/how-to-date-a-gretsch-guitar',
+      kind: 'reference',
+      note: 'Comprehensive Reverb article documenting the 1966-1972 date-coded format with examples.',
+    },
+  ],
+  formats: [
+    {
+      id: 'gretsch_modern',
+      name: 'Modern (2003+) — factory + YY + MM + seq',
+      yearRange: '2003+',
+      example: 'JT07115922',
+      rule: 'Two-letter factory code + 2-digit year + 2-digit month + 4-digit sequence. Factory codes: JT = Japan Terada (most common), JD = Japan Dyna Gakki, JF = Japan Fuji-Gen Gakki, KP = Korea Peerless, KS = Korea Samick/SPG, CY = China Yako, CS = USA Custom Shop. Example JT07115922 = Japan Terada, November 2007, #5922.',
+    },
+    {
+      id: 'gretsch_date_coded_1966_1972',
+      name: 'Date-coded (1966–1972)',
+      yearRange: '1966–1972',
+      example: '118145',
+      exampleYear: 1968,
+      rule: 'First digit(s) are the numerical month (1-12), next digit is the last digit of the year (7, 8, 9 for 1967–1969 and 0, 1, 2 for 1970–1972), remaining digits are the production rank. Example 118145 = November (11) 1968 (8), #145.',
+      gotchas: [
+        "Baldwin-era Gretsch guitars from the 1972-1981 window use hyphenated serials (e.g. '2-365') that we don't decode — those predate the modern codes and postdate the date-coded era.",
+        'Without a listing year near 1966-1972, we require the year-digit to be in the valid 0-2/6-9 range and plausibility-check the resulting year.',
+      ],
+    },
+  ],
+  findSerial: {
+    intro:
+      'Gretsch serial location varies by era. Hollowbody models usually carry a serial on a label inside the F-hole and/or stamped on the headstock. Solidbody modern models are stamped on the back of the headstock or on the neckplate.',
+    locations: [
+      {
+        place: 'Back of headstock (modern solidbody)',
+        description:
+          'Standard location for modern Electromatic, Streamliner, and Professional solidbody models.',
+      },
+      {
+        place: 'Label inside F-hole (hollowbody)',
+        description:
+          'Modern and vintage hollowbody Gretsch instruments typically carry a serial on a label visible through the F-hole. On Baldwin-era instruments the serial may only appear on this label.',
+      },
+      {
+        place: 'Back of headstock / top of headstock (pre-1966)',
+        description:
+          'Pre-1966 Gretsch often has the serial impressed or stamped on the headstock (top or back varies by model).',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.rickenbacker = {
+  id: 'rickenbacker',
+  slug: 'rickenbacker',
+  intro:
+    "Rickenbacker has used a small number of well-defined serial schemes since the 1950s. The cleanest era for automated decoding runs from November 1987 onward, where the first character encodes the month and the second a year digit. Pre-1987 serials are model-coded and don't follow a single rule — collector references are usually required.",
+  sources: [
+    {
+      label: 'Rickenbacker — Serial Number Decoder (official)',
+      url: 'https://www.rickenbacker.com/serial-number-decoder/',
+      kind: 'manufacturer',
+      note: "Rickenbacker's own serial-number decoder.",
+    },
+    {
+      label: 'Reverb — Finding the Date of Your Rickenbacker Guitar or Bass',
+      url: 'https://reverb.com/news/finding-the-date-of-your-rickenbacker-guitar-or-bass',
+      kind: 'reference',
+      note: 'Comprehensive Reverb article documenting all era formats: pre-1960 year-digit, JK/JL November-December 1960 transition, 1987-1996 month-letter-plus-digit, 1996+ M-Y month letters.',
+    },
+    {
+      label: 'Rickenbacker 101 — Serial Numbers 101',
+      url: 'https://www.rickenbacker101.com/p/serial-numbers-101',
+      kind: 'reference',
+      note: "Andy White's comprehensive community reference covering every era.",
+    },
+  ],
+  formats: [
+    {
+      id: 'rickenbacker_1987_1996',
+      name: '1987–1996 (month letter + year digit)',
+      yearRange: '1987–1996',
+      example: 'A0001',
+      rule: 'First character = month (A=Jan, B=Feb, …, L=Dec). Second character = year digit (0=1987, 1=1988, …, 9=1996). Remaining 3-5 digits are a production rank. Example A0001 = January 1987.',
+    },
+    {
+      id: 'rickenbacker_1996_plus',
+      name: '1996+ (M–Y month letters)',
+      yearRange: '1997+',
+      example: 'M0001',
+      rule: 'First character = month letter from M–Y, with O skipped (M=Jan, N=Feb, P=Mar, Q=Apr, R=May, S=Jun, T=Jul, U=Aug, V=Sep, W=Oct, X=Nov, Y=Dec). Second character = year digit (0=1997, 1=1998, …). The year digit cycles every decade, so 2007-2016 and 2017+ reuse the 0-9 digits.',
+      gotchas: [
+        'Year digit cycles every 10 years. Without a listing-year hint, the decoder leaves the year null for 1996+ serials; with a listing year we snap to the closest plausible decade.',
+      ],
+    },
+  ],
+  findSerial: {
+    intro:
+      'Rickenbacker serial numbers are usually on the jackplate (the plate surrounding the output jack). The serial is typically split into two parts — a short prefix at one end of the plate and the production number at the other end.',
+    locations: [
+      {
+        place: 'Jackplate (both ends)',
+        description:
+          'The two-character month/year prefix lives at one end of the jackplate; the production number lives at the other end. Together they form the complete serial.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.jackson = {
+  id: 'jackson',
+  slug: 'jackson',
+  intro:
+    "Jackson's serial history splits across three main production groups. USA San Dimas and Ontario models from the 1980s onward use simple sequential prefixes (J, RR, U). Made-In-Japan Professional series 1990–1995 embed the year in the first digit. Modern import production (2013+) uses a 10-character format with a 3-letter factory code followed by YY + 5 digits.",
+  sources: [
+    {
+      label: 'Jackson Guitars — Bolt-On-Neck Product Dating (official)',
+      url: 'https://support.jacksonguitars.com/en-us/knowledgebase/article/KA-02021',
+      kind: 'manufacturer',
+      note: "Jackson's official support article covering the modern 10-character import format and earlier USA serials.",
+    },
+    {
+      label: 'USA Charvels — Serial Numbers',
+      url: 'http://www.usacharvels.com/serials.htm',
+      kind: 'reference',
+      note: 'Long-standing community reference that covers the USA Jackson/Charvel serial history including Randy Rhoads variants.',
+    },
+    {
+      label: 'The Music Zoo — Jackson Guitars Serial Number Archive 1983-1985',
+      url: 'https://www.themusiczoo.com/blogs/news/jackson-guitars-serial-number-archive-1983-1985-at-the-music-zoo',
+      kind: 'reference',
+      note: 'Early-era dealer reference documenting the J and RR serial launches.',
+    },
+  ],
+  formats: [
+    {
+      id: 'jackson_modern_import',
+      name: 'Modern import (2013+) — factory + YY + seq',
+      yearRange: '2013+',
+      example: 'ICJ1500001',
+      rule: 'Three-letter factory code + 2-digit year + 5-digit sequence. Factory codes: ICJ = Indonesia Cort, CYJ = China Yako, CJ = China (generic), MJ / XJ = Mexico, CUJ = China Unsung, ISJ = Indonesia Samick. Example ICJ1500001 = Indonesia Cort, 2015, #1.',
+    },
+    {
+      id: 'jackson_rr_signature',
+      name: 'Randy Rhoads RR signature',
+      yearRange: '1983+',
+      example: 'RR0001',
+      rule: 'RR + 4-digit sequence. Assigned to Randy Rhoads neck-through guitars (all of them 1983–spring 1990, custom only after that).',
+    },
+    {
+      id: 'jackson_usa',
+      name: 'USA J-prefix (1983+)',
+      yearRange: '1983+',
+      example: 'J1234',
+      rule: 'J + 4-digit sequence. Year is not encoded in the serial — listing-year context or USA Charvels serial archive lookup is required to date.',
+    },
+    {
+      id: 'jackson_mij_professional',
+      name: 'Made-in-Japan Professional (1990–1995)',
+      yearRange: '1990–1995',
+      example: '412345',
+      rule: 'Six plain digits. The first digit is the year offset from 1990: 0 = 1990, 1 = 1991, …, 5 = 1995. Example 412345 = 1994, #12345.',
+      gotchas: [
+        'Gated tightly on first-digit ≤ 5 to avoid shadowing generic 6-digit numerics from other brands.',
+      ],
+    },
+  ],
+  findSerial: {
+    intro:
+      'Jackson serials are typically on the back of the headstock (modern production) or on the neckplate (earlier USA and some Japan production).',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description:
+          'Modern import (2013+) and most current production — 10-character serial is impressed or decaled on the back of the headstock.',
+      },
+      {
+        place: 'Neckplate',
+        description:
+          'Earlier USA Jacksons and some Japan-made Professional series carry the serial on the metal neckplate on the back of the body.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.charvel = {
+  id: 'charvel',
+  slug: 'charvel',
+  intro:
+    "Charvel (Jackson's sister brand) has two main serial eras: the pre-1986 San Dimas USA era used plain sequential 4-digit numbers. Modern Japan Charvel production uses a JC prefix followed by YY and a sequential number.",
+  sources: [
+    {
+      label: 'USA Charvels — Serial Numbers',
+      url: 'http://www.usacharvels.com/serials.htm',
+      kind: 'reference',
+      note: 'Authoritative community reference for San Dimas Charvel serials with cumulative year boundaries (1981=1001+, 1982=1096+, 1983=1725+, 1984=2939+, 1985=4262+, 1986=5304+).',
+    },
+    {
+      label: 'Charvel Serial Number Decoder Guide',
+      url: 'https://owningafather.com/charvel/serial-number-lookup',
+      kind: 'reference',
+      note: 'Dealer reference documenting the JC modern Japan format.',
+    },
+  ],
+  formats: [
+    {
+      id: 'charvel_japan',
+      name: 'Japan modern — JC + YY + seq',
+      yearRange: '2013+',
+      example: 'JC18000123',
+      rule: 'JC + 2-digit year + 5-6 digit sequence. Example JC18000123 = Japan, 2018.',
+    },
+    {
+      id: 'charvel_san_dimas',
+      name: 'USA San Dimas (1981–1986)',
+      yearRange: '1981–1986',
+      example: '1234',
+      rule: 'Plain 4-digit sequential starting at 1001 (1981). Year disambiguation uses the cumulative-range boundaries: 1981 = 1001-1095, 1982 = 1096-1724, 1983 = 1725-2938, 1984 = 2939-4261, 1985 = 4262-5303, 1986 = 5304+. We match the format and leave year null without range lookup.',
+      gotchas: [
+        'Decoder requires listing-year context to pin the exact year; the serial alone only narrows the range.',
+      ],
+    },
+  ],
+  findSerial: {
+    intro:
+      'Charvel serials are typically on the back of the headstock (modern) or the neckplate (vintage San Dimas).',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description: 'Modern Japan JC-prefix production.',
+      },
+      {
+        place: 'Neckplate',
+        description:
+          'Vintage 1981–1986 San Dimas USA Charvels carry the serial on the metal neckplate.',
+      },
+    ],
+  },
+};
+
 export function getBrandGuide(slug: string): BrandGuide | undefined {
   return Object.values(BRAND_GUIDES).find((g) => g.slug === slug);
 }

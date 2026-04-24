@@ -1,11 +1,15 @@
 import { extractSerialFromNoise } from './extractSerial.js';
 import { normalizeText } from './normalize.js';
+import { matchCharvel } from './patterns/charvel.js';
 import { matchFender } from './patterns/fender.js';
 import { matchGibson } from './patterns/gibson.js';
 import { matchGibsonCustomShop } from './patterns/gibsonCustomShop.js';
+import { matchGretsch } from './patterns/gretsch.js';
 import { matchHeritage } from './patterns/heritage.js';
 import { matchIbanez } from './patterns/ibanez.js';
+import { matchJackson } from './patterns/jackson.js';
 import { matchPrs } from './patterns/prs.js';
+import { matchRickenbacker } from './patterns/rickenbacker.js';
 import { matchSire } from './patterns/sire.js';
 import type { MatchOptions, SerialMatch } from './types.js';
 
@@ -17,6 +21,10 @@ export const SUPPORTED_BRANDS = new Set([
   'heritage',
   'sire',
   'ibanez',
+  'gretsch',
+  'rickenbacker',
+  'jackson',
+  'charvel',
 ]);
 
 type BrandMatcher = (
@@ -34,6 +42,10 @@ const BRAND_MATCHERS: Record<string, BrandMatcher> = {
   heritage: (t, y, _h, _c) => matchHeritage(t, y),
   sire: (t, y, _h, _c) => matchSire(t, y),
   ibanez: (t, y, _h, _c) => matchIbanez(t, y),
+  gretsch: (t, y, _h, _c) => matchGretsch(t, y),
+  rickenbacker: (t, y, _h, _c) => matchRickenbacker(t, y),
+  jackson: (t, y, _h, _c) => matchJackson(t, y),
+  charvel: (t, y, _h, _c) => matchCharvel(t, y),
 };
 
 /**

@@ -43,6 +43,30 @@ export const BRANDS: BrandMeta[] = [
     label: 'Ibanez',
     blurb: 'Fujigen F, letter-month, Korea/Indonesia',
   },
+  {
+    id: 'gretsch',
+    slug: 'gretsch',
+    label: 'Gretsch',
+    blurb: 'Modern JT/KS factory codes, 1966-72 date-coded era',
+  },
+  {
+    id: 'rickenbacker',
+    slug: 'rickenbacker',
+    label: 'Rickenbacker',
+    blurb: 'Letter-month + year-digit (1987+)',
+  },
+  {
+    id: 'jackson',
+    slug: 'jackson',
+    label: 'Jackson',
+    blurb: 'ICJ/CYJ modern imports, MIJ Professional',
+  },
+  {
+    id: 'charvel',
+    slug: 'charvel',
+    label: 'Charvel',
+    blurb: 'JC Japan modern, San Dimas USA 1981-86',
+  },
 ];
 
 export function findBrand(idOrSlug: string): BrandMeta | undefined {
