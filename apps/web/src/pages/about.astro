@@ -50,8 +50,24 @@ const brandCount = BRANDS.length;
       The decoder is pure TypeScript —{' '}
       <code class="rounded bg-paper-sunken px-1.5 font-mono text-xs dark:bg-espresso-sunken">@guitarserials/core</code>,
       published on npm, zero runtime dependencies. The site is a static Astro build with no
-      backend. Every decode happens in your browser. Nothing is uploaded, nothing is logged,
-      nothing is tracked.
+      backend.
+    </p>
+  </section>
+
+  <section class="mt-10 max-w-2xl">
+    <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+      Privacy, stated plainly
+    </h2>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      No analytics. No cookies. No tracking. No account. By design — not by oversight. The page
+      loads static HTML + CSS + a small React bundle for the decoder, plus web fonts from Google
+      Fonts. That is the entire network footprint. Every decode is a pure function of the text you
+      paste; nothing is uploaded, logged, or shared.
+    </p>
+    <p class="mt-3 text-ink-soft dark:text-cream-soft">
+      If you want to verify: the only third-party origin the site contacts is{' '}
+      <code class="rounded bg-paper-sunken px-1.5 font-mono text-xs dark:bg-espresso-sunken">fonts.gstatic.com</code>{' '}
+      for the font files. Block it if you prefer system fonts — the site still works.
     </p>
   </section>
 

@@ -1,19 +1,43 @@
 {
   "name": "@guitarserials/core",
-  "version": "0.0.0",
-  "description": "Guitar serial-number decoder — pure TypeScript, zero runtime dependencies.",
+  "version": "0.1.0",
+  "description": "Guitar serial-number decoder — pure TypeScript, zero runtime dependencies. Supports 18 brands across a century of production.",
   "license": "MIT",
   "author": "Miguel Pereira",
+  "homepage": "https://guitarserials.org",
+  "bugs": {
+    "url": "https://github.com/guitarserials/guitarserials/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guitarserials/guitarserials.git",
+    "directory": "packages/core"
+  },
   "keywords": [
     "guitar",
     "serial",
+    "serial-number",
     "decoder",
+    "dating",
+    "vintage",
     "gibson",
     "fender",
     "prs",
     "ibanez",
     "heritage",
-    "sire"
+    "sire",
+    "martin",
+    "rickenbacker",
+    "gretsch",
+    "jackson",
+    "charvel",
+    "epiphone",
+    "squier",
+    "gandl",
+    "schecter",
+    "esp",
+    "ltd",
+    "music-man"
   ],
   "type": "module",
   "main": "./dist/index.js",

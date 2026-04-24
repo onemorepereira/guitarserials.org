@@ -1,0 +1,63 @@
+name: Release @guitarserials/core
+
+# Publishes the library to npm when a tag of the form `core-vX.Y.Z` is pushed.
+# The tag name is the gate — there is no "is the version bumped?" heuristic,
+# so it's impossible to accidentally publish a stale dist.
+#
+# One-time setup:
+#   1. Generate an npm automation token (granular, "Publish" only) scoped to
+#      @guitarserials/*.
+#   2. Add it as the NPM_TOKEN repository secret.
+#   3. Bump packages/core/package.json version, commit, tag, push:
+#        git tag core-v0.1.0 && git push origin core-v0.1.0
+
+on:
+  push:
+    tags:
+      - 'core-v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Pack and inspect, but do not publish'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: pnpm install --frozen-lockfile
+
+      # Guardrails: build from source and pass the full test suite before
+      # shipping anything. Deploy workflow has its own CI gate; this one
+      # repeats the bits that matter for the library alone.
+      - run: pnpm --filter @guitarserials/core typecheck
+      - run: pnpm --filter @guitarserials/core test
+      - run: pnpm --filter @guitarserials/core build
+
+      - name: Pack (dry-run preview)
+        run: pnpm --filter @guitarserials/core pack --pack-destination /tmp/pack
+
+      - name: List tarball contents
+        run: ls -la /tmp/pack && tar -tzf /tmp/pack/*.tgz | head -50
+
+      - name: Publish to npm
+        if: github.event_name == 'push' || inputs.dry_run == false
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm --filter @guitarserials/core publish --no-git-checks --access public
