@@ -52,6 +52,21 @@ const MONTH_1996_PLUS: Record<string, number> = {
 };
 
 export function matchRickenbacker(text: string, listingYear: number | null): SerialMatch | null {
+  // 1961–1986: two letters + 3-5 digit production number.
+  // First letter = year (A=1961, B=1962, …, Z=1986). Second letter = month
+  // (A=Jan, B=Feb, …, L=Dec). Distinct from the 1987-1996 format (which has
+  // month LETTER + year DIGIT) because the second character is a LETTER.
+  // Checked first so the two-letter form wins over the letter+digit form.
+  {
+    const m = text.match(/^([A-Z])([A-L])(\d{3,5})$/);
+    if (m) {
+      const yearLetter = m[1] as string;
+      const yearOffset = yearLetter.charCodeAt(0) - 'A'.charCodeAt(0);
+      const decoded = 1961 + yearOffset;
+      return singleCandidateMatch(m[0], decoded, 'rickenbacker_1961_1986', listingYear, 'high');
+    }
+  }
+
   // 1987–1996: <month A-L><year digit 0-9><3-5 digit seq>
   {
     const m = text.match(/^([A-L])(\d)(\d{3,5})$/);

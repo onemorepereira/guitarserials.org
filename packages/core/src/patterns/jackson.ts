@@ -16,14 +16,32 @@ import type { SerialMatch } from '../types.js';
  * recognized and year is left to listing context.
  */
 
+/**
+ * Jackson 3-letter factory/production-line codes.
+ * Convention: first letter = country, middle letter = factory, final J = Jackson brand line.
+ *   Country: I = Indonesia, C = China, N = India, K = Korea, M = Mexico, X = Mexico.
+ *   Factory: C = Cort, W = World Musical Instruments, S = Samick, H = Harmony / Chushin Gakki, N = Unsung, Y = Yako, U = Unsung.
+ */
 const FACTORY_CODES: Record<string, string> = {
+  // Indonesia
   ICJ: 'Indonesia — Cort',
+  ISJ: 'Indonesia — Samick',
+  IWJ: 'Indonesia — World Musical Instruments',
+  // China
   CYJ: 'China — Yako',
   CJ: 'China — generic',
+  CUJ: 'China — Unsung',
+  CNJ: 'China — generic',
+  CSJ: 'China — Samick',
+  // India
+  NHJ: 'India — Chushin Gakki (Harmony)',
+  // Korea
+  KCJ: 'Korea — Cort',
+  KWJ: 'Korea — World Musical Instruments',
+  KSJ: 'Korea — Samick',
+  // Mexico
   MJ: 'Mexico',
   XJ: 'Mexico',
-  CUJ: 'China — Unsung',
-  ISJ: 'Indonesia — Samick',
 };
 
 export function matchJackson(text: string, listingYear: number | null): SerialMatch | null {
@@ -64,6 +82,32 @@ export function matchJackson(text: string, listingYear: number | null): SerialMa
       const yearDigit = parseInt(m[1] as string, 10);
       const decoded = 1990 + yearDigit;
       return singleCandidateMatch(m[0], decoded, 'jackson_mij_professional', listingYear);
+    }
+  }
+
+  // 1996+ MIJ bolt-on: 7 digits starting with 96 and growing sequentially.
+  // Year is encoded in the first two digits (96xxxxx = 1996, 97xxxxx = 1997, …).
+  {
+    const m = text.match(/^(\d{2})(\d{5})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      // Valid 1996-2012 MIJ bolt-on window (before the 10-char import format).
+      if (year2 >= 96 || year2 <= 12) {
+        const decoded = year2 >= 96 ? 1900 + year2 : 2000 + year2;
+        return singleCandidateMatch(m[0], decoded, 'jackson_mij_1996_plus', listingYear);
+      }
+    }
+  }
+
+  // MII (Made in India) JS20-series 8-digit: YY + 6-digit seq.
+  {
+    const m = text.match(/^(\d{2})(\d{6})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      if (year2 >= 96 || (year2 >= 0 && year2 <= 15)) {
+        const decoded = year2 >= 96 ? 1900 + year2 : 2000 + year2;
+        return singleCandidateMatch(m[0], decoded, 'jackson_mii_india', listingYear);
+      }
     }
   }
 

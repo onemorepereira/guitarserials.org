@@ -99,6 +99,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Gretsch date-coded (1966-1972) — first digit(s) = month, next digit = year (6-9 → 1966-1969, 0-2 → 1970-1972), remaining digits = production rank.',
   gretsch_pre1966_sequential:
     "Gretsch pre-1966 sequential (1939-1965) — 3-5 digit rising sequence. Year ranges overlap so the serial alone doesn't pin the year; use listing context and physical features.",
+  rickenbacker_1961_1986:
+    'Rickenbacker (1961-1986) — year letter A-Z (A=1961, Z=1986) + month letter A-L + 3-5 digit production number.',
   rickenbacker_1987_1996:
     'Rickenbacker (1987-1996) — month letter A-L + year digit 0-9 (1987-1996) + production number.',
   rickenbacker_1996_plus:
@@ -109,9 +111,15 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   jackson_usa: 'Jackson USA J-prefix — J + 4-digit sequence; no year encoded.',
   jackson_mij_professional:
     'Jackson MIJ Professional (1990-1995) — 6 digits; first digit = year offset (0=1990, 5=1995).',
+  jackson_mij_1996_plus:
+    'Jackson MIJ bolt-on (1996+) — 7 digits; first two digits are the 2-digit year.',
+  jackson_mii_india:
+    'Jackson MII India (JS20 series) — 8 digits; first two digits are the 2-digit year.',
   charvel_japan: 'Charvel Japan (modern) — JC + YY + 5-6 digit sequence.',
   charvel_san_dimas:
     'Charvel USA San Dimas (1981-1986) — 4-digit sequential; cumulative-range lookup needed for exact year.',
+  charvel_usa_promod:
+    'Charvel USA Pro-Mod (2004+) — 6-digit neckplate serial. Year not encoded; contact Charvel/Fender for the build date.',
   epiphone_factory:
     'Epiphone 1993-2008 — factory code (1-2 letters: S/U/P/R/I/F/T/Z/K/O/J/SI/CI/EE/EA/DW/MC/SJ/UC/FN/SM/…) + YY + MM + 4-digit rank.',
   epiphone_numeric: 'Epiphone 2008+ — 10-digit all-numeric: YY + MM + 6-digit rank.',

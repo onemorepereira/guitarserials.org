@@ -35,5 +35,15 @@ export function matchCharvel(text: string, listingYear: number | null): SerialMa
     }
   }
 
+  // USA Pro-Mod (2004+): 6-digit neckplate serial. No year encoded in the
+  // serial itself; contact Charvel/Fender for the build date or use the
+  // feature-based dating resources at usacharvels.com.
+  {
+    const m = text.match(/^(\d{6})$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'charvel_usa_promod', listingYear);
+    }
+  }
+
   return null;
 }

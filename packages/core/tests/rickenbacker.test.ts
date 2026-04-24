@@ -1,6 +1,37 @@
 import { describe, expect, it } from 'vitest';
 import { matchSerial } from '../src/index.js';
 
+describe('Rickenbacker 1961-1986', () => {
+  it('AA + digits = January 1961', () => {
+    const r = matchSerial('AA1234', 'Rickenbacker');
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1961);
+    expect(r!.brandFormat).toBe('rickenbacker_1961_1986');
+  });
+
+  it('TL + digits = December 1980', () => {
+    const r = matchSerial('TL567', 'Rickenbacker');
+    expect(r!.decodedYear).toBe(1980);
+    expect(r!.brandFormat).toBe('rickenbacker_1961_1986');
+  });
+
+  it('ZA + digits = January 1986 (last year of this era)', () => {
+    const r = matchSerial('ZA00001', 'Rickenbacker');
+    expect(r!.decodedYear).toBe(1986);
+  });
+
+  it('BG + digits = July 1962', () => {
+    const r = matchSerial('BG1234', 'Rickenbacker');
+    expect(r!.decodedYear).toBe(1962);
+  });
+
+  it('AM (month letter beyond L) does not match 1961-1986', () => {
+    // M is not a valid month letter in this era (only A-L)
+    // Falls through — no other rule matches A + M + digits
+    expect(matchSerial('AM1234', 'Rickenbacker')).toBeNull();
+  });
+});
+
 describe('Rickenbacker 1987-1996', () => {
   it('A0001 = January 1987', () => {
     const r = matchSerial('A0001', 'Rickenbacker');

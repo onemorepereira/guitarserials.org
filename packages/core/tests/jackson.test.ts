@@ -15,6 +15,17 @@ describe('Jackson modern import', () => {
     expect(r!.decodedYear).toBe(2022);
   });
 
+  it('NHJ2001234 = India Chushin Gakki 2020', () => {
+    const r = matchSerial('NHJ2001234', 'Jackson');
+    expect(r!.decodedYear).toBe(2020);
+    expect(r!.brandFormat).toBe('jackson_modern_import');
+  });
+
+  it('IWJ1901234 = Indonesia World 2019', () => {
+    const r = matchSerial('IWJ1901234', 'Jackson');
+    expect(r!.decodedYear).toBe(2019);
+  });
+
   it('unknown 3-letter prefix rejected', () => {
     expect(matchSerial('XXX2201234', 'Jackson')).toBeNull();
   });
