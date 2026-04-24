@@ -327,7 +327,7 @@ function ResultPanel({ result, onCopyPermalink, copied }: ResultPanelProps) {
           Check for typos, try a different brand, or see the brand format guide. If you know this is
           correct and we got it wrong, please{' '}
           <a
-            href="https://github.com/guitarserials/guitarserials/issues/new?template=incorrect_decode.md"
+            href="https://github.com/onemorepereira/guitarserials.org/issues/new?template=incorrect_decode.md"
             className="text-rust underline underline-offset-2 dark:text-amber"
           >
             open an incorrect-decode report

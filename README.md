@@ -60,7 +60,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for the sourcing standard. Every new fo
 2. Unit tests covering the rule and at least one plausible collision case (the test suite prevents regressions when new rules are added).
 3. A human-readable entry in `apps/web/src/lib/formatDescriptions.ts`.
 
-If the decoder got a specific serial wrong, the fastest path to a fix is an [incorrect-decode report](https://github.com/guitarserials/guitarserials/issues/new?template=incorrect_decode.md).
+If the decoder got a specific serial wrong, the fastest path to a fix is an [incorrect-decode report](https://github.com/onemorepereira/guitarserials.org/issues/new?template=incorrect_decode.md).
 
 ## License
 

@@ -6,11 +6,11 @@
   "author": "Miguel Pereira",
   "homepage": "https://guitarserials.org",
   "bugs": {
-    "url": "https://github.com/guitarserials/guitarserials/issues"
+    "url": "https://github.com/onemorepereira/guitarserials.org/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guitarserials/guitarserials.git",
+    "url": "git+https://github.com/onemorepereira/guitarserials.org.git",
     "directory": "packages/core"
   },
   "keywords": [

@@ -44,7 +44,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="mt-2">
             Try reloading the page. If it keeps happening, please{' '}
             <a
-              href="https://github.com/guitarserials/guitarserials/issues/new"
+              href="https://github.com/onemorepereira/guitarserials.org/issues/new"
               className="underline underline-offset-2"
             >
               open an issue

@@ -203,7 +203,7 @@ export class SiteStack extends cdk.Stack {
           StringLike: {
             // Restrict to this repo's main-branch workflows.
             'token.actions.githubusercontent.com:sub':
-              'repo:guitarserials/guitarserials:ref:refs/heads/main',
+              'repo:onemorepereira/guitarserials.org:ref:refs/heads/main',
           },
         },
         'sts:AssumeRoleWithWebIdentity',
