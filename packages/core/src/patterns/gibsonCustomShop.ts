@@ -101,14 +101,15 @@ export function matchGibsonCustomShop(
   //   M = model-year digit (0=R0/1960, 4=R4/1954, 7=R7/1957, 8=R8/1958, 9=R9/1959)
   //   Y = last digit of build year
   //   RRR or RRRR = production rank
-  // When M matches a documented R-series model digit, we snap Y to the
-  // closest valid CS production decade via listingYear (CS launched 1993).
-  // When M is not an R-series digit, we still match the format but leave
-  // year null (other CS historic lines may use different first-digit conventions).
+  // When M is an R-series model digit AND a listing year is provided, we snap
+  // Y to the closest valid CS production decade (CS launched 1993). Without a
+  // listing year, or when M is not an R-series digit, we still claim the
+  // format but leave decoded year null — the listing year can be added later
+  // to pin the build year.
   {
     const m = text.match(/^(\d)(\d)(\d{3,4})$/);
     const isCs = isCsBrand || isGibsonHistoricReissue(modelHint);
-    if (m && listingYear !== null && isCs) {
+    if (m && isCs) {
       const modelDigit = parseInt(m[1] as string, 10);
       const yearDigit = parseInt(m[2] as string, 10);
       const isRSeriesModel =
@@ -117,7 +118,7 @@ export function matchGibsonCustomShop(
         modelDigit === 7 ||
         modelDigit === 8 ||
         modelDigit === 9;
-      if (isRSeriesModel) {
+      if (isRSeriesModel && listingYear !== null) {
         const options = [
           1990 + yearDigit,
           2000 + yearDigit,

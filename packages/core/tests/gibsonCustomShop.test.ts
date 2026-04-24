@@ -97,8 +97,31 @@ describe('Gibson Custom Shop serials', () => {
     expect(r!.decodedYear).toBeNull();
   });
 
-  it('historic reissue skipped without year', () => {
-    expect(matchSerial('12345', 'Gibson Custom Shop')).toBeNull();
+  it('historic reissue matches format without listing year, year null', () => {
+    // Without a listing year we can't pin the build year, but the format is
+    // still a Custom Shop historic reissue — claim it with year null so the
+    // user gets a format identification. First digit 1 is not R-series so
+    // year would be null regardless.
+    const r = matchSerial('12345', 'Gibson Custom Shop');
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('gibson_cs_historic');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('historic R9 reissue 92414 without listing year matches format, year null', () => {
+    // First digit 9 = R9/1959 reissue, second digit 2 = build-year digit
+    // (2002, 2012, 2022). Without a listing year we can't pick among the
+    // decades — format matches, year left null.
+    const r = matchSerial('92414', 'Gibson Custom Shop');
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('gibson_cs_historic');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('historic R9 reissue 92414 with listing year snaps to decade', () => {
+    const r = matchSerial('92414', 'Gibson Custom Shop', { listingYear: 2014 });
+    expect(r!.brandFormat).toBe('gibson_cs_historic');
+    expect(r!.decodedYear).toBe(2012);
   });
 
   it('short numeric matches as pre-1977 for Gibson (not CS historic)', () => {
