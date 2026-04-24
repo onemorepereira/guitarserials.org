@@ -51,11 +51,17 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_neckplate:
     'Pre-1976 Fender neckplate 8-digit serial — year not encoded in the serial alone.',
   fender_avri_bridge: 'Fender AVRI bridge-plate short-numeric serial. Year inferred from listing.',
-  prs_core: 'PRS Core (2008+) — first two digits encode the year.',
-  prs_s2: 'PRS S2 series — prefix is definitive, year not encoded.',
-  prs_ce: 'PRS CE series — prefix is definitive, year not encoded.',
+  prs_core: 'PRS Core / CE 2008+ — first two digits encode the year (08–29 → 2008–2029).',
+  prs_core_pre2008:
+    'PRS Core / CE pre-2008 — single-digit year prefix. Decade disambiguation requires the cumulative-production-range table; we leave year undecoded by default.',
+  prs_s2:
+    'PRS S2 series (2013+) — sequential S2-prefix; year inferrable from cumulative production ranges (not baked into the matcher).',
+  prs_ce: 'PRS CE-prefix stamp — uncommon; most CE models carry a standard year-prefix serial.',
   prs_cti: 'PRS Indonesia CTI — the letter after CTI encodes the year (A=2018).',
-  prs_ia: 'PRS SE Indonesia IA-IE — year encoded in the letter (A=2014).',
+  prs_ia: 'PRS SE Indonesia IA–IE — letter encodes year (A=2014, B=2015, …, E=2018).',
+  prs_se_korea:
+    'PRS SE Korea single-letter year (2000–2020) — A=2000, B=2001, …, U=2020. Produced primarily by World Musical Instruments.',
+  prs_acoustic: 'PRS Acoustic (2009+) — A + 2-digit year + sequential (e.g. A151234 = 2015).',
   heritage_single: 'Heritage single-letter year code (B=1985 through Z=2009).',
   heritage_double: 'Heritage double-letter year code (AA=2010, AB=2011, ..., AP=2025).',
   heritage_cs: 'Heritage Custom Shop HC-prefix — 1YYXXXX form encodes the year after HC.',
