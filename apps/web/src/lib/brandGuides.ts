@@ -604,22 +604,10 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       "Paul Reed Smith's serial numbering splits by production origin. Core and S2 are made in Stevensville, Maryland; CE is the older Stevensville economy line; SE is imported (historically Korea, now Indonesia). Most modern PRS formats encode the year somewhere in the digits.",
     sources: [
       {
-        label: 'PRS — Year Identification',
+        label: 'PRS — Year Identification (official)',
         url: 'https://support.prsguitars.com/hc/en-us/articles/4408314427547-Year-Identification',
         kind: 'manufacturer',
-        note: "PRS Guitars' official article documenting the year-prefix convention across Set-Neck, CE, Acoustic, and S2 models.",
-      },
-      {
-        label: 'PRS — When was my PRS Guitar built?',
-        url: 'https://support.prsguitars.com/hc/en-us/articles/4408350481179-When-was-my-PRS-Guitar-built',
-        kind: 'manufacturer',
-        note: 'Companion article describing serial-number placement by model and the year-prefix rule.',
-      },
-      {
-        label: 'PRS — Year Identification (full range tables)',
-        url: 'https://support.prsguitars.com/hc/en-us/articles/4408314427547-Year-Identification',
-        kind: 'manufacturer',
-        note: 'Comprehensive official tables for every PRS model line — set-neck Core (1985–2024), S2 (2013–2024), CE (1988–2008), EG (1990–1995), Swamp Ash Special (1997–2009), and all three bass variants. This is the authoritative source; the decoder ships every row verbatim.',
+        note: "The authoritative source. PRS publishes per-year sequential ranges for every model line — set-neck Core (1985–2024), S2 (2013–2024), CE (1988–2008), EG (1990–1995), Swamp Ash Special (1997–2009), and all three bass variants. The decoder ships every row verbatim.",
       },
       {
         label: 'Hendrix Guitars — PRS Set-Neck Sequential Serial Numbers',
