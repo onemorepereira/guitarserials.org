@@ -103,5 +103,24 @@ export function matchGretsch(text: string, listingYear: number | null): SerialMa
     }
   }
 
+  // Pre-1966 sequential (1939–1965) fallback. Rising sequence starting at
+  // 001 in 1939. Per the official GretschTech "Serial Numbers 1930s-1966"
+  // article:
+  //   1939-1945: handwritten 3-4 digits (001-999) on inside of body.
+  //   1945-1954: 4-digit, pencil or label.
+  //   1954-1965: 5-digit, label or headstock, ~13000-84000.
+  // Ranges overlap heavily across years — we match the format and leave
+  // year null. Placed AFTER the date-coded rule so 5-digit MYRRR strings
+  // from 1966-1972 still decode correctly.
+  {
+    const m = text.match(/^(\d{3,5})$/);
+    if (m) {
+      const n = parseInt(m[1] as string, 10);
+      if (n >= 1 && n <= 99999) {
+        return singleCandidateMatch(m[0], null, 'gretsch_pre1966_sequential', listingYear);
+      }
+    }
+  }
+
   return null;
 }

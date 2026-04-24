@@ -97,6 +97,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Gretsch modern (2003+) — 2-letter factory code (JT/JD/JF/KP/KS/CY/CS) + YY + MM + 4-digit sequence.',
   gretsch_date_coded_1966_1972:
     'Gretsch date-coded (1966-1972) — first digit(s) = month, next digit = year (6-9 → 1966-1969, 0-2 → 1970-1972), remaining digits = production rank.',
+  gretsch_pre1966_sequential:
+    "Gretsch pre-1966 sequential (1939-1965) — 3-5 digit rising sequence. Year ranges overlap so the serial alone doesn't pin the year; use listing context and physical features.",
   rickenbacker_1987_1996:
     'Rickenbacker (1987-1996) — month letter A-L + year digit 0-9 (1987-1996) + production number.',
   rickenbacker_1996_plus:

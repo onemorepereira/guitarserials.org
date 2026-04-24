@@ -969,6 +969,17 @@ BRAND_GUIDES.gretsch = {
         'Without a listing year near 1966-1972, we require the year-digit to be in the valid 0-2/6-9 range and plausibility-check the resulting year.',
       ],
     },
+    {
+      id: 'gretsch_pre1966_sequential',
+      name: 'Pre-1966 sequential (1939–1965)',
+      yearRange: '1939–1965',
+      example: '45000',
+      rule: 'A single rising sequence from 001 (1939) up through ~84000 (1965). 1939-1945 = handwritten 3-4 digits on the inside of the body. 1945-1954 = 4-digit written in pencil or on a label. 1954-1965 = 5-digit on a label or headstock (~13000-84000 range). Year ranges overlap significantly across years — the serial alone narrows to a window, not a specific year.',
+      gotchas: [
+        'Pre-1939 Gretsch instruments often have no serial number at all — dating those requires feature-based analysis (pickups, hardware, binding).',
+        "Five-digit serials from this era overlap with the 1966-1972 date-coded format on the first character; the matcher tries the date-coded interpretation first and falls back to pre-1966 sequential when the year/month digits aren't valid.",
+      ],
+    },
   ],
   findSerial: {
     intro:
