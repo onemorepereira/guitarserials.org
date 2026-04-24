@@ -1,7 +1,7 @@
 {
   "name": "@guitarserials/core",
-  "version": "0.2.0",
-  "description": "Guitar serial-number decoder — pure TypeScript, zero runtime dependencies. Supports 18 brands across a century of production. Emits month + day precision where the format encodes it.",
+  "version": "0.3.0",
+  "description": "Guitar serial-number decoder — pure TypeScript, zero runtime dependencies. Supports 18 brands across a century of production, month/day precision where encoded, and every PRS model line from 1985 through 2024.",
   "license": "MIT",
   "author": "Miguel Pereira",
   "homepage": "https://guitarserials.org",

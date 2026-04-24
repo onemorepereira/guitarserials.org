@@ -64,10 +64,21 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_avri_bridge: 'Fender AVRI bridge-plate short-numeric serial. Year inferred from listing.',
   prs_core: 'PRS Core / CE 2008+ — first two digits encode the year (08–29 → 2008–2029).',
   prs_core_pre2008:
-    'PRS Core / CE pre-2008 — single-digit year prefix + sequential. Year decoded via the Hendrix Guitars cumulative-production-range table (1985-2007).',
+    "PRS Core set-neck pre-2008 — single-digit year prefix + sequential. Year decoded via PRS's official set-neck cumulative-range table (1985–2024).",
   prs_s2:
-    'PRS S2 series (2013+) — sequential S2-prefix; year inferrable from cumulative production ranges (not baked into the matcher).',
-  prs_ce: 'PRS CE-prefix stamp — uncommon; most CE models carry a standard year-prefix serial.',
+    'PRS S2 series (2013+) — S2-prefix + sequential. Year decoded via the official per-year S2 range table (2013–2024).',
+  prs_ce:
+    'PRS CE-prefix — decoded via PRS\'s official CE range table (1988–2008). Pre-1998 CE serials also appear with a single-digit "7" prefix and require a model hint to disambiguate from Core.',
+  prs_swamp_ash:
+    'PRS Swamp Ash Special — SA-prefix (1998+) or single-digit "8" prefix (1997–1998, model-hint gated). Year decoded via PRS\'s official Swamp Ash range table.',
+  prs_eg:
+    'PRS EG models (1990–1995) — single-digit "5" prefix + sequential. Year decoded via PRS\'s official EG range table; requires a model hint to disambiguate from Core.',
+  prs_bass_bolt_on:
+    'PRS Bolt-On Bass (1989–1991) — single-digit "4" prefix + sequential, model-hint gated. Year decoded via PRS\'s official bolt-on bass table.',
+  prs_bass_set_neck:
+    'PRS Set-Neck Bass (1986–1991) — single-digit "9" prefix + sequential, model-hint gated. Year decoded via PRS\'s official set-neck bass table.',
+  prs_bass_electric:
+    "PRS Electric Bass (2000–2004) — EB-prefix + sequential. Year decoded via PRS's official Electric Bass range table.",
   prs_cti: 'PRS Indonesia CTI — the letter after CTI encodes the year (A=2018).',
   prs_ia: 'PRS SE Indonesia IA–IE — letter encodes year (A=2014, B=2015, …, E=2018).',
   prs_se_korea:
