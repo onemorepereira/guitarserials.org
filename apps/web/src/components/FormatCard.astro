@@ -1,0 +1,85 @@
+---
+import type { BrandFormat } from '../lib/brandGuides';
+
+interface Props {
+  /** Brand id needed to build the "Try it" permalink back to the brand page. */
+  brandId: string;
+  /** Brand slug used in the permalink path. */
+  brandSlug: string;
+  format: BrandFormat;
+}
+
+const { brandId, brandSlug, format } = Astro.props;
+
+function anchorFor(f: BrandFormat): string {
+  return `f-${f.id.replace(/_/g, '-')}`;
+}
+
+const p = new URLSearchParams();
+p.set('s', format.example);
+p.set('b', brandId);
+if (format.exampleYear) p.set('y', String(format.exampleYear));
+if (format.exampleModelHint) p.set('m', format.exampleModelHint);
+const tryItHref = `/brands/${brandSlug}?${p.toString()}#decode`;
+
+const hasGotchas = format.gotchas && format.gotchas.length > 0;
+const hasFormatSources = format.sources && format.sources.length > 0;
+const hasDetails = hasGotchas || hasFormatSources;
+---
+
+<article
+  id={anchorFor(format)}
+  class="scroll-mt-24 rounded-md border border-paper-line bg-paper-raised px-5 py-4 shadow-sm transition dark:border-espresso-line dark:bg-espresso-raised"
+>
+  <div class="flex flex-wrap items-baseline justify-between gap-2">
+    <h3 class="display text-lg font-semibold text-ink dark:text-cream">{format.name}</h3>
+    <span class="text-xs text-ink-faint dark:text-cream-faint">{format.yearRange}</span>
+  </div>
+
+  <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+    <span class="text-ink-faint dark:text-cream-faint">Example</span>
+    <code class="rounded bg-paper-sunken px-2 py-0.5 font-mono text-sm text-ink dark:bg-espresso-sunken dark:text-cream">
+      {format.example}
+    </code>
+    <a
+      href={tryItHref}
+      class="ml-1 text-sm text-rust underline underline-offset-2 hover:text-rust-strong dark:text-amber dark:hover:text-amber-strong"
+    >
+      Try it →
+    </a>
+  </div>
+
+  <p class="mt-3 text-sm leading-relaxed text-ink-soft dark:text-cream-soft">{format.rule}</p>
+
+  {hasDetails && (
+    <details class="mt-3 text-xs">
+      <summary class="cursor-pointer select-none text-ink-faint hover:text-rust dark:text-cream-faint dark:hover:text-amber">
+        Gotchas &amp; format-specific sources
+      </summary>
+      <div class="mt-2 flex flex-col gap-3 border-l-2 border-paper-line pl-3 dark:border-espresso-line">
+        {hasGotchas && (
+          <ul class="list-disc space-y-1 pl-4 text-ink-soft dark:text-cream-soft">
+            {format.gotchas!.map((g) => <li>{g}</li>)}
+          </ul>
+        )}
+        {hasFormatSources && (
+          <div class="text-ink-soft dark:text-cream-soft">
+            <p class="mb-1 font-medium uppercase tracking-wide text-ink-faint dark:text-cream-faint">
+              Sources specific to this format
+            </p>
+            <ul class="space-y-1">
+              {format.sources!.map((s) => (
+                <li>
+                  <a href={s.url} rel="noopener external" class="underline underline-offset-2 hover:text-rust dark:hover:text-amber">
+                    {s.label}
+                  </a>
+                  {s.note && <span class="block text-ink-faint dark:text-cream-faint">{s.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </details>
+  )}
+</article>

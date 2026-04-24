@@ -1,4 +1,6 @@
 ---
+import Decoder from '../../components/Decoder';
+import FormatCard from '../../components/FormatCard.astro';
 import Base from '../../layouts/Base.astro';
 import { BRAND_GUIDES, type BrandFormat, type Source } from '../../lib/brandGuides';
 import { BRANDS } from '../../lib/brands';
@@ -11,10 +13,10 @@ const KIND_LABEL: Record<Source['kind'], string> = {
 };
 
 const KIND_STYLE: Record<Source['kind'], string> = {
-  manufacturer: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
-  reference: 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300',
-  community: 'bg-neutral-200 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300',
-  book: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300',
+  manufacturer: 'bg-sage-faint text-sage dark:bg-sage-faint-dark dark:text-sage-dark-text',
+  reference: 'bg-ochre-faint text-ochre dark:bg-ochre-faint-dark dark:text-ochre-dark-text',
+  community: 'bg-paper-sunken text-ink-soft dark:bg-espresso-sunken dark:text-cream-soft',
+  book: 'bg-rust-faint text-rust dark:bg-amber-faint dark:text-amber',
 };
 
 export function getStaticPaths() {
@@ -29,14 +31,69 @@ if (!brandMeta || !guide) {
   return Astro.redirect('/404');
 }
 
-function tryItHref(format: BrandFormat): string {
-  const p = new URLSearchParams();
-  p.set('s', format.example);
-  p.set('b', brandMeta!.id);
-  if (format.exampleYear) p.set('y', String(format.exampleYear));
-  if (format.exampleModelHint) p.set('m', format.exampleModelHint);
-  return `/?${p.toString()}`;
+function anchorFor(format: BrandFormat): string {
+  return `f-${format.id.replace(/_/g, '-')}`;
 }
+
+/**
+ * Describe a serial "shape" for the quick-pick row. "CS + 5 digits",
+ * "8 digits", "AA12345" for mixed shapes. Keeps the table scannable.
+ */
+function shapeOf(example: string): string {
+  const letters = example.match(/^[A-Za-z]+/);
+  const rest = example.slice(letters?.[0]?.length ?? 0);
+  const restDigitsOnly = /^\d+$/.test(rest);
+  const prefix = letters?.[0] ?? '';
+  if (prefix && restDigitsOnly) {
+    return `${prefix} + ${rest.length} digits`;
+  }
+  if (!prefix && restDigitsOnly) {
+    return `${rest.length} digits`;
+  }
+  return example;
+}
+
+// Group formats by era when any format has one, otherwise render flat.
+const hasEras = guide.formats.some((f) => f.era);
+const eraOrder: string[] = [];
+const eraMap = new Map<string, BrandFormat[]>();
+const unassigned: BrandFormat[] = [];
+for (const f of guide.formats) {
+  if (!f.era) {
+    unassigned.push(f);
+    continue;
+  }
+  if (!eraMap.has(f.era)) {
+    eraOrder.push(f.era);
+    eraMap.set(f.era, []);
+  }
+  eraMap.get(f.era)!.push(f);
+}
+
+function splitByPriority(list: BrandFormat[]): { primary: BrandFormat[]; variants: BrandFormat[] } {
+  return {
+    primary: list.filter((f) => f.primary),
+    variants: list.filter((f) => !f.primary),
+  };
+}
+
+// Source-kind breakdown for the chip row at the top of the header.
+const kindCounts: Record<Source['kind'], number> = {
+  manufacturer: 0,
+  reference: 0,
+  community: 0,
+  book: 0,
+};
+for (const s of guide.sources) kindCounts[s.kind] += 1;
+const kindSummary = (Object.entries(kindCounts) as Array<[Source['kind'], number]>).filter(
+  ([, n]) => n > 0,
+);
+
+// Quick-pick table: primary formats first so the common cases come up.
+const quickPickFormats = guide.formats.slice().sort((a, b) => {
+  if (!!a.primary !== !!b.primary) return a.primary ? -1 : 1;
+  return 0;
+});
 
 const title = `${brandMeta.label} serial number decoder — guitarserials.org`;
 const description = `Decode ${brandMeta.label} serial numbers. Every supported format, what each one encodes, and example serials you can try.`;
@@ -45,12 +102,7 @@ const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'Home',
-      item: 'https://guitarserials.org/',
-    },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://guitarserials.org/' },
     {
       '@type': 'ListItem',
       position: 2,
@@ -69,102 +121,178 @@ const breadcrumbJsonLd = {
     set:html={JSON.stringify(breadcrumbJsonLd)}
   />
 
-  <nav class="mb-6 text-sm text-neutral-600 dark:text-neutral-400">
-    <a href="/" class="hover:underline">Home</a>
+  <nav class="mb-6 text-xs uppercase tracking-wide text-ink-faint dark:text-cream-faint">
+    <a href="/" class="hover:text-rust dark:hover:text-amber">Home</a>
     <span class="mx-2">/</span>
-    <span>{brandMeta.label}</span>
+    <span class="text-ink-soft dark:text-cream-soft">{brandMeta.label}</span>
   </nav>
 
-  <header class="flex flex-col gap-3">
-    <h1 class="text-4xl font-bold tracking-tight">{brandMeta.label}</h1>
-    <p class="max-w-3xl text-lg text-neutral-700 dark:text-neutral-300">{guide.intro}</p>
-    {guide.eraPara && (
-      <p class="max-w-3xl text-base text-neutral-700 dark:text-neutral-300">{guide.eraPara}</p>
+  <header class="flex flex-col gap-4">
+    <h1 class="display text-5xl font-semibold leading-[1.05] text-ink md:text-6xl dark:text-cream">
+      {brandMeta.label}
+    </h1>
+    <p class="max-w-3xl text-lg text-ink-soft dark:text-cream-soft">{guide.intro}</p>
+
+    {kindSummary.length > 0 && (
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-faint dark:text-cream-faint">
+        <span class="uppercase tracking-wide">Sources</span>
+        {kindSummary.map(([kind, n]) => (
+          <span class={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${KIND_STYLE[kind]}`}>
+            {n} {KIND_LABEL[kind]}{n === 1 ? '' : 's'}
+          </span>
+        ))}
+        <a href="#sources" class="underline underline-offset-2 hover:text-rust dark:hover:text-amber">view all</a>
+      </p>
     )}
   </header>
 
-  <div class="mt-6 flex flex-wrap items-center gap-3 text-sm">
-    <a
-      href={`/?b=${encodeURIComponent(brandMeta.id)}`}
-      class="inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 font-semibold text-white transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
-    >
-      Decode a {brandMeta.label} serial →
-    </a>
-    <a
-      href={`/brands/${brandMeta.slug}/find-serial`}
-      class="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 bg-white px-3 py-1.5 font-medium text-neutral-800 transition hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
-    >
-      Where to find your serial
-    </a>
-  </div>
-
-  <section class="mt-10">
-    <h2 class="text-2xl font-semibold tracking-tight">Supported formats</h2>
-    <div class="mt-6 flex flex-col gap-4">
-      {
-        guide.formats.map((format) => (
-          <article class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-            <div class="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 class="text-lg font-semibold">{format.name}</h3>
-              <span class="text-sm text-neutral-600 dark:text-neutral-400">{format.yearRange}</span>
-            </div>
-
-            <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
-              <span class="text-neutral-600 dark:text-neutral-400">Example:</span>
-              <code class="rounded bg-neutral-100 px-2 py-0.5 font-mono text-sm dark:bg-neutral-800">
-                {format.example}
-              </code>
-              <a
-                href={tryItHref(format)}
-                class="ml-1 text-sm text-neutral-700 underline-offset-2 hover:underline dark:text-neutral-300"
-              >
-                Try it →
-              </a>
-            </div>
-
-            <p class="mt-3 text-sm text-neutral-700 dark:text-neutral-300">{format.rule}</p>
-
-            {format.gotchas && format.gotchas.length > 0 && (
-              <div class="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
-                <p class="font-medium">Gotchas</p>
-                <ul class="mt-1 list-disc space-y-0.5 pl-5">
-                  {format.gotchas.map((g) => <li>{g}</li>)}
-                </ul>
-              </div>
-            )}
-
-            {format.sources && format.sources.length > 0 && (
-              <div class="mt-3 border-t border-neutral-200 pt-3 text-xs text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
-                <p class="mb-1 font-medium uppercase tracking-wide">Sources for this format</p>
-                <ul class="space-y-1">
-                  {format.sources.map((s) => (
-                    <li>
-                      <a href={s.url} rel="noopener external" class="underline underline-offset-2 hover:text-neutral-900 dark:hover:text-neutral-100">
-                        {s.label}
-                      </a>
-                      <span class={`ml-2 inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${KIND_STYLE[s.kind]}`}>
-                        {KIND_LABEL[s.kind]}
-                      </span>
-                      {s.note && <span class="block text-neutral-500 dark:text-neutral-500">{s.note}</span>}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </article>
-        ))
-      }
-    </div>
+  <section
+    id="decode"
+    class="mt-8 rounded-lg border border-paper-line bg-paper-raised px-6 py-6 shadow-sm dark:border-espresso-line dark:bg-espresso-raised"
+  >
+    <h2 class="display mb-4 text-xl italic text-ink-soft dark:text-cream-soft">
+      Decode a {brandMeta.label} serial
+    </h2>
+    <Decoder client:load initialBrand={brandMeta.id} />
   </section>
 
-  <section class="mt-10 rounded-xl border border-neutral-200 bg-white p-5 text-sm dark:border-neutral-800 dark:bg-neutral-900">
-    <h2 class="text-lg font-semibold tracking-tight">Sources</h2>
+  <section id="quick-pick" class="mt-12">
+    <div class="flex items-baseline justify-between gap-4 border-b border-paper-line pb-2 dark:border-espresso-line">
+      <h2 class="display text-2xl font-medium italic text-ink dark:text-cream">
+        Quick pick
+      </h2>
+      <span class="hidden text-xs text-ink-faint md:inline dark:text-cream-faint">
+        Find your shape, jump to the format
+      </span>
+    </div>
+    <table class="mt-4 w-full border-separate border-spacing-0 text-sm">
+      <tbody>
+        {quickPickFormats.map((f, i) => (
+          <tr class={i % 2 === 1 ? 'bg-paper-sunken/40 dark:bg-espresso-sunken/40' : ''}>
+            <td class="border-b border-paper-line px-3 py-2 font-mono text-ink dark:border-espresso-line dark:text-cream">
+              {shapeOf(f.example)}
+            </td>
+            <td class="border-b border-paper-line px-3 py-2 font-mono text-xs text-ink-faint dark:border-espresso-line dark:text-cream-faint">
+              e.g. {f.example}
+            </td>
+            <td class="border-b border-paper-line px-3 py-2 dark:border-espresso-line">
+              <a
+                href={`#${anchorFor(f)}`}
+                class="display italic text-ink-soft hover:text-rust dark:text-cream-soft dark:hover:text-amber"
+              >
+                {f.name}
+              </a>
+              {f.primary && (
+                <span class="ml-2 text-[10px] uppercase tracking-wide text-rust dark:text-amber">primary</span>
+              )}
+            </td>
+            <td class="hidden border-b border-paper-line px-3 py-2 text-right text-xs text-ink-faint md:table-cell dark:border-espresso-line dark:text-cream-faint">
+              {f.yearRange}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  {guide.eraPara && (
+    <section class="mt-12 max-w-3xl text-ink-soft dark:text-cream-soft">
+      <h2 class="display mb-3 text-2xl font-medium italic text-ink dark:text-cream">
+        Eras, in brief
+      </h2>
+      <p class="text-base">{guide.eraPara}</p>
+    </section>
+  )}
+
+  <section class="mt-12">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      Supported formats
+    </h2>
+
+    {hasEras ? (
+      <div class="mt-6 flex flex-col gap-10">
+        {eraOrder.map((era) => {
+          const { primary, variants } = splitByPriority(eraMap.get(era)!);
+          return (
+            <div class="flex flex-col gap-4">
+              <h3 class="display text-xl font-medium text-ink dark:text-cream">{era}</h3>
+              {primary.map((f) => (
+                <FormatCard brandId={brandMeta.id} brandSlug={brandMeta.slug} format={f} />
+              ))}
+              {variants.length > 0 && (
+                <details class="group rounded-md border border-dashed border-paper-line px-4 py-2 dark:border-espresso-line open:border-solid">
+                  <summary class="cursor-pointer select-none text-sm text-ink-soft group-open:mb-3 hover:text-rust dark:text-cream-soft dark:hover:text-amber">
+                    {variants.length} less common variant{variants.length === 1 ? '' : 's'}
+                  </summary>
+                  <div class="flex flex-col gap-3">
+                    {variants.map((f) => (
+                      <FormatCard brandId={brandMeta.id} brandSlug={brandMeta.slug} format={f} />
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          );
+        })}
+
+        {unassigned.length > 0 && (
+          <div class="flex flex-col gap-4">
+            <h3 class="display text-xl font-medium text-ink dark:text-cream">Other formats</h3>
+            {unassigned.map((f) => (
+              <FormatCard brandId={brandMeta.id} brandSlug={brandMeta.slug} format={f} />
+            ))}
+          </div>
+        )}
+      </div>
+    ) : (
+      <div class="mt-6 flex flex-col gap-4">
+        {splitByPriority(guide.formats).primary.map((f) => (
+          <FormatCard brandId={brandMeta.id} brandSlug={brandMeta.slug} format={f} />
+        ))}
+        {splitByPriority(guide.formats).variants.length > 0 && (
+          <details class="group rounded-md border border-dashed border-paper-line px-4 py-2 dark:border-espresso-line open:border-solid">
+            <summary class="cursor-pointer select-none text-sm text-ink-soft group-open:mb-3 hover:text-rust dark:text-cream-soft dark:hover:text-amber">
+              {splitByPriority(guide.formats).variants.length} less common variant{splitByPriority(guide.formats).variants.length === 1 ? '' : 's'}
+            </summary>
+            <div class="flex flex-col gap-3">
+              {splitByPriority(guide.formats).variants.map((f) => (
+                <FormatCard brandId={brandMeta.id} brandSlug={brandMeta.slug} format={f} />
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+    )}
+  </section>
+
+  <section id="find-serial" class="mt-16 scroll-mt-24">
+    <h2 class="display border-b border-paper-line pb-2 text-2xl font-medium italic text-ink dark:border-espresso-line dark:text-cream">
+      Where to find your serial
+    </h2>
+    <p class="mt-4 max-w-3xl text-ink-soft dark:text-cream-soft">{guide.findSerial.intro}</p>
+    <ul class="mt-6 flex flex-col gap-3">
+      {
+        guide.findSerial.locations.map((loc) => (
+          <li class="rounded-md border border-paper-line bg-paper-raised px-5 py-4 dark:border-espresso-line dark:bg-espresso-raised">
+            <p class="display font-medium text-ink dark:text-cream">{loc.place}</p>
+            <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">{loc.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section
+    id="sources"
+    class="mt-16 scroll-mt-24 rounded-md border border-paper-line bg-paper-raised px-5 py-5 dark:border-espresso-line dark:bg-espresso-raised"
+  >
+    <h2 class="display text-xl font-medium italic text-ink dark:text-cream">Sources</h2>
     {guide.sourceNote && (
-      <p class="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-amber-900 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-amber-200">
+      <p class="mt-3 rounded-md border border-rust-faint bg-rust-faint/60 p-3 text-sm text-rust-strong dark:border-amber-faint dark:bg-amber-faint/60 dark:text-amber-strong">
         <strong>Note on source quality:</strong> {guide.sourceNote}
       </p>
     )}
-    <ul class="mt-3 flex flex-col gap-3">
+    <ul class="mt-4 flex flex-col gap-3 text-sm">
       {
         guide.sources.map((s) => (
           <li class="flex flex-col gap-1">
@@ -172,21 +300,23 @@ const breadcrumbJsonLd = {
               <a
                 href={s.url}
                 rel="noopener external"
-                class="font-medium text-neutral-900 underline underline-offset-2 hover:text-neutral-700 dark:text-neutral-100 dark:hover:text-neutral-300"
+                class="font-medium text-ink underline underline-offset-2 hover:text-rust dark:text-cream dark:hover:text-amber"
               >
                 {s.label}
               </a>
-              <span class={`inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${KIND_STYLE[s.kind]}`}>
+              <span class={`inline-block rounded px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide ${KIND_STYLE[s.kind]}`}>
                 {KIND_LABEL[s.kind]}
               </span>
             </div>
-            {s.note && <p class="text-neutral-600 dark:text-neutral-400">{s.note}</p>}
+            {s.note && <p class="text-ink-soft dark:text-cream-soft">{s.note}</p>}
           </li>
         ))
       }
     </ul>
-    <p class="mt-4 border-t border-neutral-200 pt-3 text-xs text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
-      Every format rule on this page traces back to at least one of the sources above. If you spot an error or have an additional authoritative source, see the <a href="/methodology" class="underline">methodology</a> for the sourcing standard.
+    <p class="mt-5 border-t border-paper-line pt-3 text-xs text-ink-faint dark:border-espresso-line dark:text-cream-faint">
+      Every format rule on this page traces back to at least one of the sources above. If you spot
+      an error or have an additional authoritative source, see the{' '}
+      <a href="/methodology" class="underline underline-offset-2 hover:text-rust dark:hover:text-amber">methodology</a>.
     </p>
   </section>
 </Base>

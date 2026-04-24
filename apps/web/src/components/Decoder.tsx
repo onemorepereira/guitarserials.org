@@ -39,6 +39,15 @@ interface FormState {
 
 const EMPTY_FORM: FormState = { serial: '', brand: '', listingYear: '', modelHint: '' };
 
+export interface DecoderProps {
+  /**
+   * Optional brand to preselect when the URL has no `?b=` override. Used by
+   * the per-brand pages so the decoder is scoped to that brand by default
+   * but users can still switch to "Unsure — try all".
+   */
+  initialBrand?: string;
+}
+
 /** Seed examples shown as clickable chips when the form is empty. */
 const EXAMPLE_CHIPS: Array<{ serial: string; brand: string; year?: string; label: string }> = [
   { serial: '82765501', brand: 'gibson', label: 'Gibson 8-digit' },
@@ -118,20 +127,27 @@ const selectClass =
 const labelClass =
   'text-[11px] font-medium uppercase tracking-[0.08em] text-ink-faint dark:text-cream-faint';
 
-export default function Decoder() {
-  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+export default function Decoder({ initialBrand }: DecoderProps = {}) {
+  const seed: FormState = initialBrand ? { ...EMPTY_FORM, brand: initialBrand } : EMPTY_FORM;
+  const [form, setForm] = useState<FormState>(seed);
   const [submitted, setSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const initial = readFormFromUrl();
+    const merged: FormState = {
+      ...initial,
+      brand: initial.brand || initialBrand || '',
+    };
     if (initial.serial) {
-      setForm(initial);
+      setForm(merged);
       setSubmitted(true);
+    } else if (initialBrand) {
+      setForm((prev) => ({ ...prev, brand: prev.brand || initialBrand }));
     }
     setHydrated(true);
-  }, []);
+  }, [initialBrand]);
 
   const result = useMemo<DecodeResult>(
     () => (submitted ? compute(form) : { kind: 'empty' }),
@@ -171,7 +187,10 @@ export default function Decoder() {
     }
   };
 
-  const showChips = !submitted || result.kind === 'empty';
+  // Hide the multi-brand example chips when the decoder is scoped to a
+  // specific brand — the brand page's format list already surfaces
+  // per-format "Try it" examples.
+  const showChips = !initialBrand && (!submitted || result.kind === 'empty');
 
   return (
     <div className="flex flex-col gap-5">

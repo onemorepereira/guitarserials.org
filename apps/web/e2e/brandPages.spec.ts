@@ -21,12 +21,16 @@ test.describe('Brand pages', () => {
     await expect(page.getByRole('heading', { level: 1, name: 'Gibson Custom Shop' })).toBeVisible();
   });
 
-  test('find-serial page renders locations', async ({ page }) => {
+  test('legacy find-serial URL redirects to brand page #find-serial anchor', async ({ page }) => {
+    // The find-serial content is now inlined on the brand page under the
+    // #find-serial anchor. The legacy /brands/<slug>/find-serial URL is a
+    // static redirect so old links keep working.
     await page.goto('/brands/fender/find-serial');
-    await expect(
-      page.getByRole('heading', { level: 1, name: /where to find your fender serial/i }),
-    ).toBeVisible();
-    await expect(page.getByRole('heading', { name: /neck plate/i }).first()).toBeVisible();
+    await page.waitForURL('**/brands/fender#find-serial');
+    // Inlined section renders under an h2, and the intro sentence mentions
+    // locations like neck plate.
+    await expect(page.getByRole('heading', { name: /where to find your serial/i }).first()).toBeVisible();
+    await expect(page.getByText(/neck plate/i).first()).toBeVisible();
   });
 
   test('home page brand card links to the guide', async ({ page }) => {

@@ -30,6 +30,19 @@ export interface BrandFormat {
    * or non-obvious decoding rule). When empty, the brand-level sources apply.
    */
   sources?: Source[];
+  /**
+   * Optional era label for grouping. Brands with many formats (Gibson,
+   * Fender, Squier, G&L…) are easier to scan when related formats cluster.
+   * Brands with a handful of formats can omit this and render flat.
+   */
+  era?: string;
+  /**
+   * Primary formats cover the bulk of real-world serials a user is likely
+   * to see today; they render prominently. Non-primary formats (vintage,
+   * edge cases) tuck into a "Less common variants" disclosure so the
+   * common path stays scannable.
+   */
+  primary?: boolean;
 }
 
 export interface SerialLocation {
@@ -1843,6 +1856,180 @@ BRAND_GUIDES['music man'] = {
     ],
   },
 };
+
+/**
+ * Organizational metadata layered on top of the format definitions above.
+ * Keeping it here rather than inline on every format means we can re-read
+ * prose in one pass and re-order / re-group organization in another, and
+ * it keeps the primary data (rule / gotchas / sources) uncluttered.
+ *
+ * `era` clusters related formats on the brand page so readers can scan by
+ * production period / country / line. Brands with fewer formats can skip
+ * eras entirely and render flat.
+ *
+ * `primary` flags the formats that cover the bulk of real-world serials
+ * a visitor today is likely to be holding. Non-primary formats tuck into
+ * a "Less common variants" disclosure so common cases stay scannable.
+ */
+const FORMAT_META: Record<string, { era?: string; primary?: boolean }> = {
+  // ---- Gibson ----
+  gibson_yddd_yrrr: { era: 'Modern era (1977+)', primary: true },
+  gibson_yddd_ybrrr: { era: 'Modern era (1977+)', primary: true },
+  gibson_yy_sequential: { era: 'Modern era (1977+)', primary: true },
+  gibson_1975_1977: { era: 'Modern era (1977+)' },
+  gibson_pre1977: { era: 'Pre-1977 (paper labels, FON, die-stamped)' },
+  gibson_a_series: { era: 'Pre-1977 (paper labels, FON, die-stamped)' },
+  gibson_fon_letter: { era: 'Pre-1977 (paper labels, FON, die-stamped)' },
+  gibson_pre1961: { era: 'Pre-1977 (paper labels, FON, die-stamped)' },
+  gibson_lp_classic_1989_1999: { era: 'Les Paul Classic ink-stamp' },
+  gibson_lp_classic_2000_2014: { era: 'Les Paul Classic ink-stamp' },
+
+  // ---- Gibson Custom Shop ----
+  gibson_cs: { primary: true },
+  gibson_cs_yyrrrr: { primary: true },
+  gibson_cs_historic: { primary: true },
+
+  // ---- Fender ----
+  fender_us_prefix: { era: 'Modern USA (2000+)', primary: true },
+  fender_avri_v_prefix: { era: 'Modern USA (2000+)' },
+  fender_s_prefix: { era: 'USA decade prefixes (1976–2000)' },
+  fender_e_prefix: { era: 'USA decade prefixes (1976–2000)' },
+  fender_n_prefix: { era: 'USA decade prefixes (1976–2000)', primary: true },
+  fender_z_prefix: { era: 'USA decade prefixes (1976–2000)' },
+  fender_dz_prefix: { era: 'USA decade prefixes (1976–2000)' },
+  fender_dn: { era: 'USA decade prefixes (1976–2000)' },
+  fender_mx: { era: 'Mexico', primary: true },
+  fender_mn: { era: 'Mexico' },
+  fender_mz: { era: 'Mexico' },
+  fender_vs: { era: 'Mexico' },
+  fender_jd: { era: 'Japan', primary: true },
+  fender_japan_jv: { era: 'Japan' },
+  fender_japan_sq: { era: 'Japan' },
+  fender_l_series: { era: 'Pre-1976 USA' },
+  fender_pre1976_neckplate: { era: 'Pre-1976 USA' },
+  fender_neckplate: { era: 'Pre-1976 USA' },
+  fender_avri_bridge: { era: 'Pre-1976 USA' },
+  fender_cs: { era: 'Custom Shop' },
+  fender_cs_masterbuilt: { era: 'Custom Shop' },
+  fender_cs_time_machine: { era: 'Custom Shop' },
+  fender_cs_american_custom: { era: 'Custom Shop' },
+  fender_cz: { era: 'Custom Shop' },
+  fender_mod_shop: { era: 'Custom Shop' },
+
+  // ---- PRS ----
+  prs_core: { era: 'Main line', primary: true },
+  prs_core_pre2008: { era: 'Main line', primary: true },
+  prs_s2: { era: 'Main line' },
+  prs_ce: { era: 'Main line' },
+  prs_se_korea: { era: 'SE / imports', primary: true },
+  prs_ia: { era: 'SE / imports' },
+  prs_cti: { era: 'SE / imports' },
+  prs_acoustic: { era: 'Acoustic' },
+
+  // ---- Heritage ----
+  heritage_single: { era: 'Letter-year (1985–2025)', primary: true },
+  heritage_double: { era: 'Letter-year (1985–2025)', primary: true },
+  heritage_standard: { era: 'Modern numeric (2020+)' },
+  heritage_cs: { era: 'Modern numeric (2020+)' },
+  heritage_numeric_6: { era: 'Kalamazoo stamp (undocumented)' },
+
+  // ---- Sire ----
+  sire_gen1: { primary: true },
+  sire_gen2: { primary: true },
+
+  // ---- Ibanez ----
+  ibanez_japan_f: { era: 'Japan (Fujigen)', primary: true },
+  ibanez_japan_letter_month: { era: 'Japan (Fujigen)' },
+  ibanez_korea: { era: 'Korea', primary: true },
+  ibanez_korea_samick: { era: 'Korea' },
+  ibanez_korea_world: { era: 'Korea' },
+  ibanez_indonesia: { era: 'Indonesia', primary: true },
+  ibanez_indonesia_kwo_hsiao: { era: 'Indonesia' },
+  ibanez_indonesia_samick: { era: 'Indonesia' },
+
+  // ---- Gretsch ----
+  gretsch_modern: { primary: true },
+  gretsch_date_coded_1966_1972: { primary: true },
+
+  // ---- Rickenbacker ----
+  rickenbacker_1987_1996: { era: 'Modern (1987+)', primary: true },
+  rickenbacker_1996_plus: { era: 'Modern (1987+)', primary: true },
+  rickenbacker_1961_1986: { era: 'Pre-1987', primary: true },
+  rickenbacker_pre1961: { era: 'Pre-1987' },
+  rickenbacker_1960_jk_jl: { era: 'Pre-1987' },
+
+  // ---- Jackson ----
+  jackson_modern_import: { era: 'Modern (1996+)', primary: true },
+  jackson_mii_india: { era: 'Modern (1996+)' },
+  jackson_mij_1996_plus: { era: 'Modern (1996+)', primary: true },
+  jackson_mij_professional: { era: 'Vintage' },
+  jackson_usa: { era: 'Vintage' },
+  jackson_rr_signature: { era: 'Vintage' },
+
+  // ---- Charvel ----
+  charvel_japan: { primary: true },
+  charvel_san_dimas: { primary: true },
+
+  // ---- Epiphone ----
+  epiphone_factory: { primary: true },
+  epiphone_numeric: { primary: true },
+
+  // ---- Squier ----
+  squier_ics: { era: 'Indonesia', primary: true },
+  squier_iss: { era: 'Indonesia' },
+  squier_ic: { era: 'Indonesia' },
+  squier_si: { era: 'Indonesia' },
+  squier_cgs: { era: 'China', primary: true },
+  squier_cn: { era: 'China' },
+  squier_cy: { era: 'China' },
+  squier_kc: { era: 'Korea' },
+  squier_kv: { era: 'Korea' },
+  squier_vn: { era: 'Vietnam' },
+  squier_mn: { era: 'Mexico (Fender-shared)' },
+  squier_mz: { era: 'Mexico (Fender-shared)' },
+  squier_usa_e: { era: 'USA (vintage)' },
+  squier_usa_n: { era: 'USA (vintage)' },
+
+  // ---- G&L ----
+  gandl_clf_dated: { era: 'CLF era', primary: true },
+  gandl_clf_cumulative: { era: 'CLF era', primary: true },
+  gandl_cl_transitional: { era: 'CLF era' },
+  gandl_g_prefix: { era: 'Legacy (1980–1997)' },
+  gandl_b_prefix: { era: 'Legacy (1980–1997)' },
+  gandl_tribute_china: { era: 'Tribute imports' },
+  gandl_tribute_indonesia: { era: 'Tribute imports' },
+  gandl_tribute_korea: { era: 'Tribute imports' },
+  gandl_placentia: { era: 'Tribute imports' },
+
+  // ---- Schecter ----
+  schecter_factory: { primary: true },
+  schecter_numeric: { primary: true },
+
+  // ---- Martin ----
+  martin_sequential: { primary: true },
+
+  // ---- ESP / LTD ----
+  esp_import: { primary: true },
+  esp_world_korea: {},
+  esp_pre2000_japan: {},
+
+  // ---- Ernie Ball Music Man ----
+  musicman_b_prefix: { primary: true },
+  musicman_f_prefix: {},
+  musicman_5digit: { primary: true },
+};
+
+// Decorate every known format with its organizational metadata. Done once
+// at module load so consumers just read `.era` / `.primary` off each
+// format without an extra indirection.
+for (const guide of Object.values(BRAND_GUIDES)) {
+  for (const format of guide.formats) {
+    const meta = FORMAT_META[format.id];
+    if (!meta) continue;
+    if (meta.era !== undefined) format.era = meta.era;
+    if (meta.primary !== undefined) format.primary = meta.primary;
+  }
+}
 
 export function getBrandGuide(slug: string): BrandGuide | undefined {
   return Object.values(BRAND_GUIDES).find((g) => g.slug === slug);
