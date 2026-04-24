@@ -97,6 +97,27 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   charvel_japan: 'Charvel Japan (modern) — JC + YY + 5-6 digit sequence.',
   charvel_san_dimas:
     'Charvel USA San Dimas (1981-1986) — 4-digit sequential; cumulative-range lookup needed for exact year.',
+  epiphone_factory:
+    'Epiphone 1993-2008 — factory code (1-2 letters: S/U/P/R/I/F/T/Z/K/O/J/SI/CI/EE/EA/DW/MC/SJ/UC/FN/SM/…) + YY + MM + 4-digit rank.',
+  epiphone_numeric: 'Epiphone 2008+ — 10-digit all-numeric: YY + MM + 6-digit rank.',
+  squier_ics: 'Squier ICS — Indonesia Cort, 2009+. ICS + YY + 4-6 digit seq.',
+  squier_iss: 'Squier ISS — Indonesia Samick. ISS + YY + 4-6 digit seq.',
+  squier_cgs: 'Squier CGS — China Guangzhou (Classic Vibe). CGS + YY + 4-6 digit seq.',
+  squier_cn: 'Squier CN — China Cor-Tek. CN + YY + 4-6 digit seq.',
+  squier_cy: 'Squier CY — China CW. CY + YY + 4-6 digit seq.',
+  squier_ic: 'Squier IC — Indonesia Cort (shorter prefix). IC + YY + 4-6 digit seq.',
+  squier_mn: 'Squier MN — Mexico 1990s. MN + single-digit year + 4-6 seq.',
+  squier_mz: 'Squier MZ — Mexico 2000s. MZ + single-digit year + 4-6 seq.',
+  squier_usa_e: 'Squier E-prefix — USA 1980s. E + single-digit year + 4-5 seq.',
+  squier_usa_n: 'Squier N-prefix — USA 1990s. N + single-digit year + 4-5 seq.',
+  gandl_clf_dated: 'G&L CLF 1998-2011 — CLF + YY + MM + 3-digit rank; year and month encoded.',
+  gandl_clf_cumulative: 'G&L CLF 2011+ — CLF + 6-digit cumulative sequence; no year encoded.',
+  gandl_cl_transitional: 'G&L CL 1997-1998 — transitional pre-CLF prefix with 5-digit sequence.',
+  gandl_g_prefix: 'G&L G-prefix (1980-1997) — guitars, 5-6 digit sequence, no year encoded.',
+  gandl_b_prefix: 'G&L B-prefix (1980-1997) — basses, 5-6 digit sequence, no year encoded.',
+  gandl_placentia: 'G&L Placentia Series (China) — full 4-digit year prefix + 4-digit sequence.',
+  schecter_factory: 'Schecter factory-prefix — W/IW/IC/C/S + YY + 3-7 digit sequence.',
+  schecter_numeric: 'Schecter no-prefix — YY + 4-6 digit sequence (older Schecter).',
 };
 
 export function describeFormat(formatId: string): string {

@@ -67,6 +67,30 @@ export const BRANDS: BrandMeta[] = [
     label: 'Charvel',
     blurb: 'JC Japan modern, San Dimas USA 1981-86',
   },
+  {
+    id: 'epiphone',
+    slug: 'epiphone',
+    label: 'Epiphone',
+    blurb: 'Factory + YY + MM + seq (1993-2008); all-numeric since 2008',
+  },
+  {
+    id: 'squier',
+    slug: 'squier',
+    label: 'Squier',
+    blurb: 'ICS/ISS/CGS/CN/CY factory prefixes + Fender-shared formats',
+  },
+  {
+    id: 'g&l',
+    slug: 'gandl',
+    label: 'G&L',
+    blurb: 'CLF YY MM (1998+), legacy G/B prefixes, Placentia China',
+  },
+  {
+    id: 'schecter',
+    slug: 'schecter',
+    label: 'Schecter',
+    blurb: 'First two digits of YY + optional factory prefix',
+  },
 ];
 
 export function findBrand(idOrSlug: string): BrandMeta | undefined {

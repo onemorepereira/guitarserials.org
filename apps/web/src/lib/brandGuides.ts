@@ -1105,6 +1105,321 @@ BRAND_GUIDES.charvel = {
   },
 };
 
+BRAND_GUIDES.epiphone = {
+  id: 'epiphone',
+  slug: 'epiphone',
+  intro:
+    "Epiphone's serial history is dominated by the FYYMMRRRR factory-prefix format, used from 1993 through 2008 across a sprawl of Asian contract manufacturers. Around 2008 production moved to an all-numeric YY+MM+6-digit sequence. Pre-1993 Epiphones used a variety of regional formats that we don't yet cover.",
+  sources: [
+    {
+      label: 'Epiphone — Serial Number Search (official)',
+      url: 'https://www.epiphone.com/en-US/Support/Serial-Number-Search',
+      kind: 'manufacturer',
+      note: "Epiphone's own serial-number search tool.",
+    },
+    {
+      label: 'Epiphone Wiki — Serial Number Decoding',
+      url: 'https://www.epiphonewiki.org/index/Epiphone_Serial_Number_Decoding.php',
+      kind: 'community',
+      note: 'Canonical community decoder documenting 25+ factory codes across Korea, Indonesia, China, Japan.',
+    },
+    {
+      label: 'Killerrig — Epiphone Factory Codes',
+      url: 'https://killerrig.com/epiphone-factory-codes/',
+      kind: 'community',
+      note: 'Additional dealer-compiled factory-code reference.',
+    },
+  ],
+  formats: [
+    {
+      id: 'epiphone_factory',
+      name: 'Factory prefix (1993–2008)',
+      yearRange: '1993–2008',
+      example: 'SI03021234',
+      rule: '1 or 2-letter factory code + YY + MM + 4-digit rank. Factory codes: SI = Samick Indonesia, CI = Cort Indonesia, EE = Qingdao Electric (China), EA = Qingdao Acoustic (China), DW = DaeWon (China), MC = Muse (China), SJ = SaeJun (China), UC = Unsung China, FN = Fine Guitars (Korea), SM = Samil (Korea); single-letter codes S/U/P/R/I/F/T/Z/K/O/J for Korean/Japanese factories.',
+      gotchas: [
+        'The 1993-2008 window is exact; some outliers exist outside it — check the Epiphone Wiki for edge cases.',
+      ],
+    },
+    {
+      id: 'epiphone_numeric',
+      name: 'All-numeric (2008+)',
+      yearRange: '2008+',
+      example: '1210123456',
+      rule: 'Ten-digit all-numeric serial: YY + MM + 6-digit rank. Gated on YY in 08-29 range and valid month 01-12.',
+    },
+  ],
+  findSerial: {
+    intro:
+      'Epiphone serials are almost universally on the back of the headstock (stamped, decaled, or inked). Some acoustic models have a label visible through the soundhole.',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description: 'Standard location across all modern (1993+) Epiphone production.',
+      },
+      {
+        place: 'Label inside soundhole (acoustic hollowbodies)',
+        description:
+          'Some Epiphone acoustic archtops and hollowbodies also carry a label on the inside of the body.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.squier = {
+  id: 'squier',
+  slug: 'squier',
+  intro:
+    "Squier serials span Indonesian, Chinese, Korean, Japanese, and Mexican production. The factory prefix is the key indicator. Several formats share Fender's original decade-prefix (MN, MZ, E, N) conventions — a Squier-brand serial starting with MN still decodes the year via the single digit after the prefix.",
+  sources: [
+    {
+      label: 'Squier Wiki — Serial Number Tracking',
+      url: 'http://www.squierwiki.com/Serial-Number-Tracking',
+      kind: 'community',
+      note: 'Long-standing community reference documenting every Squier factory prefix and year-encoding convention.',
+    },
+    {
+      label: 'Killerrig — Squier Factory Codes',
+      url: 'https://killerrig.com/squier-factory-codes-serial-number-lookup/',
+      kind: 'community',
+      note: 'Dealer-compiled lookup covering ICS, ISS, CGS, CN, CY, MN, MZ prefixes.',
+    },
+    {
+      label: 'FUZZFACED — Chinese and Indonesian Stratocasters',
+      url: 'https://www.fuzzfaced.net/serial-number-stratocaster-china-indonesia.html',
+      kind: 'reference',
+      note: 'Deep-dive reference covering the Squier Chinese/Indonesian factory prefixes and their history.',
+    },
+  ],
+  formats: [
+    {
+      id: 'squier_ics',
+      name: 'ICS — Indonesia Cort',
+      yearRange: '2009+',
+      example: 'ICS19123456',
+      rule: 'ICS + 2-digit year + 4-6 digit sequence.',
+    },
+    {
+      id: 'squier_iss',
+      name: 'ISS — Indonesia Samick',
+      yearRange: 'Varies',
+      example: 'ISS21123456',
+      rule: 'ISS + 2-digit year + 4-6 digit sequence.',
+    },
+    {
+      id: 'squier_cgs',
+      name: 'CGS — China Guangzhou (Classic Vibe)',
+      yearRange: '2009+',
+      example: 'CGS0912345',
+      rule: 'CGS + 2-digit year + 4-6 digit sequence. Predominantly Classic Vibe models.',
+    },
+    {
+      id: 'squier_cn',
+      name: 'CN — China Cor-Tek',
+      yearRange: 'Varies',
+      example: 'CN12123456',
+      rule: 'CN + 2-digit year + 4-6 digit sequence.',
+    },
+    {
+      id: 'squier_cy',
+      name: 'CY — China CW',
+      yearRange: 'Varies',
+      example: 'CY11123456',
+      rule: 'CY + 2-digit year + 4-6 digit sequence.',
+    },
+    {
+      id: 'squier_ic',
+      name: 'IC — Indonesia Cort (shorter prefix)',
+      yearRange: 'Varies',
+      example: 'IC12123456',
+      rule: 'IC + 2-digit year + 4-6 digit sequence (older Squier Indonesia).',
+    },
+    {
+      id: 'squier_mn',
+      name: 'MN — Mexico (1990s, single-digit year)',
+      yearRange: '1990s',
+      example: 'MN4123456',
+      rule: 'MN + single-digit year (0=1990, 1=1991, …, 9=1999) + 4-6 sequential. Shared with Fender Mexico.',
+    },
+    {
+      id: 'squier_mz',
+      name: 'MZ — Mexico (2000s, single-digit year)',
+      yearRange: '2000s',
+      example: 'MZ5123456',
+      rule: 'MZ + single-digit year (0=2000 … 9=2009) + 4-6 sequential. Shared with Fender Mexico.',
+    },
+    {
+      id: 'squier_usa_e',
+      name: 'E — USA (1980s)',
+      yearRange: '1982–1989',
+      example: 'E4123456',
+      rule: 'E + single-digit year + 4-5 sequential. Early Squier USA production.',
+    },
+    {
+      id: 'squier_usa_n',
+      name: 'N — USA (1990s)',
+      yearRange: '1990s',
+      example: 'N4123456',
+      rule: 'N + single-digit year + 4-5 sequential.',
+    },
+  ],
+  findSerial: {
+    intro:
+      'Squier serial locations follow the same conventions as the equivalent Fender production — back of the headstock (decade-prefix and modern), neckplate (older USA).',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description: 'Standard for ICS, ISS, CGS, CN, CY, IC Indonesian/Chinese production.',
+      },
+      {
+        place: 'Neckplate',
+        description: 'Some older USA / Japan production carries the serial on the metal neckplate.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES['g&l'] = {
+  id: 'g&l',
+  slug: 'gandl',
+  intro:
+    "G&L was Leo Fender's company after CBS (and later BBE). Serial numbering split into five eras: G/B-prefix 1980-1997 (guitars/basses, no year encoded), CL transitional 1997-1998, CLF-with-date 1998-2011 (year+month encoded), CLF-cumulative 2011+ (no year in serial), and Placentia China with a full 4-digit year prefix.",
+  sources: [
+    {
+      label: 'G&L Guitars — FAQs (official)',
+      url: 'https://glguitars.com/faqs/',
+      kind: 'manufacturer',
+      note: 'Official G&L FAQ covering serial placement and dating guidance.',
+    },
+    {
+      label: "Guitars by Leo — How do I determine an instrument's age?",
+      url: 'https://www.guitarsbyleo.com/FORUM/viewtopic.php?t=19',
+      kind: 'community',
+      note: 'Canonical community reference documenting the CL/CLF transitions and CLFYYMMnnn layout. G&L historian David McLaren-verified.',
+    },
+    {
+      label: 'Guitars by Leo — Registry',
+      url: 'https://www.guitarsbyleo.com/AUTOREG/',
+      kind: 'community',
+      note: 'Community-maintained G&L registry — best source for year lookup on CLF-cumulative (post-2011) serials.',
+    },
+  ],
+  formats: [
+    {
+      id: 'gandl_clf_dated',
+      name: 'CLF dated (1998–2011)',
+      yearRange: '1998–2011',
+      example: 'CLF0304012',
+      rule: 'CLF + 2-digit year + 2-digit month + 3-digit rank. The "CLF" stands for Clarence Leo Fender. Example CLF0304012 decodes to April 2003, #012.',
+    },
+    {
+      id: 'gandl_clf_cumulative',
+      name: 'CLF cumulative (2011+)',
+      yearRange: '2011+',
+      example: 'CLF123456',
+      rule: 'CLF + 6-digit cumulative sequence — date is no longer encoded in the serial. Year lookup requires the Guitars by Leo registry or contacting G&L.',
+      gotchas: [
+        'In February 2011 G&L moved to a metal-plate serial and dropped the embedded YY/MM.',
+      ],
+    },
+    {
+      id: 'gandl_cl_transitional',
+      name: 'CL transitional (late 1997–1998)',
+      yearRange: 'late 1997 – 1998',
+      example: 'CL12345',
+      rule: 'CL + 5-digit sequence. Short-lived transitional format before the CLF prefix was adopted.',
+    },
+    {
+      id: 'gandl_g_prefix',
+      name: 'G-prefix guitars (1980–1997)',
+      yearRange: '1980–1997',
+      example: 'G123456',
+      rule: 'G + 5-6 digit sequence for guitars. No year encoded; use the Guitars by Leo registry.',
+    },
+    {
+      id: 'gandl_b_prefix',
+      name: 'B-prefix basses (1980–1997)',
+      yearRange: '1980–1997',
+      example: 'B123456',
+      rule: 'B + 5-6 digit sequence for basses. No year encoded.',
+    },
+    {
+      id: 'gandl_placentia',
+      name: 'Placentia China (YYYY-prefix)',
+      yearRange: '2019+',
+      example: '20210009',
+      rule: "Full 4-digit year prefix + 4-digit sequence. Used on G&L's Placentia-series China production. Example 20210009 = 2021.",
+    },
+  ],
+  findSerial: {
+    intro:
+      'Early G&L serials lived on the bridge or neck plate. Modern production carries the CLF serial on the back of the headstock (waterslide decal through 2011, metal plate from February 2011 onward).',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description:
+          'Standard for all CLF-prefix production; metal plate from Feb 2011 forward, waterslide decal before.',
+      },
+      {
+        place: 'Bridge (1980–1983)',
+        description:
+          'Earliest G&L serials were stamped on the bridge. Look for an impressed 6-digit number.',
+      },
+      {
+        place: 'Inside neck pocket / neck heel',
+        description:
+          'The most accurate dating comes from the hand-written date on the neck heel or inside the neck pocket, accessible by removing the neck.',
+      },
+    ],
+  },
+};
+
+BRAND_GUIDES.schecter = {
+  id: 'schecter',
+  slug: 'schecter',
+  intro:
+    'Schecter serials combine a factory prefix letter (indicating where the guitar was built) with a 2-digit year and a production sequence. The vast majority of Schecter production runs through World Musical Instruments (W prefix) in Incheon, South Korea; smaller lots come from Cort factories in Indonesia (IC/IW) and the Schecter USA Custom Shop in Sun Valley.',
+  sources: [
+    {
+      label: 'Killerrig — Schecter Serial Number and Factory Code Lookup',
+      url: 'https://killerrig.com/schecter-serial-number-and-factory-code-lookup/',
+      kind: 'community',
+      note: 'Comprehensive lookup documenting W, IW, IC, C factory prefixes and the first-two-digits-of-year convention.',
+    },
+    {
+      label: 'Schecter Serial Numbers (Musicians Centre reference)',
+      url: 'https://sites.google.com/a/musicianscentre.com/schecter/home/schecter-serial-numbers',
+      kind: 'community',
+      note: 'Dealer-compiled reference with example serials from multiple factories and decades.',
+    },
+  ],
+  formats: [
+    {
+      id: 'schecter_factory',
+      name: 'Factory-prefix (W / IW / IC / C / S)',
+      yearRange: '2000+',
+      example: 'W10052743',
+      rule: 'Factory letter(s) + 2-digit year + 3-7 digit production sequence. W = World Musical Instruments (Korea) is the most common. IW/IC = Indonesia (World or Cort). C = Cort Korea. S = Schecter. Example W10052743 = 2010 World Korea.',
+    },
+    {
+      id: 'schecter_numeric',
+      name: 'No-prefix numeric',
+      yearRange: '2000+',
+      example: '0236758',
+      rule: 'YY + 4-6 digit sequence. Older Schecter serials sometimes omit the factory prefix. Example 0236758 = 2002.',
+    },
+  ],
+  findSerial: {
+    intro: 'Modern Schecter serials are impressed or decaled on the back of the headstock.',
+    locations: [
+      {
+        place: 'Back of headstock',
+        description: 'Standard location for all modern Schecter production.',
+      },
+    ],
+  },
+};
+
 export function getBrandGuide(slug: string): BrandGuide | undefined {
   return Object.values(BRAND_GUIDES).find((g) => g.slug === slug);
 }
