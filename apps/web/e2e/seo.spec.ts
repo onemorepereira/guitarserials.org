@@ -15,12 +15,18 @@ test.describe('SEO / social metadata', () => {
       'summary_large_image',
     );
 
-    // WebSite JSON-LD present
-    const ld = await page.locator('script[type="application/ld+json"]').textContent();
-    expect(ld).not.toBeNull();
-    const parsed = JSON.parse(ld ?? '{}');
-    expect(parsed['@type']).toBe('WebSite');
-    expect(parsed.potentialAction['@type']).toBe('SearchAction');
+    // Home ships two JSON-LD blocks: WebSite (with SearchAction) and Organization.
+    const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+    expect(blocks.length).toBeGreaterThanOrEqual(2);
+    const parsed = blocks.map((b) => JSON.parse(b));
+    const types = parsed.map((p) => p['@type']);
+    expect(types).toContain('WebSite');
+    expect(types).toContain('Organization');
+    const website = parsed.find((p) => p['@type'] === 'WebSite');
+    expect(website.potentialAction['@type']).toBe('SearchAction');
+    const org = parsed.find((p) => p['@type'] === 'Organization');
+    expect(org.logo).toBeTruthy();
+    expect(org.sameAs.some((s: string) => s.includes('github.com'))).toBe(true);
   });
 
   test('brand page has BreadcrumbList JSON-LD', async ({ page }) => {
@@ -31,5 +37,16 @@ test.describe('SEO / social metadata', () => {
     expect(parsed['@type']).toBe('BreadcrumbList');
     expect(parsed.itemListElement).toHaveLength(2);
     expect(parsed.itemListElement[1].name).toBe('Fender');
+  });
+
+  test('methodology + about pages carry BreadcrumbList JSON-LD', async ({ page }) => {
+    for (const path of ['/methodology/', '/about/']) {
+      await page.goto(path);
+      const ld = await page.locator('script[type="application/ld+json"]').textContent();
+      const parsed = JSON.parse(ld ?? '{}');
+      expect(parsed['@type']).toBe('BreadcrumbList');
+      expect(parsed.itemListElement).toHaveLength(2);
+      expect(parsed.itemListElement[0].name).toBe('Home');
+    }
   });
 });

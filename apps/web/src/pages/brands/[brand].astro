@@ -96,7 +96,34 @@ const quickPickFormats = guide.formats.slice().sort((a, b) => {
 });
 
 const title = `${brandMeta.label} serial number decoder — guitarserials.org`;
-const description = `Decode ${brandMeta.label} serial numbers. Every supported format, what each one encodes, and example serials you can try.`;
+
+/*
+ * Pull the brand-page meta description from the hand-authored `guide.intro`.
+ * Target ~155 chars (Google truncates desktop SERP snippets around there).
+ * If the first sentence fits, use it verbatim. If it doesn't, truncate at
+ * a word boundary with an ellipsis. Adds a suffix with the format + source
+ * count only when doing so keeps us under the target.
+ */
+function brandPageDescription(): string {
+  const TARGET = 155;
+  // The lookahead requires whitespace or end-of-string after the period, so
+  // abbreviations like "C.F. Martin" don't get mistaken for sentence ends.
+  const firstSentence = (guide.intro.match(/^[^.!?]+[.!?](?=\s|$)/)?.[0] ?? guide.intro).trim();
+  const formatCount = guide.formats.length;
+  const sourceCount = guide.sources.length;
+  const suffix = ` ${formatCount} documented format${formatCount === 1 ? '' : 's'}, ${sourceCount} cited source${sourceCount === 1 ? '' : 's'}.`;
+
+  if (firstSentence.length + suffix.length <= TARGET) {
+    return firstSentence + suffix;
+  }
+  if (firstSentence.length <= TARGET) {
+    return firstSentence;
+  }
+  const cut = firstSentence.slice(0, TARGET);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${cut.slice(0, lastSpace > 0 ? lastSpace : TARGET).replace(/[,;:—-]+$/, '')}…`;
+}
+const description = brandPageDescription();
 
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',

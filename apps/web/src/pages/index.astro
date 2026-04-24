@@ -42,6 +42,24 @@ const websiteJsonLd = {
     'query-input': 'required name=search_term_string',
   },
 };
+
+/*
+ * Organization JSON-LD lets search engines surface a knowledge-panel-style
+ * card for the project (name + logo + GitHub link). `sameAs` is how you tell
+ * Google which external profile pages belong to the same entity. We only
+ * have the GitHub repo — add others (Twitter/X, Mastodon, etc.) when they
+ * exist.
+ */
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'guitarserials.org',
+  url: 'https://guitarserials.org/',
+  logo: 'https://guitarserials.org/favicon.svg',
+  description:
+    'Free, open-source guitar serial-number decoder. 18 brands, 115 format rules, a century of production. Runs in the browser; no analytics, no tracking.',
+  sameAs: ['https://github.com/onemorepereira/guitarserials.org'],
+};
 ---
 
 <Base>
@@ -50,6 +68,12 @@ const websiteJsonLd = {
     is:inline
     type="application/ld+json"
     set:html={JSON.stringify(websiteJsonLd)}
+  />
+  <script
+    slot="head"
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(organizationJsonLd)}
   />
 
   <section class="flex flex-col gap-5 py-6">
