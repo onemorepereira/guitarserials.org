@@ -71,9 +71,10 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   prs_cti: 'PRS Indonesia CTI — the letter after CTI encodes the year (A=2018).',
   prs_ia: 'PRS SE Indonesia IA–IE — letter encodes year (A=2014, B=2015, …, E=2018).',
   prs_se_korea:
-    'PRS SE Korea single-letter year (2000–2020) — A=2000, B=2001, …, U=2020. Produced primarily by World Musical Instruments.',
+    'PRS SE Korea single-letter year (2000–2022) — A=2000, B=2001, …, U=2020, V=2021, W=2022. Produced primarily by World Musical Instruments.',
   prs_acoustic: 'PRS Acoustic (2009+) — A + 2-digit year + sequential (e.g. A151234 = 2015).',
-  heritage_single: 'Heritage single-letter year code (B=1985 through Z=2009).',
+  heritage_single:
+    'Heritage single-letter year code (B=1985 through Y=2008). Heritage skipped Z entirely; 2009 instruments used the 1YYXXXX standard-collection format.',
   heritage_double: 'Heritage double-letter year code (AA=2010, AB=2011, ..., AP=2025).',
   heritage_cs: 'Heritage Custom Shop HC-prefix — 1YYXXXX form encodes the year after HC.',
   heritage_standard: 'Heritage standard 1YYXXXX (2020+) — digits 2-3 encode the year.',
@@ -112,7 +113,7 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   rickenbacker_1996_plus:
     'Rickenbacker (1996+) — month letter M-Y (O skipped) + year digit 0-9 + production number. Year digit cycles every decade; needs listing-year context past 2006.',
   jackson_modern_import:
-    'Jackson modern import (2013+) — 3-letter factory (ICJ/CYJ/CJ/MJ/XJ/CUJ/ISJ) + YY + 5-digit sequence.',
+    'Jackson modern import (2013+) — 3-letter factory code + YY + 5-digit sequence. Codes: ICJ/ISJ/IWJ (Indonesia), CYJ/CJ/CUJ/CNJ/CSJ (China), NHJ (India), KCJ/KWJ/KSJ (Korea), MJ/XJ (Mexico, 2-letter).',
   jackson_rr_signature: 'Jackson Randy Rhoads signature — RR + 4-digit sequence; no year encoded.',
   jackson_usa: 'Jackson USA J-prefix — J + 4-digit sequence; no year encoded.',
   jackson_mij_professional:

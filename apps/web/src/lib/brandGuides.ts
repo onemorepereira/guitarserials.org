@@ -267,11 +267,15 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
       {
         id: 'gibson_cs_historic',
         name: 'Historic Reissue (5–6 digit numeric)',
-        yearRange: 'Any',
-        example: '12345',
-        exampleYear: 2020,
-        exampleModelHint: 'Les Paul Standard Historic',
-        rule: 'Pure 5- or 6-digit sequential numbers on Historic Reissue / R-series / Murphy Lab Les Pauls. No year encoded — a listing year and a model hint (Reissue, R0/R4/R7/R8/R9, Historic, Murphy Lab, or Custom Shop) are required to claim this format.',
+        yearRange: '1993+',
+        example: '991234',
+        exampleYear: 1999,
+        exampleModelHint: 'Les Paul Standard R9 Historic',
+        rule: 'Pure 5- or 6-digit sequential numbers on Historic Reissue / R-series / Murphy Lab Les Pauls. Format is MYRRR(R) where M is the model-year digit (0 = R0/1960, 4 = R4/1954, 7 = R7/1957, 8 = R8/1958, 9 = R9/1959) and Y is the last digit of the build year. When M matches a documented R-series model digit the decoder snaps Y to the closest CS production decade using the listing year (Custom Shop launched 1993). When M is not an R-series digit we match the format but leave year null (other CS historic lines use different first-digit conventions). Requires a listing year and a model hint (Reissue, R0/R4/R7/R8/R9, Historic, Murphy Lab, or Custom Shop) to claim.',
+        gotchas: [
+          'The build year is decoded only when the first digit is 0/4/7/8/9 — other first digits match the format but leave year null.',
+          'The year-digit is ambiguous across decades. Without a listing year the decoder has no way to pick between 1999, 2009, 2019, and 2029 for R9 991234 — listing context is required.',
+        ],
       },
       {
         id: 'gibson_cs_collectors_choice',
@@ -432,11 +436,14 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         rule: 'Z + single year digit + 4–6 digit sequence.',
       },
       {
-        id: 'fender_v_prefix',
+        id: 'fender_avri_v_prefix',
         name: 'V-prefix (AVRI, American Vintage Reissue)',
-        yearRange: 'Any',
-        example: 'V123456',
-        rule: 'V followed by 4–7 digits. No year encoded in the serial — the prefix alone is definitive.',
+        yearRange: '1982+',
+        example: 'V1612345',
+        rule: 'V + 4–7 digits. Two sub-eras: pre-2012 V-prefix (original AVRI line, 4–7 digits) has no year encoded and must be dated via pot codes / listing context. From mid-2012 onward (AVRI II era), V + 7 digits encodes the 2-digit year in the first two post-prefix digits (e.g. V1612345 = 2016). The decoder applies a plausibility gate of 12–29 on the leading pair; lengths or leading pairs outside that gate fall back to no-year.',
+        gotchas: [
+          'A 7-digit V-prefix serial with leading digits like 08 or 09 is NOT a 2008/2009 AVRI II — those leading pairs are outside the AVRI II era. The decoder correctly leaves year null in that case.',
+        ],
       },
       {
         id: 'fender_cs',
@@ -444,6 +451,20 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         yearRange: 'Any',
         example: 'CS123456',
         rule: 'Fender Custom Shop 5–6 digit serials. No year encoded.',
+      },
+      {
+        id: 'fender_cs_masterbuilt',
+        name: 'HR-prefix (Custom Shop Masterbuilt)',
+        yearRange: 'Any',
+        example: 'HR12345',
+        rule: 'HR + 5–6 digit sequence. Used on Custom Shop Masterbuilt instruments; "HR" is the builder-initials convention the Custom Shop uses for select masterbuilt runs. No year encoded in the serial — the masterbuilt certificate of authenticity is the primary dating document.',
+      },
+      {
+        id: 'fender_cz',
+        name: 'CZ-prefix (Custom Shop, 2000s+)',
+        yearRange: '2000s+',
+        example: 'CZ123456',
+        rule: 'CZ + 5–6 digit sequence. Custom Shop prefix introduced in the 2000s; predecessor to the XN American Custom prefix. No year encoded in the serial — use the COA.',
       },
       {
         id: 'fender_vs',
@@ -708,10 +729,13 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
     formats: [
       {
         id: 'heritage_single',
-        name: 'Single-letter (B–Z)',
-        yearRange: '1985–2009',
+        name: 'Single-letter (B–Y)',
+        yearRange: '1985–2008',
         example: 'H12345',
-        rule: 'Single letter B–Z followed by 5 digits. B = 1985, C = 1986, …, Z = 2009 (no letters skipped).',
+        rule: 'Single letter B–Y followed by 5 digits. B = 1985, C = 1986, …, Y = 2008. Heritage skipped Z entirely — 2009 instruments used the 1YYXXXX standard-collection format, and the double-letter system picked up at AA = 2010.',
+        gotchas: [
+          'Earlier drafts of this decoder mapped Z = 2009. Heritage\'s official "Date Your Heritage" dropdown jumps directly from Y (2008) to AA (2010), so Z = 2009 was never a real mapping.',
+        ],
       },
       {
         id: 'heritage_double',
@@ -1019,7 +1043,7 @@ BRAND_GUIDES.rickenbacker = {
   id: 'rickenbacker',
   slug: 'rickenbacker',
   intro:
-    "Rickenbacker has used a small number of well-defined serial schemes since the 1950s. The cleanest era for automated decoding runs from November 1987 onward, where the first character encodes the month and the second a year digit. Pre-1987 serials are model-coded and don't follow a single rule — collector references are usually required.",
+    'Rickenbacker has used five well-defined serial schemes since the mid-1950s. Pre-1961 (1954–1959): model letter (B = bass, C = combo, M = mandolin, G = guitar) + year digit + production number. JK/JL: November and December 1960 respectively — a two-letter pilot of the permanent system. 1961–1986: year letter (A = 1961 through Z = 1986) + month letter (A–L) + production rank. 1987–1996: month letter (A–L) + year digit (0 = 1987 through 9 = 1996) + rank. 1996+: month letter from M–Y (O skipped) + year digit. The 1996+ year digit cycles every decade, so 2006+ decoding needs a listing year for decade snap.',
   sources: [
     {
       label: 'Rickenbacker — Serial Number Decoder (official)',
@@ -1135,7 +1159,7 @@ BRAND_GUIDES.jackson = {
       name: 'Modern import (2013+) — factory + YY + seq',
       yearRange: '2013+',
       example: 'ICJ1500001',
-      rule: 'Three-letter factory code + 2-digit year + 5-digit sequence. Factory codes: ICJ = Indonesia Cort, CYJ = China Yako, CJ = China (generic), MJ / XJ = Mexico, CUJ = China Unsung, ISJ = Indonesia Samick. Example ICJ1500001 = Indonesia Cort, 2015, #1.',
+      rule: 'Three-letter factory code + 2-digit year + 5-digit sequence. Country prefix (letter 1): I = Indonesia, C = China, N = India, K = Korea, M/X = Mexico. Factory letter (letter 2): C = Cort, W = World Musical Instruments, S = Samick, Y = Yako, U = Unsung, H = Chushin Gakki (Harmony). Trailing J marks Jackson brand line. Documented codes: ICJ, ISJ, IWJ (Indonesia); CYJ, CJ, CUJ, CNJ, CSJ (China); NHJ (India); KCJ, KWJ, KSJ (Korea); plus 2-letter MJ and XJ (Mexico). Example ICJ1500001 = Indonesia Cort, 2015, #1.',
     },
     {
       id: 'jackson_rr_signature',
@@ -1161,6 +1185,23 @@ BRAND_GUIDES.jackson = {
         'Gated tightly on first-digit ≤ 5 to avoid shadowing generic 6-digit numerics from other brands.',
       ],
     },
+    {
+      id: 'jackson_mij_1996_plus',
+      name: 'Made-in-Japan bolt-on (1996–2012)',
+      yearRange: '1996–2012',
+      example: '9612345',
+      rule: 'Seven plain digits. The first two digits are the 2-digit year. Covers the 1996–2012 MIJ bolt-on window that bridges the MIJ Professional era and the 3-letter modern-import era. Plausibility gate accepts leading pairs 96–99 (1996–1999) and 00–12 (2000–2012).',
+      gotchas: [
+        'Outside the 96–99 / 00–12 window the rule does not match to avoid collision with other 7-digit numeric serials.',
+      ],
+    },
+    {
+      id: 'jackson_mii_india',
+      name: 'Made-in-India (JS20-series, 8-digit)',
+      yearRange: '1996+',
+      example: '19000123',
+      rule: 'Eight plain digits. The first two digits are the 2-digit year. Used on Jackson JS-series instruments made in India (Chushin Gakki / Harmony). Plausibility gate: leading pair 96–99 (1996–1999) or 00–15 (2000–2015).',
+    },
   ],
   findSerial: {
     intro:
@@ -1184,7 +1225,7 @@ BRAND_GUIDES.charvel = {
   id: 'charvel',
   slug: 'charvel',
   intro:
-    "Charvel (Jackson's sister brand) has two main serial eras: the pre-1986 San Dimas USA era used plain sequential 4-digit numbers. Modern Japan Charvel production uses a JC prefix followed by YY and a sequential number.",
+    "Charvel (Jackson's sister brand) has three main serial eras. The pre-1986 San Dimas USA era used plain sequential 4-digit numbers, dated via a cumulative range table. Modern Japan Charvel production uses a JC prefix followed by YY and a sequential number. The current USA Pro-Mod line (2004+) uses a 6-digit neckplate serial that does not encode the year.",
   sources: [
     {
       label: 'USA Charvels — Serial Numbers',
@@ -1216,6 +1257,13 @@ BRAND_GUIDES.charvel = {
       gotchas: [
         'Decoder requires listing-year context to pin the exact year; the serial alone only narrows the range.',
       ],
+    },
+    {
+      id: 'charvel_usa_promod',
+      name: 'USA Pro-Mod (2004+)',
+      yearRange: '2004+',
+      example: '123456',
+      rule: 'Six plain digits stamped on the neckplate. Year is not encoded in the serial itself; contact Charvel/Fender with the serial for the build date, or cross-reference the neck-heel date stamp.',
     },
   ],
   findSerial: {
@@ -1507,6 +1555,27 @@ BRAND_GUIDES['g&l'] = {
       yearRange: '2019+',
       example: '20210009',
       rule: "Full 4-digit year prefix + 4-digit sequence. Used on G&L's Placentia-series China production. Example 20210009 = 2021.",
+    },
+    {
+      id: 'gandl_tribute_china',
+      name: 'Tribute China (L-prefix)',
+      yearRange: 'Varies',
+      example: 'L15081234',
+      rule: 'L + YY + MM + 4–5 digit sequence. Chinese Tribute Series production. Example L15081234 = August 2015, #1234. Month must be 01–12 for year decoding.',
+    },
+    {
+      id: 'gandl_tribute_indonesia',
+      name: 'Tribute Indonesia (9-digit)',
+      yearRange: '2003+',
+      example: '150812345',
+      rule: 'Nine plain digits = YY + MM + 5-digit sequence. Indonesian Tribute Series production. Plausibility gate on YY = 03–29 (Tribute Series launched in the early 2000s) and month = 01–12.',
+    },
+    {
+      id: 'gandl_tribute_korea',
+      name: 'Tribute Korea (8-digit)',
+      yearRange: '2003+',
+      example: '15081234',
+      rule: 'Eight plain digits = YY + MM + 4-digit sequence. Korean Tribute Series production. Same YY (03–29) and month (01–12) plausibility gates as the Indonesian variant.',
     },
   ],
   findSerial: {
