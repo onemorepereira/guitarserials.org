@@ -20,7 +20,7 @@ p.set('s', format.example);
 p.set('b', brandId);
 if (format.exampleYear) p.set('y', String(format.exampleYear));
 if (format.exampleModelHint) p.set('m', format.exampleModelHint);
-const tryItHref = `/brands/${brandSlug}?${p.toString()}#decode`;
+const tryItHref = `/brands/${brandSlug}/?${p.toString()}#decode`;
 
 const hasGotchas = format.gotchas && format.gotchas.length > 0;
 const hasFormatSources = format.sources && format.sources.length > 0;

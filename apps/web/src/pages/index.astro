@@ -80,7 +80,7 @@ const websiteJsonLd = {
       {
         BRANDS.map((brand) => (
           <a
-            href={`/brands/${brand.slug}`}
+            href={`/brands/${brand.slug}/`}
             class="group flex items-baseline justify-between gap-4 border-b border-dashed border-paper-line py-3 transition hover:border-rust dark:border-espresso-line dark:hover:border-amber"
           >
             <span class="flex items-baseline gap-3">
@@ -100,7 +100,7 @@ const websiteJsonLd = {
 
   <section class="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
     <div>
-      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Built from sources</h3>
+      <h2 class="display text-lg font-semibold italic text-ink dark:text-cream">Built from sources</h2>
       <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
         Every format rule traces back to at least two authoritative references — manufacturers
         where possible, then audited community references. See the{' '}
@@ -108,14 +108,14 @@ const websiteJsonLd = {
       </p>
     </div>
     <div>
-      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Runs offline</h3>
+      <h2 class="display text-lg font-semibold italic text-ink dark:text-cream">Runs offline</h2>
       <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
         The decoder is a static site. No backend, no analytics, no account. Your serial never
         leaves the browser.
       </p>
     </div>
     <div>
-      <h3 class="display text-lg font-semibold italic text-ink dark:text-cream">Got an incorrect decode?</h3>
+      <h2 class="display text-lg font-semibold italic text-ink dark:text-cream">Got an incorrect decode?</h2>
       <p class="mt-1 text-sm text-ink-soft dark:text-cream-soft">
         This is an open-source community resource. Contributions with authoritative sources are
         welcome —{' '}

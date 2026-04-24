@@ -112,21 +112,36 @@ export class SiteStack extends cdk.Stack {
     // A CloudFront Function rewrites `/path/` to `/path/index.html` so Astro's
     // folder-based routes (e.g. /brands/gibson/) resolve to their index file
     // without hitting a bucket 403.
+    // Two jobs at the viewer-request edge:
+    //   1. 301-redirect no-trailing-slash (extensionless) paths to /slash/ form
+    //      so Google doesn't see /brands/gibson and /brands/gibson/ as two
+    //      documents. Canonical URL is the trailing-slash form.
+    //   2. Rewrite /folder/ requests to /folder/index.html so S3+OAC serves
+    //      the generated HTML (S3 + OAC can't resolve index documents on its
+    //      own — only the legacy website endpoint can, and that can't use OAC).
     const rewriteFn = new cloudfront.Function(this, 'IndexRewrite', {
       functionName: 'guitarserials-index-rewrite',
       code: cloudfront.FunctionCode.fromInline(`
         function handler(event) {
           var req = event.request;
           var uri = req.uri;
+          if (!uri.endsWith('/') && uri.indexOf('.') < 0) {
+            return {
+              statusCode: 301,
+              statusDescription: 'Moved Permanently',
+              headers: {
+                'location': { value: uri + '/' },
+                'cache-control': { value: 'public, max-age=604800' }
+              }
+            };
+          }
           if (uri.endsWith('/')) {
             req.uri = uri + 'index.html';
-          } else if (!uri.includes('.')) {
-            req.uri = uri + '/index.html';
           }
           return req;
         }
       `),
-      comment: 'Resolve folder routes to index.html',
+      comment: '301 no-slash → slash; serve index.html for folder routes',
     });
 
     const distribution = new cloudfront.Distribution(this, 'SiteDistribution', {

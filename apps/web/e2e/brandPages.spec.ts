@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test.describe('Brand pages', () => {
   test('Gibson page lists format cards and links to find-serial', async ({ page }) => {
-    await page.goto('/brands/gibson');
+    await page.goto('/brands/gibson/');
     await expect(page.getByRole('heading', { level: 1, name: 'Gibson' })).toBeVisible();
 
     // At least 5 format cards (Gibson has 9)
@@ -17,7 +17,7 @@ test.describe('Brand pages', () => {
   });
 
   test('Gibson Custom Shop page uses the hyphenated slug', async ({ page }) => {
-    await page.goto('/brands/gibson-custom-shop');
+    await page.goto('/brands/gibson-custom-shop/');
     await expect(page.getByRole('heading', { level: 1, name: 'Gibson Custom Shop' })).toBeVisible();
   });
 
@@ -25,10 +25,16 @@ test.describe('Brand pages', () => {
     // The find-serial content is now inlined on the brand page under the
     // #find-serial anchor. The legacy /brands/<slug>/find-serial URL is a
     // static redirect so old links keep working.
-    await page.goto('/brands/fender/find-serial');
-    await page.waitForURL('**/brands/fender#find-serial');
-    // Inlined section renders under an h2, and the intro sentence mentions
-    // locations like neck plate.
+    // With trailingSlash: 'always', Astro dev serves the redirect page at
+    // /brands/fender/find-serial/ and 404s the no-slash form. In production
+    // CloudFront 301s the no-slash form to the slash form — that CDN-level
+    // redirect isn't something this e2e can exercise from dev. So we hit
+    // the slash form directly and verify the meta-refresh + JS redirect
+    // land on the brand page.
+    await page.goto('/brands/fender/find-serial/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Fender' })).toBeVisible({
+      timeout: 10000,
+    });
     await expect(
       page.getByRole('heading', { name: /where to find your serial/i }).first(),
     ).toBeVisible();
@@ -41,7 +47,7 @@ test.describe('Brand pages', () => {
     const gibsonCard = page.getByRole('link', { name: /^Gibson →/i });
     await expect(gibsonCard).toBeVisible();
     await gibsonCard.click();
-    await expect(page).toHaveURL(/\/brands\/gibson$/);
+    await expect(page).toHaveURL(/\/brands\/gibson\/$/);
     await expect(page.getByRole('heading', { level: 1, name: 'Gibson' })).toBeVisible();
   });
 });
