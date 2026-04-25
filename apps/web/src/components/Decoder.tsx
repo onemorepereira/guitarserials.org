@@ -85,11 +85,36 @@ const EXAMPLE_CHIPS: Array<{ serial: string; brand: string; year?: string; label
   { serial: '08123456', brand: 'prs', label: 'PRS Core' },
 ];
 
+/**
+ * Resolve the URL `b=` parameter to a matcher brand id. We accept BOTH the
+ * matcher id (with spaces, e.g. "gibson custom shop") and the URL-friendly
+ * slug (with hyphens, e.g. "gibson-custom-shop") — the latter is the form
+ * users naturally reach for when hand-templating links to mirror the brand
+ * page URLs (`/brands/gibson-custom-shop/`). Without this normalization,
+ * slug-form values silently fall through the matcher dispatch and surface
+ * as a misleading "No match under <slug>" with no hint that the brand
+ * wasn't recognized.
+ */
+function resolveBrandParam(raw: string): string {
+  if (!raw) return '';
+  const lower = raw.toLowerCase();
+  // Direct id match (e.g. "gibson custom shop", URL-decoded from "gibson+custom+shop").
+  const byId = BRANDS.find((b) => b.id === lower);
+  if (byId) return byId.id;
+  // Slug match (e.g. "gibson-custom-shop").
+  const bySlug = BRANDS.find((b) => b.slug === lower);
+  if (bySlug) return bySlug.id;
+  // Unrecognized — pass through unchanged. The matcher will return null and
+  // the UI will show a "no match" message; preserving the raw value lets
+  // users see what they typed if they got the brand wrong.
+  return raw;
+}
+
 function readFormFromUrl(): FormState {
   const p = new URLSearchParams(window.location.search);
   return {
     serial: p.get('s') ?? '',
-    brand: p.get('b') ?? '',
+    brand: resolveBrandParam(p.get('b') ?? ''),
     listingYear: p.get('y') ?? '',
     modelHint: p.get('m') ?? '',
   };
