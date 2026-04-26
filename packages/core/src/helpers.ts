@@ -122,3 +122,37 @@ export function isFenderAvri(modelHint: string | null | undefined): boolean {
   if (/'\d{2}s?\b/.test(m)) return true;
   return false;
 }
+
+/**
+ * Fender Japan ("Crafted in Japan", MIJ) vintage reissue context detector.
+ *
+ * Fender Japan reissues from 1997-2015 reuse the USA vintage-style S/E
+ * decade prefixes (e.g. S025075 on a 2008 ST62-US Stratocaster) but do
+ * NOT encode the year. Without this gate the regular S/E decoder would
+ * return "1970" / "1980" on a 2008 listing.
+ *
+ * Triggers on any of:
+ *   - direct MIJ markers in the model_hint (MIJ, "Crafted in Japan",
+ *     "Made in Japan", "Fender Japan");
+ *   - MIJ model codes (ST62, TL52, JG65, JM62, JB62, PB57, etc.);
+ *   - post-1997 vintage-reissue context (AVRI / "Vintage Reissue" /
+ *     "Vintage '62" with listing_year >= 1997, the year the MIJ
+ *     S/E scheme overlapped with USA legacy serials).
+ */
+const FENDER_MIJ_DIRECT = /\b(?:mij|crafted\s+in\s+japan|made\s+in\s+japan|fender\s+japan)\b/i;
+const FENDER_MIJ_MODEL_CODE = /\b(?:st|tl|jg|jm|jb|pb)\d{2}[-_a-z]{0,8}\b/i;
+const FENDER_VINTAGE_REISSUE =
+  /\b(?:american\s+)?vintage\s+(?:reissue|'?5[0-9]|'?6[0-9])\b|\bavri\b|\breissue\b/i;
+
+export function isFenderMijReissue(
+  modelHint: string | null | undefined,
+  listingYear: number | null | undefined,
+): boolean {
+  if (!modelHint) return false;
+  if (FENDER_MIJ_DIRECT.test(modelHint)) return true;
+  if (FENDER_MIJ_MODEL_CODE.test(modelHint)) return true;
+  if (listingYear != null && listingYear >= 1997 && FENDER_VINTAGE_REISSUE.test(modelHint)) {
+    return true;
+  }
+  return false;
+}

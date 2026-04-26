@@ -159,4 +159,35 @@ describe('Ibanez serials', () => {
     expect(r!.brandFormat).toBe('ibanez_indonesia_samick');
     expect(r!.decodedYear).toBe(2016);
   });
+
+  // Cort Indonesia (CP prefix). Format mirrors Cort Korea (C) but lives
+  // at a distinct factory and gets its own brand_format. The CP branch
+  // must run before any C\d... matcher that could partially capture it.
+  it('Cort Indonesia CP + 8-digit YYMMPPPP decodes year + month', () => {
+    // CP21030042 = March 2021, #0042
+    const r = matchSerial('CP21030042', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_cort');
+    expect(r!.decodedYear).toBe(2021);
+    expect(r!.decodedMonth).toBe(3);
+  });
+
+  it('Cort Indonesia CP + 7-digit YMMPPPP decodes 2000s single-Y year', () => {
+    // CP5060001 = Y=5 (2005), MM=06, PPPP=0001
+    const r = matchSerial('CP5060001', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_cort');
+    expect(r!.decodedYear).toBe(2005);
+    expect(r!.decodedMonth).toBe(6);
+  });
+
+  it('Cort Indonesia CP with invalid month falls back to year-null', () => {
+    const r = matchSerial('CP21999999', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_cort');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('Cort Indonesia CP + 6-digit short fallback claims format only', () => {
+    const r = matchSerial('CP123456', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_indonesia_cort');
+    expect(r!.decodedYear).toBeNull();
+  });
 });

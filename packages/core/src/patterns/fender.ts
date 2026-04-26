@@ -1,5 +1,5 @@
 import { buildMatch, singleCandidateMatch } from '../buildMatch.js';
-import { isFenderAvri } from '../helpers.js';
+import { isFenderAvri, isFenderMijReissue } from '../helpers.js';
 import type { SerialMatch, SerialMatchCandidate } from '../types.js';
 
 export function matchFender(
@@ -74,6 +74,13 @@ export function matchFender(
   for (const [prefix, baseYear, fmt] of decadePrefixes) {
     const m = text.match(new RegExp(`^${prefix}(\\d)(\\d{4,6})$`));
     if (m) {
+      // Fender Japan reuses S/E vintage-style prefixes on Crafted-in-Japan
+      // reissues (1997-2015) without encoding the year. When the listing
+      // context says MIJ, emit a no-year candidate instead of a stale
+      // 1970/1980 decode.
+      if ((prefix === 'S' || prefix === 'E') && isFenderMijReissue(modelHint, listingYear)) {
+        return singleCandidateMatch(m[0], null, 'fender_mij_vintage_reissue', listingYear, 'high');
+      }
       const yearDigit = parseInt(m[1] as string, 10);
       return singleCandidateMatch(m[0], baseYear + yearDigit, fmt, listingYear);
     }

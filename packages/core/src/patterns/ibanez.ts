@@ -149,6 +149,51 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
     }
   }
 
+  // Cort Indonesia CP + 8 digits: YY + MM + 4-digit seq. Format mirrors
+  // Cort Korea (C) but lives at a distinct factory and gets its own
+  // brand_format. Must precede the Cort Korea C matchers below so "CP..."
+  // can never be partially captured by a future loosened C\d{...} regex.
+  {
+    const m = text.match(/^CP(\d{2})(\d{2})(\d{4})$/);
+    if (m) {
+      const year2 = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+        return singleCandidateMatch(m[0], decoded, 'ibanez_indonesia_cort', listingYear, null, {
+          month,
+        });
+      }
+    }
+  }
+
+  // Cort Indonesia CP + 7 digits: Y + MM + 4-digit seq (2000s).
+  {
+    const m = text.match(/^CP(\d)(\d{2})(\d{4})$/);
+    if (m) {
+      const yearDigit = parseInt(m[1] as string, 10);
+      const month = parseInt(m[2] as string, 10);
+      if (month >= 1 && month <= 12) {
+        return singleCandidateMatch(
+          m[0],
+          2000 + yearDigit,
+          'ibanez_indonesia_cort',
+          listingYear,
+          null,
+          { month },
+        );
+      }
+    }
+  }
+
+  // Cort Indonesia CP + 6-9 digits: fall-back claiming format only.
+  {
+    const m = text.match(/^CP\d{6,9}$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'ibanez_indonesia_cort', listingYear);
+    }
+  }
+
   // Cort Korea C + 8 digits: YY + MM + 4-digit seq (per ibanezrules.com —
   // "8th digit format allows for YY, C03 is now 2003").
   {

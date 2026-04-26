@@ -449,6 +449,13 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         rule: 'Z + single year digit + 4–6 digit sequence.',
       },
       {
+        id: 'fender_mij_vintage_reissue',
+        name: 'MIJ vintage reissue (Crafted in Japan)',
+        yearRange: '1997–2015',
+        example: 'S025075',
+        rule: 'Fender Japan reissues from 1997–2015 reuse the USA vintage-style S/E decade prefixes (e.g. S025075 on a 2008 ST62-US Stratocaster) but do NOT encode the year. Detected via MIJ markers in the model context (MIJ, "Crafted in Japan", "Made in Japan", "Fender Japan"), MIJ model codes (ST62, TL52, JG65, JM62, JB62, PB57, …), or post-1997 vintage-reissue context (AVRI / "Vintage Reissue"). Year inferred from the listing.',
+      },
+      {
         id: 'fender_avri_v_prefix',
         name: 'V-prefix (AVRI, American Vintage Reissue)',
         yearRange: '1982+',
@@ -865,6 +872,13 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         example: '2N21123456',
         rule: 'The 2N prefix, then 8 digits. The first two post-prefix digits are the 2-digit year, the remaining six are sequential.',
       },
+      {
+        id: 'sire_gen2_letter_month',
+        name: 'Gen 2 letter-month — 2N + YY + M + 5 digits',
+        yearRange: '2025+',
+        example: '2N25H70217',
+        rule: '2N + 2-digit year + month letter (A=Jan, B=Feb, …, L=Dec) + 5-digit sequence. Encodes both year and month. Observed on 2025+ Larry Carlton X6 batches (e.g. 2N25H70217 = August 2025, #70217).',
+      },
     ],
     findSerial: {
       intro:
@@ -951,6 +965,13 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         yearRange: 'Varies',
         example: 'C1234567',
         rule: 'C followed by 6–8 digits. Cort-factory Korea production. Year encoding varies by era; we match the format but leave the year undecoded.',
+      },
+      {
+        id: 'ibanez_indonesia_cort',
+        name: 'CP-prefix Indonesia (Cort)',
+        yearRange: '2000s+',
+        example: 'CP21030042',
+        rule: 'CP followed by 6–9 digits. Cort’s Indonesia plant. Same YY+MM+PPPP structure as the Korean Cort C-prefix: 8-digit decodes 2-digit year + month, 7-digit decodes 2000s single-digit year + month, shorter forms claim the format only.',
       },
       {
         id: 'ibanez_korea_samick',
@@ -1932,6 +1953,7 @@ const FORMAT_META: Record<string, { era?: string; primary?: boolean }> = {
   fender_z_prefix: { era: 'USA decade prefixes (1976–2000)' },
   fender_dz_prefix: { era: 'USA decade prefixes (1976–2000)' },
   fender_dn: { era: 'USA decade prefixes (1976–2000)' },
+  fender_mij_vintage_reissue: { era: 'Japan' },
   fender_mx: { era: 'Mexico', primary: true },
   fender_mn: { era: 'Mexico' },
   fender_mz: { era: 'Mexico' },
@@ -1975,6 +1997,7 @@ const FORMAT_META: Record<string, { era?: string; primary?: boolean }> = {
   // ---- Sire ----
   sire_gen1: { primary: true },
   sire_gen2: { primary: true },
+  sire_gen2_letter_month: { primary: true },
 
   // ---- Ibanez ----
   ibanez_japan_f: { era: 'Japan (Fujigen)', primary: true },
@@ -1985,6 +2008,7 @@ const FORMAT_META: Record<string, { era?: string; primary?: boolean }> = {
   ibanez_indonesia: { era: 'Indonesia', primary: true },
   ibanez_indonesia_kwo_hsiao: { era: 'Indonesia' },
   ibanez_indonesia_samick: { era: 'Indonesia' },
+  ibanez_indonesia_cort: { era: 'Indonesia' },
 
   // ---- Gretsch ----
   gretsch_modern: { primary: true },

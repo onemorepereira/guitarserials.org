@@ -283,3 +283,60 @@ describe('Fender decade prefixes', () => {
     expect(m!.confidenceTier).toBe('rejected');
   });
 });
+
+// Fender Japan ("Crafted in Japan", MIJ) reissues from 1997-2015 reuse
+// the USA vintage-style S/E decade prefixes (e.g. S025075 on a 2008
+// ST62-US) but do NOT encode the year. The unmodified S/E decade-prefix
+// decoder would mis-label them as 1970/1980. The MIJ branch must run
+// before the decade-prefix loop and emit a no-year candidate.
+describe('Fender MIJ vintage reissue (S/E with Japan context)', () => {
+  it('S025075 with explicit MIJ model_hint returns no year', () => {
+    const r = matchSerial('S025075', 'Fender', {
+      listingYear: 2008,
+      modelHint: 'ST62-US MIJ Stratocaster',
+    });
+    expect(r).not.toBeNull();
+    expect(r!.brandFormat).toBe('fender_mij_vintage_reissue');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('S025075 with "Crafted in Japan" model_hint returns no year', () => {
+    const r = matchSerial('S025075', 'Fender', {
+      listingYear: 2008,
+      modelHint: 'Stratocaster Crafted in Japan 62 Reissue',
+    });
+    expect(r!.brandFormat).toBe('fender_mij_vintage_reissue');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('S025075 with MIJ model code (ST62) and no MIJ keyword returns no year', () => {
+    const r = matchSerial('S025075', 'Fender', {
+      listingYear: 2008,
+      modelHint: 'ST62-US Olympic White',
+    });
+    expect(r!.brandFormat).toBe('fender_mij_vintage_reissue');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('S025075 with post-1997 vintage reissue context returns no year', () => {
+    const r = matchSerial('S025075', 'Fender', {
+      listingYear: 2008,
+      modelHint: "American Vintage Reissue '62 Stratocaster",
+    });
+    expect(r!.brandFormat).toBe('fender_mij_vintage_reissue');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('S025075 with no MIJ context and pre-1980 listing falls through to USA decoder', () => {
+    const r = matchSerial('S025075', 'Fender', {
+      listingYear: 1979,
+      modelHint: 'Stratocaster',
+    });
+    expect(r!.brandFormat).toBe('fender_s_prefix');
+  });
+
+  it('S025075 with no model_hint at all falls through to USA decoder', () => {
+    const r = matchSerial('S025075', 'Fender', { listingYear: 2008 });
+    expect(r!.brandFormat).toBe('fender_s_prefix');
+  });
+});
