@@ -55,6 +55,48 @@ describe('Ibanez serials', () => {
     expect(r!.decodedYear).toBe(1984);
   });
 
+  // F750605 is structurally ambiguous — it satisfies BOTH:
+  //   letter-month: F (June) + 75 + 0605  → 1975
+  //   F-prefix-6  : F + 7    + 50605      → 1987
+  // Both interpretations must be emitted; listingYear decides which wins.
+  it('F + letter-month ambiguity: listing 1987 picks F-prefix (1987)', () => {
+    const r = matchSerial('F750605', 'Ibanez', { listingYear: 1987 });
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1987);
+    expect(r!.brandFormat).toBe('ibanez_japan_f');
+    const formats = r!.candidates.map((c) => c.brandFormat).sort();
+    expect(formats).toEqual(['ibanez_japan_f', 'ibanez_japan_letter_month']);
+  });
+
+  it('F + letter-month ambiguity: no listing year prefers letter-month (1975)', () => {
+    const r = matchSerial('F750605', 'Ibanez');
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1975);
+    expect(r!.brandFormat).toBe('ibanez_japan_letter_month');
+  });
+
+  it('F + letter-month ambiguity: F876543 listing 1988 picks F-prefix', () => {
+    const r = matchSerial('F876543', 'Ibanez', { listingYear: 1988 });
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1988);
+    expect(r!.brandFormat).toBe('ibanez_japan_f');
+  });
+
+  it('F + letter-month ambiguity: F876543 listing 1987 picks letter-month', () => {
+    const r = matchSerial('F876543', 'Ibanez', { listingYear: 1987 });
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1987);
+    expect(r!.brandFormat).toBe('ibanez_japan_letter_month');
+  });
+
+  it('F + 6 digits: YY out of [75,88] — only F-prefix matches', () => {
+    const r = matchSerial('F950000', 'Ibanez', { listingYear: 1989 });
+    expect(r).not.toBeNull();
+    expect(r!.decodedYear).toBe(1989);
+    expect(r!.brandFormat).toBe('ibanez_japan_f');
+    expect(r!.candidates).toHaveLength(1);
+  });
+
   it('pre-F letter does not shadow Indonesia I', () => {
     const r = matchSerial('I12345678', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_indonesia');
