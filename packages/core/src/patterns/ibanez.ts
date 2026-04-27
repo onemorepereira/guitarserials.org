@@ -1,10 +1,17 @@
-import { singleCandidateMatch } from '../buildMatch.js';
-import type { SerialMatch } from '../types.js';
+import { buildMatch, singleCandidateMatch } from '../buildMatch.js';
+import type { SerialMatch, SerialMatchCandidate } from '../types.js';
 
 export function matchIbanez(text: string, listingYear: number | null): SerialMatch | null {
   // Pre-F Japan letter-month prefix (1975-1988).
   // Letter encodes month A=Jan..L=Dec, YY is year suffix 75-88.
-  // Must match before F-prefix so "F" letter-month doesn't also match F-prefix.
+  //
+  // Ambiguity: when the letter is "F", the same 7-char string ALSO satisfies
+  // the F-prefix-6 format (F + Y + 5-digit seq, 1987-1996). Both reads can
+  // be valid — e.g. F750605 means either 1975 (F=June) or 1987 (F-prefix
+  // Y=7). Build candidates for both and let listingYear tiebreak via the
+  // closest-year rule. Without listingYear, letter-month wins (preserves
+  // the long-standing default).
+  let letterMonthCandidate: SerialMatchCandidate | null = null;
   {
     const m = text.match(/^([A-L])(\d{2})(\d{4})$/);
     if (m) {
@@ -12,14 +19,16 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const month = monthLetter.charCodeAt(0) - 'A'.charCodeAt(0) + 1;
       const yy = parseInt(m[2] as string, 10);
       if (yy >= 75 && yy <= 88) {
-        return singleCandidateMatch(
-          m[0],
-          1900 + yy,
-          'ibanez_japan_letter_month',
-          listingYear,
-          null,
-          { month },
-        );
+        letterMonthCandidate = {
+          serial: m[0],
+          decodedYear: 1900 + yy,
+          decodedMonth: month,
+          decodedDay: null,
+          brandFormat: 'ibanez_japan_letter_month',
+          sourceTag: null,
+          confidenceCap: null,
+          confidenceOverride: null,
+        };
       }
     }
   }
@@ -45,8 +54,40 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
       const digits = m[1] as string;
       const yd = parseInt(digits[0] as string, 10);
       const decoded = yd >= 7 ? 1980 + yd : 1990 + yd;
-      return singleCandidateMatch(m[0], decoded, 'ibanez_japan_f', listingYear);
+      const fCandidate: SerialMatchCandidate = {
+        serial: m[0],
+        decodedYear: decoded,
+        decodedMonth: null,
+        decodedDay: null,
+        brandFormat: 'ibanez_japan_f',
+        sourceTag: null,
+        confidenceCap: null,
+        confidenceOverride: null,
+      };
+      if (letterMonthCandidate !== null) {
+        const candidates = [letterMonthCandidate, fCandidate];
+        const best =
+          listingYear === null
+            ? letterMonthCandidate
+            : candidates.reduce((a, b) => {
+                const ga = Math.abs((a.decodedYear ?? 9999) - listingYear);
+                const gb = Math.abs((b.decodedYear ?? 9999) - listingYear);
+                return ga <= gb ? a : b;
+              });
+        return buildMatch(m[0], candidates, best, listingYear);
+      }
+      return buildMatch(m[0], [fCandidate], fCandidate, listingYear);
     }
+  }
+
+  // No F-prefix match — fall back to letter-month if it matched.
+  if (letterMonthCandidate !== null) {
+    return buildMatch(
+      letterMonthCandidate.serial,
+      [letterMonthCandidate],
+      letterMonthCandidate,
+      listingYear,
+    );
   }
 
   // Indonesia I + 9 digits: YY + MM + 5-digit sequence (per Ibanez Wiki
