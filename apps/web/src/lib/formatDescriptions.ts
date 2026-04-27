@@ -42,6 +42,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   fender_e_prefix: 'Fender USA 1980s — E + year-digit + sequence.',
   fender_n_prefix: 'Fender USA 1990s — N + year-digit + sequence.',
   fender_z_prefix: 'Fender USA 2000s — Z + year-digit + sequence.',
+  fender_mij_vintage_reissue:
+    'Fender Japan vintage reissue (Crafted in Japan / MIJ, 1997–2015) — S/E prefix on a Japan-context model. Year is NOT encoded in the serial; the USA decade-prefix decoder would mis-label these as 1970/1980. Use the listing year for production date.',
   fender_avri_v_prefix:
     'Fender American Vintage Reissue (AVRI) — V-prefix. Pre-2012 serials have no year encoded; from mid-2012 onward (AVRI II), the first two digits after V are the 2-digit year.',
   fender_cs: 'Fender Custom Shop — CS-prefix. Year not encoded in the serial.',
@@ -92,6 +94,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   heritage_numeric_6: 'Heritage bare 6-digit Kalamazoo stamp — undocumented format, year unknown.',
   sire_gen1: 'Sire Gen 1 — 8-digit, first two digits encode the year.',
   sire_gen2: 'Sire Gen 2 — 2N + 8 digits, first two post-prefix digits encode the year.',
+  sire_gen2_letter_month:
+    'Sire Gen 2 letter-month (2025+) — 2N + YY + month-letter (A=Jan, B=Feb, …, L=Dec) + 5-digit sequence. Encodes both year and month.',
   ibanez_japan_f:
     'Ibanez Japan (Fujigen) F-prefix. Length distinguishes eras: 6 digits = 1987-1996 single-Y, 7-8 digits = 1997+ YY.',
   ibanez_japan_letter_month:
@@ -104,6 +108,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
     'Ibanez Indonesia SI-prefix (Samick). 7-digit YMMPPPP (2000s single-digit year) or 9-digit YYMMPPPPP layout.',
   ibanez_korea:
     'Ibanez Korea C-prefix (Cort). 8-digit YY+MM+PPPP decodes 2-digit year; 7-digit YMMPPPP decodes 1990s single-digit year; 6-digit leaves year unknown.',
+  ibanez_indonesia_cort:
+    'Ibanez Indonesia CP-prefix (Cort Indonesia plant). 8-digit YY+MM+PPPP decodes 2-digit year; 7-digit YMMPPPP decodes 2000s single-digit year; 6-9 digit fallback claims the format with year unknown.',
   ibanez_korea_samick:
     'Ibanez Korea S-prefix (Samick, 1990–1995). S + Y + MM + 4-digit sequence; Y is last digit of year.',
   ibanez_korea_world:
