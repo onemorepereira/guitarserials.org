@@ -14,7 +14,20 @@ export function matchGibsonCustomShop(
   listingYear: number | null,
   modelHint: string | null = null,
   isCsBrand = false,
+  todayYear: number | null = null,
 ): SerialMatch | null {
+  // Murphy Lab: CSLB<run-letter>[<seq>]. Tom Murphy's hand-aged
+  // Custom Shop instruments since 2020 — letters in the body, no
+  // production year encoded. Tagged with its own brandFormat so
+  // analytics can split Murphy Lab off from the standard digit-encoded
+  // CS lines. Mirror of backend gibson_cs_murphy_lab branch.
+  {
+    const m = text.match(/^CSLB[A-Z]\d{0,5}$/);
+    if (m) {
+      return singleCandidateMatch(m[0], null, 'gibson_cs_murphy_lab', listingYear, 'high');
+    }
+  }
+
   // CS prefix: Gibson Custom Shop, launched 1993.
   //   3-5 digits: CSYRRR(R) — single-digit year, snap to closest decade.
   //   6 digits: ambiguous CSYRRRRR (single Y + 5-rank) vs CSYYRRRR (YY + 4-rank);
@@ -27,7 +40,7 @@ export function matchGibsonCustomShop(
       const candidates: SerialMatchCandidate[] = [];
 
       const ySingle = parseInt(digits[0] as string, 10);
-      const yearSingle = csSnapYearSingle(ySingle, listingYear);
+      const yearSingle = csSnapYearSingle(ySingle, listingYear, todayYear);
       if (yearSingle !== null) {
         candidates.push({ serial, decodedYear: yearSingle, brandFormat: 'gibson_cs' });
       } else if (listingYear === null) {

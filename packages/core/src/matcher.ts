@@ -47,28 +47,29 @@ type BrandMatcher = (
   listingYear: number | null,
   modelHint: string | null,
   isCsBrand: boolean,
+  todayYear: number | null,
 ) => SerialMatch | null;
 
 const BRAND_MATCHERS: Record<string, BrandMatcher> = {
-  gibson: (t, y, h, _c) => matchGibson(t, y, h),
-  'gibson custom shop': (t, y, h, _c) => matchGibsonCustomShop(t, y, h, true),
-  fender: (t, y, h, _c) => matchFender(t, y, h),
-  prs: (t, y, h, _c) => matchPrs(t, y, h),
-  heritage: (t, y, _h, _c) => matchHeritage(t, y),
-  sire: (t, y, _h, _c) => matchSire(t, y),
-  ibanez: (t, y, _h, _c) => matchIbanez(t, y),
-  gretsch: (t, y, _h, _c) => matchGretsch(t, y),
-  rickenbacker: (t, y, _h, _c) => matchRickenbacker(t, y),
-  jackson: (t, y, _h, _c) => matchJackson(t, y),
-  charvel: (t, y, _h, _c) => matchCharvel(t, y),
-  epiphone: (t, y, _h, _c) => matchEpiphone(t, y),
-  squier: (t, y, _h, _c) => matchSquier(t, y),
-  'g&l': (t, y, _h, _c) => matchGAndL(t, y),
-  schecter: (t, y, _h, _c) => matchSchecter(t, y),
-  martin: (t, y, _h, _c) => matchMartin(t, y),
-  esp: (t, y, _h, _c) => matchEsp(t, y),
-  ltd: (t, y, _h, _c) => matchEsp(t, y),
-  'music man': (t, y, _h, _c) => matchMusicMan(t, y),
+  gibson: (t, y, h, _c, ty) => matchGibson(t, y, h, ty),
+  'gibson custom shop': (t, y, h, _c, ty) => matchGibsonCustomShop(t, y, h, true, ty),
+  fender: (t, y, h, _c, _ty) => matchFender(t, y, h),
+  prs: (t, y, h, _c, _ty) => matchPrs(t, y, h),
+  heritage: (t, y, _h, _c, _ty) => matchHeritage(t, y),
+  sire: (t, y, _h, _c, _ty) => matchSire(t, y),
+  ibanez: (t, y, _h, _c, _ty) => matchIbanez(t, y),
+  gretsch: (t, y, _h, _c, _ty) => matchGretsch(t, y),
+  rickenbacker: (t, y, _h, _c, _ty) => matchRickenbacker(t, y),
+  jackson: (t, y, _h, _c, _ty) => matchJackson(t, y),
+  charvel: (t, y, _h, _c, _ty) => matchCharvel(t, y),
+  epiphone: (t, y, _h, _c, _ty) => matchEpiphone(t, y),
+  squier: (t, y, _h, _c, _ty) => matchSquier(t, y),
+  'g&l': (t, y, _h, _c, _ty) => matchGAndL(t, y),
+  schecter: (t, y, _h, _c, _ty) => matchSchecter(t, y),
+  martin: (t, y, _h, _c, _ty) => matchMartin(t, y),
+  esp: (t, y, _h, _c, _ty) => matchEsp(t, y),
+  ltd: (t, y, _h, _c, _ty) => matchEsp(t, y),
+  'music man': (t, y, _h, _c, _ty) => matchMusicMan(t, y),
 };
 
 /**
@@ -85,6 +86,11 @@ export function matchSerial(text: string, brand: string, opts?: MatchOptions): S
 
   const listingYear = opts?.listingYear ?? null;
   const modelHint = opts?.modelHint ?? null;
+  // Default todayYear to the current calendar year so callers don't
+  // have to pass it explicitly. Tests pass an explicit value for
+  // determinism. Used by Gibson CS-prefix decade disambiguation when
+  // listingYear is absent.
+  const todayYear = opts?.todayYear ?? new Date().getFullYear();
 
   const normalizedBrand = brand.trim().toLowerCase();
   const matcher = BRAND_MATCHERS[normalizedBrand];
@@ -94,13 +100,13 @@ export function matchSerial(text: string, brand: string, opts?: MatchOptions): S
   if (!normalizedText) return null;
 
   // Pass 1: full-text match.
-  const exact = matcher(normalizedText, listingYear, modelHint, false);
+  const exact = matcher(normalizedText, listingYear, modelHint, false, todayYear);
   if (exact) return exact;
 
   // Pass 2: extract a known prefix from OCR noise.
   const extracted = extractSerialFromNoise(normalizedText);
   if (extracted && extracted !== normalizedText) {
-    return matcher(extracted, listingYear, modelHint, false);
+    return matcher(extracted, listingYear, modelHint, false, todayYear);
   }
 
   return null;

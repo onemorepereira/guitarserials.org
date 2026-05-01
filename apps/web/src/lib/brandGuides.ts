@@ -314,6 +314,17 @@ export const BRAND_GUIDES: Record<string, BrandGuide> = {
         example: 'A80001',
         rule: "A followed by 8 or 9, then 4–5 digits. The 8 or 9 identifies the reissue model year (A8 = '58, A9 = '59); the following digits are year + rank, but the label does not reliably encode current production year.",
       },
+      {
+        id: 'gibson_cs_murphy_lab',
+        name: 'Murphy Lab (CSLB prefix)',
+        yearRange: '2020–present',
+        example: 'CSLBH',
+        rule: 'CSLB followed by a single run-letter and an optional sequential. Tom Murphy hand-aged instruments — letters in the body, no production year encoded in the serial. The build year comes from the listing context (or from the inscribed Murphy Lab certificate).',
+        gotchas: [
+          'Year is never decoded from these serials; the format itself is the signal.',
+          'Confidence is marked high because the CSLB prefix is definitive even without a year.',
+        ],
+      },
     ],
     findSerial: {
       intro:
@@ -1943,6 +1954,7 @@ const FORMAT_META: Record<string, { era?: string; primary?: boolean }> = {
   gibson_cs: { primary: true },
   gibson_cs_yyrrrr: { primary: true },
   gibson_cs_historic: { primary: true },
+  gibson_cs_murphy_lab: { era: 'Murphy Lab (2020+)' },
 
   // ---- Fender ----
   fender_us_prefix: { era: 'Modern USA (2000+)', primary: true },

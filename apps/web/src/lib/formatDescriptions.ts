@@ -31,6 +31,8 @@ export const FORMAT_DESCRIPTIONS: Record<string, string> = {
   gibson_cs_collectors_choice: "Gibson Custom Shop Collector's Choice run (CC<series>A<rank>).",
   gibson_cs_artist: 'Gibson Custom Shop artist/limited-run signature serial.',
   gibson_cs_es_reissue: 'Gibson Custom Shop ES F-hole label reissue (A8/A9 prefix).',
+  gibson_cs_murphy_lab:
+    'Gibson Custom Shop Murphy Lab — Tom Murphy hand-aged instruments (CSLB<run-letter>[<seq>]). Year not encoded in the serial.',
   fender_us_prefix:
     'Fender USA — US + year-digits + sequence. First two post-prefix digits encode the year.',
   fender_mx: 'Fender Mexico — MX + 2-digit year + 6-digit sequence.',

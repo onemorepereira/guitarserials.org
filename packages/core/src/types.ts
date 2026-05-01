@@ -10,6 +10,15 @@ export type ConfidenceTier =
 export interface MatchOptions {
   listingYear?: number;
   modelHint?: string;
+  /**
+   * Optional upper-bound year used by decoders when listingYear is
+   * absent (currently: Gibson CS-prefix decade disambiguation —
+   * single-digit Y collides every 10 years across the 1990s/2000s/
+   * 2010s/2020s). When supplied, the decoder biases to the most-
+   * recent valid year ≤ todayYear. Public callers should pass
+   * `new Date().getFullYear()`; tests pass a fixed value.
+   */
+  todayYear?: number;
 }
 
 export interface SerialMatchCandidate {

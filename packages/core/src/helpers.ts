@@ -64,13 +64,28 @@ export function isGibsonHistoricReissue(modelHint: string | null | undefined): b
  * Snap a single-digit Y (0-9) to the closest valid CS production year (1993+).
  * Returns null when listingYear is absent.
  */
-export function csSnapYearSingle(y: number, listingYear: number | null): number | null {
-  if (listingYear === null) return null;
+export function csSnapYearSingle(
+  y: number,
+  listingYear: number | null,
+  todayYear: number | null = null,
+): number | null {
   const options = [1990 + y, 2000 + y, 2010 + y, 2020 + y].filter((o) => o >= 1993 && o <= 2030);
   if (options.length === 0) return null;
-  return options.reduce((best, o) =>
-    Math.abs(o - listingYear) < Math.abs(best - listingYear) ? o : best,
-  );
+  if (listingYear !== null) {
+    return options.reduce((best, o) =>
+      Math.abs(o - listingYear) < Math.abs(best - listingYear) ? o : best,
+    );
+  }
+  // No listing year — bias to most-recent valid year ≤ todayYear.
+  // Single-digit Y is genuinely ambiguous across 4 decades; production
+  // volume is heavily 2020s, so most-recent is right ~70%+ of the time.
+  // Mirrored from reverb-scrapper sibling project (commit 323b0b9).
+  if (todayYear !== null) {
+    const valid = options.filter((o) => o <= todayYear);
+    if (valid.length === 0) return null;
+    return Math.max(...valid);
+  }
+  return null;
 }
 
 /**
