@@ -162,17 +162,48 @@ describe('Ibanez serials', () => {
   });
 
   it('Korea W-prefix (World) decodes year with digit month', () => {
-    // W02 + 5 (May) + 12345 = May 2002
-    const r = matchSerial('W02512345', 'Ibanez');
+    // 2026-05-01 — format correction. Authoritative sources
+    // (killerrig.com, guitarinsite.nl, ibanezserialnumberlookup.com)
+    // all document `W <month-char> <year-digit> <4-seq>` = 7 chars,
+    // not the previous `W YY M NNNN(N)` 8-9 char form. The old
+    // format never matched real W-serials.
+    // W112612 = January 2001.
+    const r = matchSerial('W112612', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_korea_world');
-    expect(r!.decodedYear).toBe(2002);
+    expect(r!.decodedYear).toBe(2001);
+    expect(r!.decodedMonth).toBe(1);
   });
 
   it('Korea W-prefix decodes year with letter month (X/Y/Z = Oct/Nov/Dec)', () => {
-    // W02Y12345 = November 2002
-    const r = matchSerial('W02Y12345', 'Ibanez');
+    // WX41258 = October 2004.
+    const r = matchSerial('WX41258', 'Ibanez');
     expect(r!.brandFormat).toBe('ibanez_korea_world');
-    expect(r!.decodedYear).toBe(2002);
+    expect(r!.decodedYear).toBe(2004);
+    expect(r!.decodedMonth).toBe(10);
+  });
+
+  it('Korea W-prefix year-digit 9 → 1999 (first W year)', () => {
+    const r = matchSerial('W990001', 'Ibanez');
+    expect(r!.brandFormat).toBe('ibanez_korea_world');
+    expect(r!.decodedYear).toBe(1999);
+  });
+
+  it('Korea W-prefix year-digit 8 → 2008 (last W year)', () => {
+    const r = matchSerial('W180001', 'Ibanez');
+    expect(r!.decodedYear).toBe(2008);
+  });
+
+  it('Korea W-prefix Z = December', () => {
+    const r = matchSerial('WZ50001', 'Ibanez');
+    expect(r!.decodedMonth).toBe(12);
+    expect(r!.decodedYear).toBe(2005);
+  });
+
+  it('Korea W-prefix old 8-9 char format no longer matches as world', () => {
+    // Pin the regression — the previous wrong rule would match this
+    // string as ibanez_korea_world. New rule must NOT.
+    const r = matchSerial('W02512345', 'Ibanez');
+    expect(r === null || r.brandFormat !== 'ibanez_korea_world').toBe(true);
   });
 
   it('K-prefix Kwo Hsiao Indonesia 9-digit decodes year', () => {
