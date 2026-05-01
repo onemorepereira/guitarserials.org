@@ -74,6 +74,7 @@ export function matchGibson(
   text: string,
   listingYear: number | null,
   modelHint: string | null = null,
+  todayYear: number | null = null,
 ): SerialMatch | null {
   // Les Paul Classic reissue-style ink-stamped serials (evaluated before CS historic).
   if (isLesPaulClassic(modelHint)) {
@@ -95,7 +96,7 @@ export function matchGibson(
   // Try CS / artist prefixes — sellers often list CS guitars as just "Gibson".
   // isCsBrand stays false: plain Gibson has no implicit CS authority; the 5-6
   // digit historic fallback is gated on the model hint.
-  const csMatch = matchGibsonCustomShop(text, listingYear, modelHint, false);
+  const csMatch = matchGibsonCustomShop(text, listingYear, modelHint, false, todayYear);
   if (csMatch) return csMatch;
 
   // 1975-1977 Gibson USA 8-digit decals.

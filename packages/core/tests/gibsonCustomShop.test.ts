@@ -3,11 +3,13 @@ import { matchSerial } from '../src/index.js';
 
 describe('Gibson Custom Shop serials', () => {
   it('CS prefix', () => {
+    // 2026-05-01: matchSerial defaults todayYear to current year, so
+    // CS-prefix with no listing year now decodes to most-recent valid
+    // year (was null before). Pure-format assertions are the stable bits.
     const r = matchSerial('CS12345', 'Gibson Custom Shop');
     expect(r).not.toBeNull();
     expect(r!.serial).toBe('CS12345');
     expect(r!.brandFormat).toBe('gibson_cs');
-    expect(r!.decodedYear).toBeNull();
   });
 
   it('CS prefix 3 digits', () => {
@@ -189,11 +191,15 @@ describe('Gibson CS year decode', () => {
     expect(m!.brandFormat).toBe('gibson_cs');
   });
 
-  it('CS no listing year leaves decoded none', () => {
+  it('CS no listing year still decodes via todayYear default', () => {
+    // 2026-05-01: behaviour change. matchSerial now defaults todayYear
+    // to current year, so even without a listingYear we get a year.
+    // Y=1 → year ends in 1 (could be 1991/2001/2011/2021/2031...).
     const m = matchSerial('CS10845', 'Gibson Custom Shop');
     expect(m).not.toBeNull();
-    expect(m!.decodedYear).toBeNull();
     expect(m!.brandFormat).toBe('gibson_cs');
+    expect(m!.decodedYear).not.toBeNull();
+    expect(m!.decodedYear! % 10).toBe(1);
   });
 
   it('CS pre-1993 listing snaps up to 1995', () => {
@@ -230,5 +236,74 @@ describe('Gibson CS year decode', () => {
     expect(m).not.toBeNull();
     expect(m!.decodedYear).toBe(1994);
     expect(m!.brandFormat).toBe('gibson_cs_yyrrrr');
+  });
+});
+
+describe('Gibson CS — todayYear fallback when no listing year', () => {
+  // Mirrored from reverb-scrapper sibling project (commit 323b0b9).
+  // Single-digit Y in CSYRRRR collides every 10 years across
+  // 1990s/2000s/2010s/2020s. With no listing year, bias to the most-
+  // recent valid year ≤ todayYear. Right ~70%+ of the time given
+  // current production volume.
+
+  it('biases to most-recent valid year ≤ todayYear when no listing year', () => {
+    // CS500091 — Y=5 → options [1995, 2005, 2015, 2025] → cap at 2026 → 2025.
+    const r = matchSerial('CS500091', 'Gibson Custom Shop', { todayYear: 2026 });
+    expect(r!.brandFormat).toBe('gibson_cs');
+    expect(r!.decodedYear).toBe(2025);
+  });
+
+  it('listing year still wins over todayYear when both supplied', () => {
+    const r = matchSerial('CS500091', 'Gibson Custom Shop', {
+      listingYear: 2005,
+      todayYear: 2026,
+    });
+    expect(r!.decodedYear).toBe(2005);
+  });
+
+  it('todayYear too old for any valid decade returns null year', () => {
+    // CS launched 1993; todayYear=1991 means even Y=4 → 1994 is in the future.
+    const r = matchSerial('CS50001', 'Gibson Custom Shop', { todayYear: 1991 });
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('plain Gibson brand also benefits (sellers often mis-tag)', () => {
+    // Mirror of reverb-side test_cs_via_plain_gibson_brand_propagates_today_year.
+    const r = matchSerial('CS600945', 'Gibson', {
+      modelHint: 'Les Paul Custom',
+      todayYear: 2026,
+    });
+    expect(r!.brandFormat).toBe('gibson_cs');
+    expect(r!.decodedYear).toBe(2026);
+  });
+
+  it('matchSerial defaults todayYear to current calendar year', () => {
+    // Without explicit todayYear, the dispatcher still applies the
+    // bias-to-recent fallback. Y=1 → year ends in 1.
+    const r = matchSerial('CS10845', 'Gibson Custom Shop');
+    expect(r!.decodedYear).not.toBeNull();
+    expect(r!.decodedYear! % 10).toBe(1);
+  });
+});
+
+describe('Gibson CS — Murphy Lab letter-suffix', () => {
+  // Mirrored from reverb-scrapper sibling project (commit 323b0b9).
+  // Tom Murphy's hand-aged Custom Shop instruments use letters in the
+  // body (CSLB<run-letter>[<seq>]). Year is not encoded in the serial.
+
+  it('CSLBH recognized as Murphy Lab format', () => {
+    const r = matchSerial('CSLBH', 'Gibson Custom Shop');
+    expect(r!.brandFormat).toBe('gibson_cs_murphy_lab');
+    expect(r!.decodedYear).toBeNull();
+  });
+
+  it('CSLBA1234 (letter + sequential) recognized as Murphy Lab format', () => {
+    const r = matchSerial('CSLBA1234', 'Gibson Custom Shop');
+    expect(r!.brandFormat).toBe('gibson_cs_murphy_lab');
+  });
+
+  it('Murphy Lab also resolves under plain Gibson brand', () => {
+    const r = matchSerial('CSLBH', 'Gibson');
+    expect(r!.brandFormat).toBe('gibson_cs_murphy_lab');
   });
 });

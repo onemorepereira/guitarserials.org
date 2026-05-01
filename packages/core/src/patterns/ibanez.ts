@@ -168,13 +168,25 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
     }
   }
 
-  // World Korea W-prefix: W + YY + M + RRRR (8 digits after W).
-  // YY = 2-digit year. M encodes month: 1-9 = Jan-Sep, X = Oct, Y = Nov, Z = Dec.
+  // World Korea (World Musical Instrument Co., Incheon) — 1999-2008.
+  // Authoritative format per killerrig.com / guitarinsite.nl /
+  // ibanezserialnumberlookup.com:
+  //
+  //   W <month-char> <year-digit> <4-digit-seq>     (7 chars total)
+  //
+  // month-char: 1-9 = Jan-Sept; X = Oct; Y = Nov; Z = Dec.
+  // year-digit: 9 = 1999, 0 = 2000, 1 = 2001, ..., 8 = 2008.
+  //
+  // Previous rule expected `W \d{2} [1-9XYZ] \d{4-5}` (8-9 chars) —
+  // a format not documented in any authoritative source. Verified
+  // wrong against production W-serials in the reverb-scrapper sibling
+  // project on 2026-05-01 (zero matches). Replaced with the correct
+  // documented format.
   {
-    const m = text.match(/^W(\d{2})([1-9XYZ])(\d{4,5})$/);
+    const m = text.match(/^W([1-9XYZ])(\d)(\d{4})$/);
     if (m) {
-      const year2 = parseInt(m[1] as string, 10);
-      const monthChar = m[2] as string;
+      const monthChar = m[1] as string;
+      const yearDigit = parseInt(m[2] as string, 10);
       const month =
         monthChar === 'X'
           ? 10
@@ -183,7 +195,8 @@ export function matchIbanez(text: string, listingYear: number | null): SerialMat
             : monthChar === 'Z'
               ? 12
               : parseInt(monthChar, 10);
-      const decoded = year2 < 50 ? 2000 + year2 : 1900 + year2;
+      // 9 → 1999; 0-8 → 2000-2008.
+      const decoded = yearDigit === 9 ? 1999 : 2000 + yearDigit;
       return singleCandidateMatch(m[0], decoded, 'ibanez_korea_world', listingYear, null, {
         month,
       });

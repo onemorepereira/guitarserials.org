@@ -76,9 +76,13 @@ describe('date precision — month only', () => {
     expect(r!.decodedMonth).toBe(1);
   });
 
-  it('Ibanez W-prefix World Korea W02Y12345 = November 2002', () => {
-    const r = matchSerial('W02Y12345', 'ibanez');
-    expect(r!.decodedYear).toBe(2002);
+  it('Ibanez W-prefix World Korea WY52612 = November 2005', () => {
+    // 2026-05-01 — format correction. Authoritative format is
+    // `W <month-char> <year-digit> <4-seq>` (7 chars), not the
+    // previous wrong `W YY M NNNN(N)` (8-9 chars). WY52612 = Y=Nov,
+    // year-digit=5 → 2005, seq=2612.
+    const r = matchSerial('WY52612', 'ibanez');
+    expect(r!.decodedYear).toBe(2005);
     expect(r!.decodedMonth).toBe(11);
   });
 
