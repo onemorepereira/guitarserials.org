@@ -18,7 +18,7 @@ import type { SerialMatch } from '../types.js';
  */
 
 /** Set-neck (Core) models, 1985–2024. */
-const PRS_SET_NECK_RANGES: Array<[number, number, number]> = [
+export const PRS_SET_NECK_RANGES: Array<[number, number, number]> = [
   [1985, 1, 400],
   [1986, 401, 1700],
   [1987, 1701, 3500],
@@ -67,7 +67,7 @@ const PRS_SET_NECK_RANGES: Array<[number, number, number]> = [
 ];
 
 /** S2 Series, 2013–2024. Sequence is the digits AFTER the literal "S2". */
-const PRS_S2_RANGES: Array<[number, number, number]> = [
+export const PRS_S2_RANGES: Array<[number, number, number]> = [
   [2013, 1, 3820],
   [2014, 3821, 10529],
   [2015, 10530, 17390],
@@ -86,7 +86,7 @@ const PRS_S2_RANGES: Array<[number, number, number]> = [
 ];
 
 /** CE models 1988–2008. Prefix is "7" pre-1998, "7 or CE" in 1998, "CE" after. */
-const PRS_CE_RANGES: Array<[number, number, number]> = [
+export const PRS_CE_RANGES: Array<[number, number, number]> = [
   [1988, 1, 270],
   [1989, 271, 1830],
   [1990, 1831, 3200],
@@ -111,7 +111,7 @@ const PRS_CE_RANGES: Array<[number, number, number]> = [
 ];
 
 /** EG models (electric, maple top + fender-style body), 1990–1995. Prefix "5". */
-const PRS_EG_RANGES: Array<[number, number, number]> = [
+export const PRS_EG_RANGES: Array<[number, number, number]> = [
   [1990, 1, 920],
   [1991, 921, 1290],
   [1992, 1291, 2070],
@@ -121,7 +121,7 @@ const PRS_EG_RANGES: Array<[number, number, number]> = [
 ];
 
 /** Swamp Ash Special, 1997–2009. Prefix "8" pre-1998, "8 or SA" in 1998, "SA" after. */
-const PRS_SWAMP_ASH_RANGES: Array<[number, number, number]> = [
+export const PRS_SWAMP_ASH_RANGES: Array<[number, number, number]> = [
   [1997, 1, 410],
   [1998, 411, 760],
   [1999, 761, 969],
@@ -138,14 +138,14 @@ const PRS_SWAMP_ASH_RANGES: Array<[number, number, number]> = [
 ];
 
 /** Bolt-on bass, 1989–1991. Prefix "4". */
-const PRS_BASS_BOLT_ON_RANGES: Array<[number, number, number]> = [
+export const PRS_BASS_BOLT_ON_RANGES: Array<[number, number, number]> = [
   [1989, 1, 30],
   [1990, 31, 140],
   [1991, 141, 200],
 ];
 
 /** Set-neck bass, 1986–1991. Prefix "9". (PRS lists 1986/87 as one row.) */
-const PRS_BASS_SET_NECK_RANGES: Array<[number, number, number]> = [
+export const PRS_BASS_SET_NECK_RANGES: Array<[number, number, number]> = [
   [1987, 1, 230],
   [1988, 231, 350],
   [1989, 351, 680],
@@ -154,7 +154,7 @@ const PRS_BASS_SET_NECK_RANGES: Array<[number, number, number]> = [
 ];
 
 /** Electric Bass, 2000–2004. Literal "EB" prefix. */
-const PRS_BASS_ELECTRIC_RANGES: Array<[number, number, number]> = [
+export const PRS_BASS_ELECTRIC_RANGES: Array<[number, number, number]> = [
   [2000, 7, 72],
   [2001, 73, 199],
   [2002, 200, 422],
@@ -163,7 +163,7 @@ const PRS_BASS_ELECTRIC_RANGES: Array<[number, number, number]> = [
 ];
 
 /** Look up a sequential in a range table. First matching row wins. */
-function findYearInRanges(
+export function findYearInRanges(
   sequential: number,
   ranges: Array<[number, number, number]>,
 ): number | null {
